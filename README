@@ -1,0 +1,21 @@
+Site:		 http://www.gnss-sensor.com
+Authour: Sergey Khabarov
+license: GNU2
+
+This project includes:
+	1. C++ bit-to bit model of the full system:
+		- CPU Leon3 + DSU3
+		- AHB controller
+		- JTAG module
+		- RAM
+  
+  2. C++ software is generating all input signals for the SoC
+  	- SCLK (66 MHz), SRESET
+  	- JTag signals: TCK, TMS, TDO, TRESET
+  	- GNSS sensor signals: ClkADC, I, Q
+
+  3. Source VHDL files by Gaisler
+
+This software allows to generate test-bench files of the whole system
+and any single module of the SoC. It allows to work with real firmware
+as with the system emulator.
