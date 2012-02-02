@@ -1,0 +1,6 @@
+# Visual Studio Project files
+#########################
+*.ncb
+*.suo
+ProjectFiles2005/debug/
+ProjectFiles2005/libleon/debug/
