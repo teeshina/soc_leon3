@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "leon3", "leon3.vcproj", "{C1F2E1EB-EC8D-41B7-8E72-3E548D0FAC9C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FB6FB300-207E-4A37-B2FE-F2758D3BCC09} = {FB6FB300-207E-4A37-B2FE-F2758D3BCC09}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libleon", "libleon\libleon.vcproj", "{FB6FB300-207E-4A37-B2FE-F2758D3BCC09}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C1F2E1EB-EC8D-41B7-8E72-3E548D0FAC9C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C1F2E1EB-EC8D-41B7-8E72-3E548D0FAC9C}.Debug|Win32.Build.0 = Debug|Win32
+		{C1F2E1EB-EC8D-41B7-8E72-3E548D0FAC9C}.Release|Win32.ActiveCfg = Release|Win32
+		{C1F2E1EB-EC8D-41B7-8E72-3E548D0FAC9C}.Release|Win32.Build.0 = Release|Win32
+		{FB6FB300-207E-4A37-B2FE-F2758D3BCC09}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FB6FB300-207E-4A37-B2FE-F2758D3BCC09}.Debug|Win32.Build.0 = Debug|Win32
+		{FB6FB300-207E-4A37-B2FE-F2758D3BCC09}.Release|Win32.ActiveCfg = Release|Win32
+		{FB6FB300-207E-4A37-B2FE-F2758D3BCC09}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
