@@ -2,5 +2,7 @@
 #########################
 *.ncb
 *.suo
+leon3.vcproj.*.user
 ProjectFiles2005/debug/
 ProjectFiles2005/libleon/debug/
+ProjectFiles2010/
