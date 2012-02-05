@@ -65,7 +65,7 @@ void mmu_cache::Update( uint32 rst,//   : in  std_ulogic;
 
 
 //-- AMBA AHB interface     
-  clACache.Update(rst, sclk, mcii, mcio, mcdi, mcdo, mcmmi, mcmmo, ahbi2, ahbo2, ahbso, hclken);
+  pclACache->Update(rst, sclk, mcii, mcio, mcdi, mcdo, mcmmi, mcmmo, ahbi2, ahbo2, ahbso, hclken);
   
 //-- MMU
 #if (CFG_MMUEN==1)

@@ -57,6 +57,9 @@ class mmu_icache
       lru_type *arr;
       lru_reg_type() 
       { 
+        write = 0;
+        waddr = 0;
+        set   = 0;
         int32 size = (0x1<<IOFFSET_BITS);
         arr = (lru_type*)malloc( (0x1<<IOFFSET_BITS)*sizeof(lru_type) );
       }

@@ -13,6 +13,9 @@ dbg::dbg()
 #ifdef DBG_mmulru
   ptst_mmulru = new mmulru(CFG_ITLBNUM); // index in a range CFG_ITLBNUM or CFG_DTLBNUM
 #endif
+#ifdef DBG_ahbram
+  ptst_ahbram = new ahbram(AHB_SLAVE_MEM, 0x300, 0xfff);
+#endif
 }
 
 dbg::~dbg()
@@ -22,6 +25,9 @@ dbg::~dbg()
 #endif
 #ifdef DBG_mmulru
   free(ptst_mmulru);
+#endif
+#ifdef DBG_ahbram
+  free(ptst_ahbram);
 #endif
 }
 
@@ -103,7 +109,7 @@ void dbg::Update(SystemOnChipIO &io)
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_tbufmem]) tbufmem_tb(io);
 #endif
 
-  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_JTAGCOM]) jtagcom_tb(io);
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_jtagcom]) jtagcom_tb(io);
 
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_AHBMASTER]) ahbmst_tb(io);  
 
@@ -114,6 +120,8 @@ void dbg::Update(SystemOnChipIO &io)
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_leon3s]) leon3s_tb(io);
   
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_dsu3x]) dsu3x_tb(io);
+
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_ahbram]) ahbram_tb(io);
 
   if(io.inClk.eClock==SClock::CLK_POSEDGE)
     iClkCnt++;

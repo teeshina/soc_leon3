@@ -94,6 +94,8 @@ class mmu_dcache
       uint32 snmiss  : CFG_DSETS;//std_logic_vector(0 to DSETS-1);               -- set on cache miss due to snoop hit
       snoop_hit_reg_type()
       { 
+        taddr = hitaddr = 0;
+        clear = snhit = snmiss = 0;
         hit = (snoop_hit_bits_type*)malloc((0x1<<DOFFSET_BITS)*sizeof(snoop_hit_bits_type));
       }
       ~snoop_hit_reg_type() {free(hit);}
@@ -125,6 +127,9 @@ class mmu_dcache
       lru_type *lru;//   : lru_array;
       lru_reg_type()
       {
+        write = 0;
+        waddr = 0;
+        set   = 0;
         int32 size = (0x1<<DOFFSET_BITS);
         lru = (lru_type*)malloc( (0x1<<DOFFSET_BITS)*sizeof(lru_type) );
       }

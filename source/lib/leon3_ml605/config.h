@@ -1,17 +1,17 @@
 #pragma once
 
+#define LEON3_CORES_NUM 1
 const enum 
 {
   AHB_MASTER_LEON3=0,
-  AHB_MASTER_DSU,
-  AHB_MASTER_JTAG,
-  AHB_MASTER_UART,
+  AHB_MASTER_JTAG=(AHB_MASTER_LEON3+LEON3_CORES_NUM),
   AHB_MASTER_TOTAL
 };
 
 const enum 
 {
   AHB_SLAVE_ROM=0,
+  AHB_SLAVE_DSU,
   AHB_SLAVE_MEM,
   AHB_SLAVE_APBBRIDGE,
   AHB_SLAVE_TOTAL
@@ -20,6 +20,7 @@ const enum
 const enum
 {
   IRQ_DSU,
+  IRQ_GNSS_ENGINE,
   IRQ_TOTAL
 };
 
@@ -116,7 +117,7 @@ const uint32 ADDR_BUILD_LIB_MAX  = 0xFFFFFFFF;
 
 // LEON3 processor core
 #define CFG_LEON3                     1
-#define CFG_NCPU                      (1)
+#define CFG_NCPU                      (LEON3_CORES_NUM)
 #define CFG_NWIN                      (8)
 #define NWINLOG2  (log2[CFG_NWIN])// : integer range 1 to 5 := log2(NWIN);
 #define RFBITS    (log2[CFG_NWIN+1]+4)//: integer range 6 to 10 := log2(NWIN+1) + 4;

@@ -22,13 +22,13 @@ class leon3s
   uint32 gnd, vcc;// : std_logic;
   SClock clk_gnd;
   
-  proc3      clProc3;
+  proc3      *pclProc3;
   regfile_3p clRegfile3Port;
   cachemem   clCacheMem;
   tbufmem    *pclTBufMem;
 
   public:
-    leon3s();
+    leon3s(uint32 mst_index=AHB_MASTER_LEON3);
     ~leon3s();
     void Update(  SClock clk,//    : in  std_ulogic;
                   uint32 rstn,//   : in  std_ulogic;
@@ -45,7 +45,7 @@ class leon3s
     void ClkUpdate()
     {
       rst.ClkUpdate();
-      clProc3.ClkUpdate();
+      pclProc3->ClkUpdate();
       clRegfile3Port.ClkUpdate();
       clCacheMem.ClkUpdate();
       pclTBufMem->ClkUpdate();

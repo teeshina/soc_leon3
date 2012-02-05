@@ -18,7 +18,8 @@ int _tmain(int argc, _TCHAR* argv[])
   // Select testbench to print:
   for (int i=0; i<TB_TOTAL; i++)
     sLibInitData.uiBenchEna[i] = PRINT_TESTBENCH_DISABLE;
-  //sLibInitData.uiBenchEna[TB_JTAGCOM] = PRINT_TESTBENCH_ENABLE;
+  
+  //sLibInitData.uiBenchEna[TB_jtagcom] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_AHBMASTER] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_AHBJTAG] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_AHBCTRL] = PRINT_TESTBENCH_ENABLE;
@@ -39,7 +40,8 @@ int _tmain(int argc, _TCHAR* argv[])
   //sLibInitData.uiBenchEna[TB_regfile_3p] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_tbufmem] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_leon3s] = PRINT_TESTBENCH_ENABLE;
-  sLibInitData.uiBenchEna[TB_dsu3x] = PRINT_TESTBENCH_ENABLE;
+  //sLibInitData.uiBenchEna[TB_dsu3x] = PRINT_TESTBENCH_ENABLE;
+  sLibInitData.uiBenchEna[TB_ahbram] = PRINT_TESTBENCH_ENABLE;
   // Library init procedure:
   LibInit(&sLibInitData);
   

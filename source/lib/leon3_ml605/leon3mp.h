@@ -17,9 +17,14 @@ class leon3mp
     //
     l3_irq_in_type irqi;//   : in  l3_irq_in_type;
     l3_irq_out_type irqo;//   : out l3_irq_out_type;
-    l3_debug_in_type dbgi;//   : in  l3_debug_in_type;
-    l3_debug_out_type dbgo;
-    leon3s clLeon3s;
+    l3_debug_in_vector dbgi;//   : in  l3_debug_in_type;
+    l3_debug_out_vector dbgo;
+    leon3s* pclLeon3s[CFG_NCPU];
+    
+    dsu_in_type dsui;//   : in dsu_in_type;
+    dsu_out_type dsuo;//   : out dsu_out_type;
+    dsu3x *pclDsu3x;
+
 
   public:
     leon3mp();
@@ -43,7 +48,9 @@ class leon3mp
       clAhbControl.ClkUpdate();
       pclAhbSlaveMem->ClkUpdate();
       
-      clLeon3s.ClkUpdate();
+      for(int32 i=0; i<CFG_NCPU; i++)
+        pclLeon3s[i]->ClkUpdate();
+      pclDsu3x->ClkUpdate();
     }
 };
 

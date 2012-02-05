@@ -120,7 +120,7 @@ class dsu3x
 
 
   public:
-    dsu3x(uint32 ind_=AHB_MASTER_DSU, uint32 uiMemaddr_=0x900, uint32 uiAddrmask_=0xf00);
+    dsu3x(uint32 ind_=AHB_SLAVE_DSU, uint32 uiMemaddr_=0x900, uint32 uiAddrmask_=0xf00);
     ~dsu3x();
   
     void Update(uint32 rst,//    : in  std_ulogic;

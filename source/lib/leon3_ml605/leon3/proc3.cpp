@@ -46,6 +46,6 @@ void proc3::Update( SClock clk,//    : in  std_ulogic;
 
 //-- cache controller
 
-  clCacheMMU.Update(rstn, clk, ici, ico, dci, dco,
+  pclCacheMMU->Update(rstn, clk, ici, ico, dci, dco,
     ahbi, ahbo, ahbsi, ahbso, crami, cramo, pholdn, hclk, sclk, hclken);
 }

@@ -92,10 +92,20 @@ begin
 
 procCheck : process (inClk, ch_tbo)
   variable iErrCnt : integer := 0;
+  variable iChkCnt1 : integer := 0;
+  variable iChkCnt2 : integer := 0;
+  variable iChkCnt3 : integer := 0;
 begin
   if(rising_edge(inClk) and (iClkCnt>2)) then
-    if(rdata1/="UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU") then
-      --if(ch_rdata1/=rdata1) then print("Err: rdata1"); iErrCnt:=iErrCnt+1;end if;
+    if(((tbo.data(127)='U')or(tbo.data(95)='U')) and ((tbo.data(63)/='U')and(tbo.data(31)/='U')) )then
+      iCnkCnt1 := iChkCnt1+1;
+      if(ch_tbo.data(63 downto 0)/=tbo.data(63 downto 0)) then print("Err: tbo.data(63 downto 0)"); iErrCnt:=iErrCnt+1;end if;
+    elsif(((tbo.data(127)/='U')and(tbo.data(95)/='U')) and ((tbo.data(63)='U')or(tbo.data(31)='U')) )then
+      iCnkCnt2 := iChkCnt2+1;
+      if(ch_tbo.data(127 downto 64)/=tbo.data(127 downto 64)) then print("Err: tbo.data(127 downto 64)"); iErrCnt:=iErrCnt+1;end if;
+    elsif((tbo.data(127)/='U') and (tbo.data(95)/='U') and (tbo.data(63)/='U') and (tbo.data(31)/='U') )then
+      iCnkCnt3 := iChkCnt3+1;
+      if(ch_tbo.data/=tbo.data) then print("Err: tbo.data"); iErrCnt:=iErrCnt+1;end if;
     end if;
   end if;
 end process procCheck;

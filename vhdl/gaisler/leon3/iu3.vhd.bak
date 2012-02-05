@@ -609,6 +609,56 @@ architecture rtl of iu3 is
       end case;
   end;
   
+
+  procedure itrace(r    : in registers;
+                   dsur : in dsu_registers;
+                   vdsu : in dsu_registers;
+                   res  : in word;
+                   exc  : in std_ulogic;
+                   dbgi : in l3_debug_in_type;
+                   error : in std_ulogic;
+                   trap  : in std_ulogic;                          
+                   tbufcnt : out std_logic_vector(TBUFBITS-1 downto 0); 
+                   di  : out tracebuf_in_type) is
+  variable meminst : std_ulogic;
+  begin
+    di.addr := (others => '0'); di.data := (others => '0');
+    di.enable := '0'; di.write := (others => '0');
+    tbufcnt := vdsu.tbufcnt;
+    meminst := r.x.ctrl.inst(31) and r.x.ctrl.inst(30);
+    if TRACEBUF then
+      di.addr(TBUFBITS-1 downto 0) := dsur.tbufcnt;
+      di.data(127) := '0';
+      di.data(126) := not r.x.ctrl.pv;
+      di.data(125 downto 96) := dbgi.timer(29 downto 0);
+      di.data(95 downto 64) := res;
+      di.data(63 downto 34) := r.x.ctrl.pc(31 downto 2);
+      di.data(33) := trap;
+      di.data(32) := error;
+      di.data(31 downto 0) := r.x.ctrl.inst;
+      if (dbgi.tenable = '0') or (r.x.rstate = dsu2) then
+        if ((dbgi.dsuen and dbgi.denable) = '1') and (dbgi.daddr(23 downto 20) & dbgi.daddr(16) = "00010") then
+          di.enable := '1'; 
+          di.addr(TBUFBITS-1 downto 0) := dbgi.daddr(TBUFBITS-1+4 downto 4);
+          if dbgi.dwrite = '1' then            
+            case dbgi.daddr(3 downto 2) is
+              when "00" => di.write(3) := '1';
+              when "01" => di.write(2) := '1';
+              when "10" => di.write(1) := '1';
+              when others => di.write(0) := '1';
+            end case;
+            di.data := dbgi.ddata & dbgi.ddata & dbgi.ddata & dbgi.ddata;
+          end if;
+        end if;
+      elsif (not r.x.ctrl.annul and (r.x.ctrl.pv or meminst) and not r.x.debug) = '1' then        
+        di.enable := '1'; di.write := (others => '1');
+        tbufcnt := dsur.tbufcnt + 1;
+      end if;
+      di.diag := dco.testen & "000";
+      if dco.scanen = '1' then di.enable := '0'; end if;
+    end if;
+  end;
+
   procedure dbg_cache(holdn    : in std_ulogic;
                       dbgi     :  in l3_debug_in_type;
                       r        : in registers;
@@ -2961,6 +3011,15 @@ begin
         end if;
       end if;
       if rstn = '0' then
+        r.w.s.cwp <= (others => '0');
+        r.w.s.tba <= (others => '0');
+        r.w.s.y   <= (others => '0');
+        r.w.s.icc <= (others => '0');
+        r.w.s.pil <= (others => '0');
+        r.w.s.wim <= (others => '0');
+        r.x.y     <= (others => '0');
+        r.x.icc   <= (others => '0');
+
         r.w.s.s <= '1'; r.w.s.ps <= '1'; 
         if need_extra_sync_reset(fabtech) /= 0 then 
           r.d.inst <= (others => (others => '0'));
@@ -2979,10 +3038,11 @@ begin
         else
           dsur.crdy <= dsuin.crdy;
         end if;
-        if need_extra_sync_reset(fabtech) /= 0 and (rstn = '0') then 
+        --if need_extra_sync_reset(fabtech) /= 0 and (rstn = '0') then 
+        if (rstn = '0') then 
           dsur.err <= '0'; dsur.tbufcnt <= (others => '0'); dsur.tt <= (others => '0');
           dsur.asi <= (others => '0'); dsur.crdy <= (others => '0');
-	end if;
+       	end if;
       end if;
     end process;
   end generate;
@@ -3010,7 +3070,8 @@ begin
         if rising_edge(clk) then
           if holdn = '1' then wpr(i) <= wprin(i); end if;
           if rstn = '0' then 
-	    wpr(i).exec <= '0'; wpr(i).load <= '0'; wpr(i).store <= '0';
+--	    wpr(i).exec <= '0'; wpr(i).load <= '0'; wpr(i).store <= '0';
+            wpr(i) <= wpr_none;
 	  end if;
         end if;
       end process;

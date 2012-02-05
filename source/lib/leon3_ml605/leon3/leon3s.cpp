@@ -58,13 +58,15 @@
 #define fpunet    (CFG_FPU/16)//: integer := fpu / 16;
 
 //******************************************************************
-leon3s::leon3s()
+leon3s::leon3s(uint32 mst_index)
 {
+  pclProc3 = new proc3(mst_index);
   pclTBufMem = new tbufmem(CFG_ITBSZ);
 }
 
 leon3s::~leon3s()
 {
+  free(pclProc3);
   free(pclTBufMem);
 }
 
@@ -85,7 +87,7 @@ void leon3s::Update(SClock clk,//    : in  std_ulogic;
   vcc = 1;
 
   // leon3 processor core (iu, caches & mul/div) 
-  clProc3.Update(clk, rst.Q, holdn, ahbi, ahbo, ahbsi, ahbso, rfi, rfo, crami, cramo, 
+  pclProc3->Update(clk, rst.Q, holdn, ahbi, ahbo, ahbsi, ahbso, rfi, rfo, crami, cramo, 
     tbi, tbo, fpi, fpo, cpi, cpo, irqi, irqo, dbgi, dbgo, clk_gnd, clk, vcc);
   
   // IU register file

@@ -4,6 +4,8 @@ class mmu_acache
 {
   friend class dbg;
   private:
+    uint32 hindex;
+  private:
     struct reg_type
     {
       uint32 bg     : 1;//std_logic;   -- bus grant
@@ -67,8 +69,9 @@ class mmu_acache
     uint32 vreqmsk   : 1;//std_ulogic;
 
   public:
-    mmu_acache()
+    mmu_acache(uint32 mst_index=AHB_MASTER_LEON3)
     {
+      hindex = mst_index;
       memset((void*)&hconfig, 0, sizeof(ahb_config_type));
       ((ahb_device_reg*)(&hconfig.arr[0]))->vendor  = VENDOR_GAISLER;
       ((ahb_device_reg*)(&hconfig.arr[0]))->device  = GAISLER_LEON3;

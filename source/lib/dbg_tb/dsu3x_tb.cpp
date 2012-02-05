@@ -5,7 +5,7 @@ extern leon3mp  topLeon3mp;
 extern void ResetPutStr();
 extern void PrintIndexStr();
 
-struct DsuAdrFields
+/*struct DsuAdrFields
 {
   uint32 nul_a    : 2;
   uint32 DsuRegs  : 5;//(6:2)hsel2
@@ -13,151 +13,86 @@ struct DsuAdrFields
   uint32 TypeRegs : 4;//(23:20)hsel1
   uint32 CpuInd   : 1;//(24+log2x[ncpu]-1;24)
   uint32 nul_c    : 7;
-};
+};*/
 
-struct DsuCpu
+
+
+void DsuCpu::Update(SClock inClk, ahb_slv_out_type *pahbso)
 {
-  struct DsuRegBits
+  if(inClk.eClock_z!=SClock::CLK_POSEDGE)
+    return;
+        
+  switch(eState)
   {
-    static const uint32 ADR = 0x0;
-    struct W
-    {
-      uint32 te     : 1;
-      uint32 be     : 1;
-      uint32 bw     : 1;
-      uint32 bs     : 1;
-      uint32 bx     : 1;
-      uint32 bz     : 1;
-      uint32 nall_a : 3;
-      uint32 reset  : 1;
-      uint32 halt   : 1;
-      uint32 null_b : 21;
-    };
-    struct R
-    {
-      uint32 te     : 1;
-      uint32 be     : 1;
-      uint32 bw     : 1;
-      uint32 bs     : 1;
-      uint32 bx     : 1;
-      uint32 bz     : 1;
-      uint32 mode   : 1;
-      uint32 enable : 1;
-      uint32 Break  : 1;
-      uint32 nError : 1;
-      uint32 halt   : 1;
-      uint32 pwd    : 1;
-      uint32 null   : 20;
-    };
-  };
-  struct DsuRegTimer
-  {
-    static const uint32 ADR = (0x02<<2);
-    struct RW
-    {
-      uint32 timer  : CFG_DSU_TBITS;
-      uint32 null   : 32-CFG_DSU_TBITS;
-    };
-  };
-  struct DsuRegBreakStep
-  {
-    static const uint32 ADR = (0x08<<2);
-    struct RW
-    {
-      uint32 bn     : CFG_NCPU;
-      uint32 null_a : 16-CFG_NCPU;
-      uint32 ss     : CFG_NCPU;
-      uint32 null_b : 16-CFG_NCPU;
-    };
-  };  
-  struct DsuRegMask
-  {
-    static const uint32 ADR = (0x09<<2);
-    struct RW
-    {
-      uint32 bmsk   : CFG_NCPU;
-      uint32 null_a : 16-CFG_NCPU;
-      uint32 dmsk   : CFG_NCPU;
-      uint32 null_b : 16-CFG_NCPU;
-    };
-  };
-  struct DsuRegDelaycnt
-  {
-    static const uint32 ADR = (0x10<<2);
-    struct RW
-    {
-      uint32 enable   : 1;
-      uint32 dcnten   : 1;
-      uint32 Break    : 1;
-      uint32 null_a   : 13;
-      uint32 delaycnt : 8;  // TBUFABITS width
-      uint32 null_b   : 8;
-    };
-  };
-  struct DsuRegAIndex
-  {
-    static const uint32 ADR = (0x11<<2);
-    struct RW
-    {
-      uint32 null_a   : 4;
-      uint32 aindex   : 8;  // TBUFABITS width
-      uint32 null_b   : 20;
-    };
-  };
-  struct DsuRegTraceAddr1
-  {
-    static const uint32 ADR = (0x14<<2);
-    struct RW
-    {
-      uint32 null_a : 2;
-      uint32 addr   : 30;
-    };
-  };
-  struct DsuRegTraceMask1
-  {
-    static const uint32 ADR = (0x15<<2);
-    struct RW
-    {
-      uint32 write  : 1;
-      uint32 read   : 1;
-      uint32 mask   : 30;
-    };
-  };
-  struct DsuRegTraceAddr2
-  {
-    static const uint32 ADR = (0x16<<2);
-    struct RW
-    {
-      uint32 null_a : 2;
-      uint32 addr   : 30;
-    };
-  };
-  struct DsuRegTraceMask2
-  {
-    static const uint32 ADR = (0x17<<2);
-    struct RW
-    {
-      uint32 write  : 1;
-      uint32 read   : 1;
-      uint32 mask   : 30;
-    };
-  };
-};
+    case IDLE:
+      ahbsi.htrans = HTRANS_IDLE;
+      ahbsi.hsel   = 0;
+      if(bNewWord)
+      {
+        eState = NONSEQ;
+        ahbsi.haddr  = 0x90000000 | rDsuRegBits.u.r.ADR;
+        ahbsi.hsize  = HSIZE_WORD;
+        ahbsi.htrans = HTRANS_NONSEQ;
+        ahbsi.hwdata = 0x22223333;
+        ahbsi.hburst = HBURST_WRAP8;//HBURST_SINGLE;
+        ahbsi.hsel   = 1<<AHB_SLAVE_DSU;
+        ahbsi.hwrite = 1;
+        ahbsi.hready = 1;
+        iSeqCnt      = 0;
+      }
+    break;
+    case NONSEQ:
+      if(pahbso->hready)
+      {
+        iSeqCnt++;
+        if(ahbsi.hburst == HBURST_SINGLE) 
+        {
+          eState = IDLE;
+          bNewWord = false;
+        }else
+        {
+          eState = SEQ;
+          ahbsi.htrans = HTRANS_SEQ;;
+          ahbsi.haddr += 4;
+        }
+      }
+    break;
+    case SEQ:
+      if(pahbso->hready)
+      {
+        iSeqCnt++;
+        if(iSeqCnt>rDsuRegBits.u.r.SEQ)
+        {
+          eState = IDLE;
+          bNewWord = false;
+        }
+      }
+    break;
+    default:;
+  }
+}
 
 
 //****************************************************************************
 void dbg::dsu3x_tb(SystemOnChipIO &io)
 {
   // default output using SoC top level:
-  ahb_mst_in_type     *pin_ahbmi;//  : in  ahb_mst_in_type;
-  ahb_slv_in_type     *pin_ahbsi;//  : in  ahb_slv_in_type;
-  ahb_slv_out_type    *pch_ahbso;//  : out ahb_slv_out_type;
-  l3_debug_out_vector *pin_dbgi;//   : in l3_debug_out_vector(0 to NCPU-1);
-  l3_debug_in_vector  *pch_dbgo;//   : out l3_debug_in_vector(0 to NCPU-1);
-  dsu_in_type         *pin_dsui;//   : in dsu_in_type;
-  dsu_out_type        *pch_dsuo;//   : out dsu_out_type;
-  uint32              *pin_hclken;// : in std_ulogic
+  ahb_mst_in_type     *pin_ahbmi = &topLeon3mp.stCtrl2Mst;//  : in  ahb_mst_in_type;
+  ahb_slv_in_type     *pin_ahbsi = &topLeon3mp.stCtrl2Slv;//  : in  ahb_slv_in_type;
+  ahb_slv_out_type    *pch_ahbso = &topLeon3mp.stSlv2Ctrl[AHB_SLAVE_MEM];//  : out ahb_slv_out_type;
+  l3_debug_out_vector *pin_dbgo = &topLeon3mp.dbgo;//   : in l3_debug_out_vector(0 to NCPU-1);
+  l3_debug_in_vector  *pch_dbgi = &topLeon3mp.dbgi;//   : out l3_debug_in_vector(0 to NCPU-1);
+  dsu_in_type         *pin_dsui = &topLeon3mp.dsui;//   : in dsu_in_type;
+  dsu_out_type        *pch_dsuo = &topLeon3mp.dsuo;//   : out dsu_out_type;
+  uint32              hclken = 1;// : in std_ulogic
 
+//#define DSU_CPU_ENA
+#ifdef DSU_CPU_ENA
+  if(iClkCnt==100)
+    clDsuCpu.Write(0,0,0);
+
+  clDsuCpu.Update(io.inClk, &ch_ahbso);
+#endif
 
 #ifdef DBG_dsu3x
   if(io.inClk.eClock_z==SClock::CLK_POSEDGE)
@@ -221,12 +156,19 @@ void dbg::dsu3x_tb(SystemOnChipIO &io)
     in_dsui.enable = rand()&0x1;//  : std_ulogic;
     in_dsui.Break  = rand()&0x1;//std_ulogic;
   }
+
+#ifdef DSU_CPU_ENA
+  pin_ahbsi = clDsuCpu.GetpAhsi();
+#else
+  pin_ahbsi = &in_ahbsi;//  : in  ahb_slv_in_type;
+#endif
+
   
   tst_dsu3x.Update(io.inNRst,//    : in  std_ulogic;
                 io.inClk,//   : in  std_ulogic;
                 io.inClk,// : in std_ulogic;
                 in_ahbmi,//  : in  ahb_mst_in_type;
-                in_ahbsi,//  : in  ahb_slv_in_type;
+                *pin_ahbsi,//  : in  ahb_slv_in_type;
                 ch_ahbso,//  : out ahb_slv_out_type;
                 in_dbgi,//   : in l3_debug_out_vector(0 to NCPU-1);
                 ch_dbgo,//   : out l3_debug_in_vector(0 to NCPU-1);
@@ -236,13 +178,12 @@ void dbg::dsu3x_tb(SystemOnChipIO &io)
                 );
 
   pin_ahbmi = &in_ahbmi;//  : in  ahb_mst_in_type;
-  pin_ahbsi = &in_ahbsi;//  : in  ahb_slv_in_type;
   pch_ahbso = &ch_ahbso;//  : out ahb_slv_out_type;
   pin_dbgi = &in_dbgi;//   : in l3_debug_out_vector(0 to NCPU-1);
   pch_dbgo = &ch_dbgo;//   : out l3_debug_in_vector(0 to NCPU-1);
   pin_dsui = &in_dsui;//   : in dsu_in_type;
   pch_dsuo = &ch_dsuo;//   : out dsu_out_type;
-  pin_hclken = &in_hclken;// : in std_ulogic
+  hclken = in_hclken;// : in std_ulogic
 #endif
 
   if(io.inClk.eClock==SClock::CLK_POSEDGE)
@@ -254,7 +195,7 @@ void dbg::dsu3x_tb(SystemOnChipIO &io)
   
     // inputs:
     pStr = PutToStr(pStr, io.inNRst, 1, "inNRst");
-    pStr = PutToStr(pStr, *pin_hclken, 1, "in_hclken");
+    pStr = PutToStr(pStr, hclken, 1, "in_hclken");
     //
     pStr = PutToStr(pStr, pin_ahbmi->hgrant,AHB_MASTERS_MAX,"in_ahbmi.hgrant",true);//[0:15]  : (0 to AHB_MASTERS_MAX-1);     -- bus grant
     pStr = PutToStr(pStr, pin_ahbmi->hready,1,"in_ahbmi.hready");//  ;                           -- transfer done
@@ -286,29 +227,29 @@ void dbg::dsu3x_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pin_ahbsi->scanen,1,"in_ahbsi.scanen");//                        -- scan enable
     pStr = PutToStr(pStr, pin_ahbsi->testoen,1,"in_ahbsi.testoen");;//                       -- test output enable 
     //
-    pStr = PutToStr(pStr, pin_dbgi->arr[0].data,32,"in_dbgi(0).data");//    : std_logic_vector(31 downto 0);
-    pStr = PutToStr(pStr, pin_dbgi->arr[0].crdy,1,"in_dbgi(0).crdy");//    : std_ulogic;
-    pStr = PutToStr(pStr, pin_dbgi->arr[0].dsu,1,"in_dbgi(0).dsu");//     : std_ulogic;
-    pStr = PutToStr(pStr, pin_dbgi->arr[0].dsumode,1,"in_dbgi(0).dsumode");// : std_ulogic;
-    pStr = PutToStr(pStr, pin_dbgi->arr[0].error,1,"in_dbgi(0).error");//   : std_ulogic;
-    pStr = PutToStr(pStr, pin_dbgi->arr[0].halt,1,"in_dbgi(0).halt");//    : std_ulogic;
-    pStr = PutToStr(pStr, pin_dbgi->arr[0].pwd,1,"in_dbgi(0).pwd");//     : std_ulogic;
-    pStr = PutToStr(pStr, pin_dbgi->arr[0].idle,1,"in_dbgi(0).idle");//    : std_ulogic;
-    pStr = PutToStr(pStr, pin_dbgi->arr[0].ipend,1,"in_dbgi(0).ipend");//   : std_ulogic;
-    pStr = PutToStr(pStr, pin_dbgi->arr[0].icnt,1,"in_dbgi(0).icnt");//    : std_ulogic;
-    pStr = PutToStr(pStr, pin_dbgi->arr[0].fcnt,1,"in_dbgi(0).fcnt");//    : std_ulogic;
-    pStr = PutToStr(pStr, pin_dbgi->arr[0].optype,6,"in_dbgi(0).optype");//  : std_logic_vector(5 downto 0); -- instruction type
-    pStr = PutToStr(pStr, pin_dbgi->arr[0].bpmiss,1,"in_dbgi(0).bpmiss");//  : std_ulogic;     -- branch predict miss
-    pStr = PutToStr(pStr, pin_dbgi->arr[0].istat.cmiss,1,"in_dbgi(0).istat.cmiss");//   : std_ulogic;			-- cache miss
-    pStr = PutToStr(pStr, pin_dbgi->arr[0].istat.tmiss,1,"in_dbgi(0).istat.tmiss");//   : std_ulogic;			-- TLB miss
-    pStr = PutToStr(pStr, pin_dbgi->arr[0].istat.chold,1,"in_dbgi(0).istat.chold");//   : std_ulogic;			-- cache hold
-    pStr = PutToStr(pStr, pin_dbgi->arr[0].istat.mhold,1,"in_dbgi(0).istat.mhold");//   : std_ulogic;			-- cache mmu hold
-    pStr = PutToStr(pStr, pin_dbgi->arr[0].dstat.cmiss,1,"in_dbgi(0).dstat.cmiss");//   : std_ulogic;			-- cache miss
-    pStr = PutToStr(pStr, pin_dbgi->arr[0].dstat.tmiss,1,"in_dbgi(0).dstat.tmiss");//   : std_ulogic;			-- TLB miss
-    pStr = PutToStr(pStr, pin_dbgi->arr[0].dstat.chold,1,"in_dbgi(0).dstat.chold");//   : std_ulogic;			-- cache hold
-    pStr = PutToStr(pStr, pin_dbgi->arr[0].dstat.mhold,1,"in_dbgi(0).dstat.mhold");//   : std_ulogic;			-- cache mmu hold
-    pStr = PutToStr(pStr, pin_dbgi->arr[0].wbhold,1,"in_dbgi(0).wbhold");//  : std_ulogic;     -- write buffer hold
-    pStr = PutToStr(pStr, pin_dbgi->arr[0].su,1,"in_dbgi(0).su");//      : std_ulogic;     -- supervisor state
+    pStr = PutToStr(pStr, pin_dbgo->arr[0].data,32,"in_dbgi(0).data");//    : std_logic_vector(31 downto 0);
+    pStr = PutToStr(pStr, pin_dbgo->arr[0].crdy,1,"in_dbgi(0).crdy");//    : std_ulogic;
+    pStr = PutToStr(pStr, pin_dbgo->arr[0].dsu,1,"in_dbgi(0).dsu");//     : std_ulogic;
+    pStr = PutToStr(pStr, pin_dbgo->arr[0].dsumode,1,"in_dbgi(0).dsumode");// : std_ulogic;
+    pStr = PutToStr(pStr, pin_dbgo->arr[0].error,1,"in_dbgi(0).error");//   : std_ulogic;
+    pStr = PutToStr(pStr, pin_dbgo->arr[0].halt,1,"in_dbgi(0).halt");//    : std_ulogic;
+    pStr = PutToStr(pStr, pin_dbgo->arr[0].pwd,1,"in_dbgi(0).pwd");//     : std_ulogic;
+    pStr = PutToStr(pStr, pin_dbgo->arr[0].idle,1,"in_dbgi(0).idle");//    : std_ulogic;
+    pStr = PutToStr(pStr, pin_dbgo->arr[0].ipend,1,"in_dbgi(0).ipend");//   : std_ulogic;
+    pStr = PutToStr(pStr, pin_dbgo->arr[0].icnt,1,"in_dbgi(0).icnt");//    : std_ulogic;
+    pStr = PutToStr(pStr, pin_dbgo->arr[0].fcnt,1,"in_dbgi(0).fcnt");//    : std_ulogic;
+    pStr = PutToStr(pStr, pin_dbgo->arr[0].optype,6,"in_dbgi(0).optype");//  : std_logic_vector(5 downto 0); -- instruction type
+    pStr = PutToStr(pStr, pin_dbgo->arr[0].bpmiss,1,"in_dbgi(0).bpmiss");//  : std_ulogic;     -- branch predict miss
+    pStr = PutToStr(pStr, pin_dbgo->arr[0].istat.cmiss,1,"in_dbgi(0).istat.cmiss");//   : std_ulogic;			-- cache miss
+    pStr = PutToStr(pStr, pin_dbgo->arr[0].istat.tmiss,1,"in_dbgi(0).istat.tmiss");//   : std_ulogic;			-- TLB miss
+    pStr = PutToStr(pStr, pin_dbgo->arr[0].istat.chold,1,"in_dbgi(0).istat.chold");//   : std_ulogic;			-- cache hold
+    pStr = PutToStr(pStr, pin_dbgo->arr[0].istat.mhold,1,"in_dbgi(0).istat.mhold");//   : std_ulogic;			-- cache mmu hold
+    pStr = PutToStr(pStr, pin_dbgo->arr[0].dstat.cmiss,1,"in_dbgi(0).dstat.cmiss");//   : std_ulogic;			-- cache miss
+    pStr = PutToStr(pStr, pin_dbgo->arr[0].dstat.tmiss,1,"in_dbgi(0).dstat.tmiss");//   : std_ulogic;			-- TLB miss
+    pStr = PutToStr(pStr, pin_dbgo->arr[0].dstat.chold,1,"in_dbgi(0).dstat.chold");//   : std_ulogic;			-- cache hold
+    pStr = PutToStr(pStr, pin_dbgo->arr[0].dstat.mhold,1,"in_dbgi(0).dstat.mhold");//   : std_ulogic;			-- cache mmu hold
+    pStr = PutToStr(pStr, pin_dbgo->arr[0].wbhold,1,"in_dbgi(0).wbhold");//  : std_ulogic;     -- write buffer hold
+    pStr = PutToStr(pStr, pin_dbgo->arr[0].su,1,"in_dbgi(0).su");//      : std_ulogic;     -- supervisor state
     //
     pStr = PutToStr(pStr, pin_dsui->enable,1,"in_dsui.enable");//  : std_ulogic;
     pStr = PutToStr(pStr, pin_dsui->Break,1,"in_dsui.break");//std_ulogic;
@@ -332,32 +273,27 @@ void dbg::dsu3x_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pch_ahbso->hconfig.arr[7],32,"ch_ahbso.hconfig(7)");
     pStr = PutToStr(pStr, pch_ahbso->hindex,4,"conv_integer(ch_ahbso.hindex)");//    : integer range 0 to AHB_SLAVES_MAX-1;   -- diagnostic use only
     //
-    pStr = PutToStr(pStr, pch_dbgo->arr[0].dsuen,1,"ch_dbgo(0).dsuen");//   : std_ulogic;  -- DSU enable
-    pStr = PutToStr(pStr, pch_dbgo->arr[0].denable,1,"ch_dbgo(0).denable");// : std_ulogic;  -- diagnostic register access enable
-    pStr = PutToStr(pStr, pch_dbgo->arr[0].dbreak,1,"ch_dbgo(0).dbreak");//  : std_ulogic;  -- debug break-in
-    pStr = PutToStr(pStr, pch_dbgo->arr[0].step,1,"ch_dbgo(0).step");//    : std_ulogic;  -- single step    
-    pStr = PutToStr(pStr, pch_dbgo->arr[0].halt,1,"ch_dbgo(0).halt");//    : std_ulogic;  -- halt processor
-    pStr = PutToStr(pStr, pch_dbgo->arr[0].reset,1,"ch_dbgo(0).reset");//   : std_ulogic;  -- reset processor
-    pStr = PutToStr(pStr, pch_dbgo->arr[0].dwrite,1,"ch_dbgo(0).dwrite");//  : std_ulogic;  -- read/write
-    pStr = PutToStr(pStr, pch_dbgo->arr[0].daddr>>2,22,"ch_dbgo(0).daddr");//   : std_logic_vector(23 downto 2); -- diagnostic address
-    pStr = PutToStr(pStr, pch_dbgo->arr[0].ddata,32,"ch_dbgo(0).ddata");//   : std_logic_vector(31 downto 0); -- diagnostic data
-    pStr = PutToStr(pStr, pch_dbgo->arr[0].btrapa,1,"ch_dbgo(0).btrapa");//  : std_ulogic;	   -- break on IU trap
-    pStr = PutToStr(pStr, pch_dbgo->arr[0].btrape,1,"ch_dbgo(0).btrape");//  : std_ulogic;	-- break on IU trap
-    pStr = PutToStr(pStr, pch_dbgo->arr[0].berror,1,"ch_dbgo(0).berror");//  : std_ulogic;	-- break on IU error mode
-    pStr = PutToStr(pStr, pch_dbgo->arr[0].bwatch,1,"ch_dbgo(0).bwatch");//  : std_ulogic;	-- break on IU watchpoint
-    pStr = PutToStr(pStr, pch_dbgo->arr[0].bsoft,1,"ch_dbgo(0).bsoft");//   : std_ulogic;	-- break on software breakpoint (TA 1)
-    pStr = PutToStr(pStr, pch_dbgo->arr[0].tenable,1,"ch_dbgo(0).tenable");// : std_ulogic;
-    pStr = PutToStr(pStr, pch_dbgo->arr[0].timer,31,"ch_dbgo(0).timer");//   :  std_logic_vector(30 downto 0);                                                -- 
+    pStr = PutToStr(pStr, pch_dbgi->arr[0].dsuen,1,"ch_dbgo(0).dsuen");//   : std_ulogic;  -- DSU enable
+    pStr = PutToStr(pStr, pch_dbgi->arr[0].denable,1,"ch_dbgo(0).denable");// : std_ulogic;  -- diagnostic register access enable
+    pStr = PutToStr(pStr, pch_dbgi->arr[0].dbreak,1,"ch_dbgo(0).dbreak");//  : std_ulogic;  -- debug break-in
+    pStr = PutToStr(pStr, pch_dbgi->arr[0].step,1,"ch_dbgo(0).step");//    : std_ulogic;  -- single step    
+    pStr = PutToStr(pStr, pch_dbgi->arr[0].halt,1,"ch_dbgo(0).halt");//    : std_ulogic;  -- halt processor
+    pStr = PutToStr(pStr, pch_dbgi->arr[0].reset,1,"ch_dbgo(0).reset");//   : std_ulogic;  -- reset processor
+    pStr = PutToStr(pStr, pch_dbgi->arr[0].dwrite,1,"ch_dbgo(0).dwrite");//  : std_ulogic;  -- read/write
+    pStr = PutToStr(pStr, pch_dbgi->arr[0].daddr>>2,22,"ch_dbgo(0).daddr");//   : std_logic_vector(23 downto 2); -- diagnostic address
+    pStr = PutToStr(pStr, pch_dbgi->arr[0].ddata,32,"ch_dbgo(0).ddata");//   : std_logic_vector(31 downto 0); -- diagnostic data
+    pStr = PutToStr(pStr, pch_dbgi->arr[0].btrapa,1,"ch_dbgo(0).btrapa");//  : std_ulogic;	   -- break on IU trap
+    pStr = PutToStr(pStr, pch_dbgi->arr[0].btrape,1,"ch_dbgo(0).btrape");//  : std_ulogic;	-- break on IU trap
+    pStr = PutToStr(pStr, pch_dbgi->arr[0].berror,1,"ch_dbgo(0).berror");//  : std_ulogic;	-- break on IU error mode
+    pStr = PutToStr(pStr, pch_dbgi->arr[0].bwatch,1,"ch_dbgo(0).bwatch");//  : std_ulogic;	-- break on IU watchpoint
+    pStr = PutToStr(pStr, pch_dbgi->arr[0].bsoft,1,"ch_dbgo(0).bsoft");//   : std_ulogic;	-- break on software breakpoint (TA 1)
+    pStr = PutToStr(pStr, pch_dbgi->arr[0].tenable,1,"ch_dbgo(0).tenable");// : std_ulogic;
+    pStr = PutToStr(pStr, pch_dbgi->arr[0].timer,31,"ch_dbgo(0).timer");//   :  std_logic_vector(30 downto 0);                                                -- 
     //
     pStr = PutToStr(pStr, pch_dsuo->active,1,"ch_dsuo.active");//std_ulogic;
     pStr = PutToStr(pStr, pch_dsuo->tstop,1,"ch_dsuo.tstop");//std_ulogic;
     pStr = PutToStr(pStr, pch_dsuo->pwd,16,"ch_dsuo.pwd");//std_logic_vector(15 downto 0);
-    
-    // Internal
-    pStr = PutToStr(pStr, tst_dsu3x.tv.delaycnt,1,"t_v_act");//std_ulogic;
-    pStr = PutToStr(pStr, tst_dsu3x.trin.tbreg2.addr>>2,30,"t_trin_tbreg2_addr");//std_ulogic;
 
-    
     PrintIndexStr();
 
     *posBench[TB_dsu3x] << chStr << "\n";

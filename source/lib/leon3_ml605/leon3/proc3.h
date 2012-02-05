@@ -18,9 +18,17 @@ class proc3
     iu3 clIU3;
     mul32 clMul32;
     div32 clDiv32;
-    mmu_cache clCacheMMU;
+    mmu_cache *pclCacheMMU;
 
   public:
+    proc3(uint32 mst_index=AHB_MASTER_LEON3)
+    {
+      pclCacheMMU = new mmu_cache(mst_index);
+    }
+    ~proc3()
+    {
+      free(pclCacheMMU);
+    }
     void Update(SClock clk,//    : in  std_ulogic;
                 uint32 rstn,//   : in  std_ulogic;
                 uint32 &holdn,//  : out std_ulogic;
@@ -52,7 +60,7 @@ class proc3
       clIU3.ClkUpdate();
       clMul32.ClkUpdate();
       clDiv32.ClkUpdate();
-      clCacheMMU.ClkUpdate();
+      pclCacheMMU->ClkUpdate();
     }
 };
 

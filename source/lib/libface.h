@@ -10,7 +10,7 @@
 //****************************************************************************
 enum ETestBenchName
 {
-  TB_JTAGCOM,
+  TB_jtagcom,
   TB_AHBMASTER,
   TB_AHBJTAG,
   TB_AHBCTRL,
@@ -33,6 +33,7 @@ enum ETestBenchName
   TB_tbufmem,
   TB_leon3s,
   TB_dsu3x,
+  TB_ahbram,
   
   TB_TOTAL
 };
@@ -62,6 +63,7 @@ const char chBenchFile[TB_TOTAL][64]=
   "tbufmem_tb.txt",
   "leon3s_tb.txt",
   "dsu3x_tb.txt",
+  "ahbram_tb.txt",
 };
 
 

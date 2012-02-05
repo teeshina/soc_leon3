@@ -10,13 +10,13 @@ class jtagcom
     enum EJtagState {JTAG_SHIFT, JTAG_AHB, JTAG_NEXT_SHIFT};
 
 
-    TDFF<uint32>rTCK[3];  // clock edge detector
-    TDFF<uint32>rTDI[3];
+    TDFF<uint32>rTCK;  // clock edge detector
+    TDFF<uint32>rTDI;
     TDFF<uint32>rAdrSel[2];
     TDFF<uint32>rDataSel[2];
     TDFF<uint32>rShift[3];
     TDFF<uint32>rUpdate[3];
-    TDFF<uint32>rReset[2];
+    TDFF<uint32>rReset;
     
     TDFF<uint64>rbAdr;
     TDFF<uint64>rbData;
@@ -50,12 +50,8 @@ class jtagcom
     );
     void ClkUpdate()
     {
-      rTCK[0].ClkUpdate();
-      rTCK[1].ClkUpdate();
-      rTCK[2].ClkUpdate();
-      rTDI[0].ClkUpdate();
-      rTDI[1].ClkUpdate();
-      rTDI[2].ClkUpdate();
+      rTCK.ClkUpdate();
+      rTDI.ClkUpdate();
       rAdrSel[0].ClkUpdate();
       rAdrSel[1].ClkUpdate();
       rDataSel[0].ClkUpdate();
@@ -66,8 +62,7 @@ class jtagcom
       rUpdate[0].ClkUpdate();
       rUpdate[1].ClkUpdate();
       rUpdate[2].ClkUpdate();
-      rReset[0].ClkUpdate();
-      rReset[1].ClkUpdate();
+      rReset.ClkUpdate();
       rbAdr.ClkUpdate();
       rbData.ClkUpdate();
       rSeq.ClkUpdate();

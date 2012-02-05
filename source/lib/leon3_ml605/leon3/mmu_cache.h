@@ -25,10 +25,18 @@ class mmu_cache
     
     mmu_icache clICache;
     mmu_dcache clDCache;
-    mmu_acache clACache;
+    mmu_acache *pclACache;
     mmu clMMU;
 
   public:
+    mmu_cache(uint32 mst_index=AHB_MASTER_LEON3)
+    {
+      pclACache = new mmu_acache(mst_index);
+    }
+    ~mmu_cache()
+    {
+      free(pclACache);
+    }
     
     void Update(uint32 rst,//   : in  std_ulogic;
                 SClock clk,//   : in  std_ulogic;
@@ -52,7 +60,7 @@ class mmu_cache
     {
       clICache.ClkUpdate();
       clDCache.ClkUpdate();
-      clACache.ClkUpdate();
+      pclACache->ClkUpdate();
       clMMU.ClkUpdate();
     }
 };

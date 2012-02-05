@@ -159,7 +159,7 @@ begin
   return(new_lru);
 end;
 
-type istatetype is (idle, trans, streaming, stop);
+tstopype istatetype is (idle, trans, streaming, stop);
 type icache_control_type is record			-- all registers
   req, burst, holdn : std_logic;
   overrun       : std_logic;			-- 

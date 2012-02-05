@@ -22,25 +22,15 @@ void jtagcom::Update( uint32            inNRst,//  : in std_ulogic;
   write = (uint32)((rbAdr.Q>>34)&0x1);// write or read operation
 
   
-  rTCK[0].CLK = inClk;
-  rTCK[0].D = inTCK;
-  rTCK[1].CLK = inClk;
-  rTCK[1].D = rTCK[0].Q;
-  rTCK[2].CLK = inClk;
-  rTCK[2].D = rTCK[1].Q;
-  wEdgeTCK = !rTCK[2].Q & rTCK[1].Q;
+  rTCK.CLK = inClk;
+  rTCK.D = ( (rTCK.Q<<1)|inTCK ) & MSK32(2,0);
+  wEdgeTCK = !BIT32(rTCK.Q,2) & BIT32(rTCK.Q,1);
  
-  rTDI[0].CLK = inClk;
-  rTDI[0].D = inTDI;
-  rTDI[1].CLK = inClk;
-  rTDI[1].D = rTDI[0].Q; 
-  rTDI[2].CLK = inClk;
-  rTDI[2].D = rTDI[1].Q; 
+  rTDI.CLK = inClk;
+  rTDI.D = ( (rTDI.Q<<1)|inTDI ) &MSK32(2,0);
 
-  rReset[0].CLK = inClk;
-  rReset[0].D = inRESET;
-  rReset[1].CLK = inClk;
-  rReset[1].D = rReset[0].Q;
+  rReset.CLK = inClk;
+  rReset.D = ((rReset.Q<<1)|inRESET) & MSK32(1,0);
   
   rShift[0].CLK = inClk;
   rShift[0].D = inShift;
@@ -82,7 +72,7 @@ void jtagcom::Update( uint32            inNRst,//  : in std_ulogic;
   uint32 wNext = rbState.Q==JTAG_NEXT_SHIFT ? 1: 0;
 
   rbState.CLK = inClk;
-  if( !inNRst | rReset[1].Q )
+  if( !inNRst | BIT32(rReset.Q,1) )
     rbState.D = JTAG_SHIFT;
   else if(wShift&!rShift[2].Q&rUpdate[2].Q & ((rAdrSel[1].Q & !write)|(rDataSel[1].Q & (write | (!write&rSeq.Q)))) )
     rbState.D = JTAG_AHB;
@@ -100,14 +90,14 @@ void jtagcom::Update( uint32            inNRst,//  : in std_ulogic;
 
   // reading address:
   rbAdr.CLK   = inClk;
-  if( !inNRst | rReset[1].Q )                                      rbAdr.D = 0;
-  else if(wShift & rAdrSel[1].Q & wEdgeTCK & rShift[2].Q)          rbAdr.D = (((uint64)rTDI[2].Q)<<34)|(rbAdr.Q>>1);
-  else if(wShift & rDataSel[1].Q & rUpdate[2].Q & (rSeq.Q&!write)) rbAdr.D = ((rbAdr.Q>>10)<<10) + BITS64((rbAdr.Q+4),11,0);
-  else if(wAhb & inDMA.active & inDMA.ready & (rSeq.Q & write))    rbAdr.D = ((rbAdr.Q>>10)<<10) + BITS64((rbAdr.Q+4),11,0);
+  if( !inNRst | BIT32(rReset.Q,1) )                                rbAdr.D = 0;
+  else if(wShift & rAdrSel[1].Q & wEdgeTCK & rShift[2].Q)          rbAdr.D = (((uint64)BIT32(rTDI.Q,2))<<34)|(rbAdr.Q>>1);
+  else if(wShift & rDataSel[1].Q & rUpdate[2].Q & (rSeq.Q&!write)) rbAdr.D = ((rbAdr.Q>>10)<<10) | BITS64((rbAdr.Q+4),11,0);
+  else if(wAhb & inDMA.active & inDMA.ready & (rSeq.Q & write))    rbAdr.D = ((rbAdr.Q>>10)<<10) | BITS64((rbAdr.Q+4),11,0);
 
   rbData.CLK   = inClk;
   if(!inNRst)                                               rbData.D = 0;
-  else if(wShift & rDataSel[1].Q & wEdgeTCK & rShift[2].Q)  rbData.D = (((uint64)rTDI[2].Q)<<32)|(rbData.Q>>1);
+  else if(wShift & rDataSel[1].Q & wEdgeTCK & rShift[2].Q)  rbData.D = (((uint64)BIT32(rTDI.Q,2))<<32)|(rbData.Q>>1);
   else if(wShift & rUpdate[2].Q)                            rbData.D = BITS64(rbData.Q,31,0);// transfer not done. clear bit 32
 #ifdef REREAD
   else if(wAhb & inDMA.active & inDMA.ready)                rbData.D = MSK64(32,32) | inDMA.rdata; // transfer done. bit 32
@@ -117,8 +107,8 @@ void jtagcom::Update( uint32            inNRst,//  : in std_ulogic;
 
   // sequential data flag:
   rSeq.CLK    = inClk;
-  if(!inNRst | rReset[1].Q)                                 rSeq.D = 0;
-  else if(wShift & rDataSel[1].Q & wEdgeTCK & rShift[2].Q)  rSeq.D = rTDI[2].Q;
+  if(!inNRst | BIT32(rReset.Q,1))                            rSeq.D = 0;
+  else if(wShift & rDataSel[1].Q & wEdgeTCK & rShift[2].Q)  rSeq.D = BIT32(rTDI.Q,2);
 
 
 #ifdef REREAD

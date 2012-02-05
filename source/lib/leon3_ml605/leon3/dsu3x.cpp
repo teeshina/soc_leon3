@@ -1,6 +1,6 @@
 #include "lheaders.h"
 
-//#define hindex AHB_MASTER_DSU// : integer := 0;
+//#define hindex AHB_SAVE_DSU// : integer := 0;
 //#define haddr uiMemaddr// : integer := 16#900#;
 //#define hmask uiAddrmask// : integer := 16#f00#;
 //#define ncpu CFG_NCPU//   : integer := 1;
@@ -281,58 +281,6 @@ void dsu3x::Update(uint32 rst,//    : in  std_ulogic;
   else                     index = rawindex;
 #endif
 
-#if 0
-    switch(hasel1>>AREA_L)
-    {
-      case 0x0:  //-- DSU registers
-        switch(hasel2>>2)
-        {
-          case 0://when "00000" =>
-          break;
-          case 0x02://when "00010" =>  -- timer
-          break;
-          case 0x08://when "01000" =>
-          break;
-          case 0x09://when "01001" =>
-          break;
-          case 0x10://when "10000" =>
-          break;
-          case 0x11://when "10001" =>
-          break;
-          case 0x14://when "10100" =>
-          break;
-          case 0x15://when "10101" =>
-          break;
-          case 0x16://when "10110" =>
-          break;
-          case 0x17://when "10111" =>
-          break;
-          default:;
-        }
-      break;
-      
-      case 0x2://when "010"  =>  -- AHB tbuf
-        switch(BITS32(tr.Q.haddr,3,2))
-        {
-          case 0:
-          break;
-          case 1:
-          break;
-          case 2:
-          break;
-          default:
-        }
-      break;
-      case 0x3: case 0x1://when "011" | "001"  =>  -- IU reg file, IU tbuf
-      break;
-      case 0x4:  //-- IU reg access
-      break;
-      case 0x7: //-- DSU ASI
-      break;
-      default:
-    }
-
-#endif
 
   hasel1 = r.Q.slv.haddr & MSK32(AREA_H-1,AREA_L);
   hasel2 = r.Q.slv.haddr & MSK32(6,2);

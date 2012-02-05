@@ -48,6 +48,9 @@
 #include "sparc.h"
 #include "leon3_ml605\config.h"
 #include "leon3_ml605\stdlib\stdlib.h"
+
+#include "leon3_ml605\leon3\mem_unisim.h"
+
 #include "leon3_ml605\amba\amba.h"
 #include "leon3_ml605\amba\ahbmst.h"
 #include "leon3_ml605\amba\ahbctrl.h"
@@ -55,6 +58,7 @@
 #include "leon3_ml605\jtag\jtagcom.h"
 #include "leon3_ml605\jtag\ahbjtag.h"
 #include "leon3_ml605\mem\ahbmem.h"
+#include "leon3_ml605\mem\ahbmem_my.h"
 
 
 #include "leon3_ml605\leon3\arith.h"
@@ -67,7 +71,6 @@
 #include "leon3_ml605\leon3\div32.h"
 #include "leon3_ml605\leon3\mmuconfig.h"
 #include "leon3_ml605\leon3\libmmu.h"
-#include "leon3_ml605\leon3\mem_unisim.h"
 #include "leon3_ml605\leon3\mmuiface.h"
 #include "leon3_ml605\leon3\mmu_icache.h"
 #include "leon3_ml605\leon3\mmu_dcache.h"

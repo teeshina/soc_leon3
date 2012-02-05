@@ -89,7 +89,7 @@ begin
       readline(InputFile, rdLine);
       read(rdLine, strLine);
       U <= StringToUVector(strLine);
-      S <= StringToSVector(strLine);
+      S <= StringToSVector(strLine);--UnsignedToSigned(wbSignals);
   
       wait until rising_edge(inClk);
       --wait until falling_edge(inClk);

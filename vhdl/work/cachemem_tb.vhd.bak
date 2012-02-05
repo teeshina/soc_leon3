@@ -19,7 +19,7 @@ use work.util_tb.all;
 
 entity cachemem_tb is
   constant CLK_HPERIOD : time := 10 ps;
-  constant STRING_SIZE : integer := 1858; -- string size = index of the last element
+  constant STRING_SIZE : integer := 1798; -- string size = index of the last element
 end cachemem_tb;
 architecture behavior of cachemem_tb is
 
@@ -41,11 +41,6 @@ architecture behavior of cachemem_tb is
   signal t_itwrite  : std_logic_vector(0 to 3);
   signal t_dtdataout20  : std_logic_vector(31 downto 0);
   signal t_dtdataout30  : std_logic_vector(31 downto 0);
-  signal t_dtenable  : std_logic_vector(0 to 3);
-  signal t_dtaddr2  : std_logic_vector(7 downto 0);
-  signal t_dtwrite3  : std_logic_vector(0 to 3);
-  signal t_dtaddr  : std_logic_vector(7 downto 0);
-  signal t_dtdatain30  : std_logic_vector(35 downto 0);
 
   
   signal U: std_ulogic_vector(STRING_SIZE-1 downto 0);
@@ -205,12 +200,6 @@ begin
   t_itwrite <= S(1733 downto 1730);
   t_dtdataout20 <= S(1765 downto 1734);
   t_dtdataout30 <= S(1797 downto 1766);
-  t_dtenable <= S(1801 downto 1798);
-  t_dtaddr2 <= S(1809 downto 1802);
-  t_dtwrite3 <= S(1813 downto 1810);
-  t_dtaddr <= S(1821 downto 1814);
-  t_dtdatain30 <= S(1857 downto 1822);
-
 
 
   tt : cachemem generic map
