@@ -41,7 +41,8 @@ int _tmain(int argc, _TCHAR* argv[])
   //sLibInitData.uiBenchEna[TB_tbufmem] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_leon3s] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_dsu3x] = PRINT_TESTBENCH_ENABLE;
-  sLibInitData.uiBenchEna[TB_ahbram] = PRINT_TESTBENCH_ENABLE;
+  //sLibInitData.uiBenchEna[TB_ahbram] = PRINT_TESTBENCH_ENABLE;
+  
   // Library init procedure:
   LibInit(&sLibInitData);
   

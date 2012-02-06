@@ -308,10 +308,10 @@ void mmu_acache::Update( uint32 rst,//    : in  std_logic;
   if (ahbi.hready)
   {
     if (r.Q.retry==0) v.bo = nbo;
-    v.bg = BIT32(ahbi.hgrant,AHB_MASTER_LEON3);
+    v.bg = BIT32(ahbi.hgrant,hindex);
     if( (htrans==HTRANS_NONSEQ) || (htrans==HTRANS_SEQ) ) v.ba = r.Q.bg;
     else                                                  v.ba = 0;
-    v.hlocken = hlock & BIT32(ahbi.hgrant,AHB_MASTER_LEON3);
+    v.hlocken = hlock & BIT32(ahbi.hgrant,hindex);
     if (CFG_CLK2X != 0)
     {
       igrant  = igrant & vreqmsk;
@@ -366,7 +366,7 @@ void mmu_acache::Update( uint32 rst,//    : in  std_logic;
   ahbo.hwrite  = hwrite;
   ahbo.hsize   = hsize;
   ahbo.hburst  = hburst;
-  ahbo.hindex  = AHB_MASTER_LEON3;
+  ahbo.hindex  = hindex;
   if (nbo==0) ahbo.hprot = (0x3<<2) | (su<<1) | 0;
   else        ahbo.hprot = (0x3<<2) | (su<<1) | 1;
 

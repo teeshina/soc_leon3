@@ -12,7 +12,7 @@ const enum
 {
   AHB_SLAVE_ROM=0,
   AHB_SLAVE_DSU,
-  AHB_SLAVE_MEM,
+  AHB_SLAVE_RAM,
   AHB_SLAVE_APBBRIDGE,
   AHB_SLAVE_TOTAL
 };
@@ -186,6 +186,10 @@ const uint32 ADDR_BUILD_LIB_MAX  = 0xFFFFFFFF;
 #define CFG_LEON3_NETLIST             0
 #define CFG_DISAS                     (0 + 0)
 #define CFG_PCLOW                     2
+
+#define CFG_AHBRAMSZ                  1//[kBytes]
+#define CFG_AHBRAMADDR                0x400
+#define CFG_AHBRAMMASK                0xFFF
 
 
 #define CFG_COPROC_ENA      0 // co-copressor 1=ena; 0=dis

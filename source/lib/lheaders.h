@@ -57,7 +57,7 @@
 #include "leon3_ml605\jtag\jtagpad.h"
 #include "leon3_ml605\jtag\jtagcom.h"
 #include "leon3_ml605\jtag\ahbjtag.h"
-#include "leon3_ml605\mem\ahbmem.h"
+#include "leon3_ml605\mem\ahbram.h"
 #include "leon3_ml605\mem\ahbmem_my.h"
 
 

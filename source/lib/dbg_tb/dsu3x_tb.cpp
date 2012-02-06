@@ -79,7 +79,7 @@ void dbg::dsu3x_tb(SystemOnChipIO &io)
   // default output using SoC top level:
   ahb_mst_in_type     *pin_ahbmi = &topLeon3mp.stCtrl2Mst;//  : in  ahb_mst_in_type;
   ahb_slv_in_type     *pin_ahbsi = &topLeon3mp.stCtrl2Slv;//  : in  ahb_slv_in_type;
-  ahb_slv_out_type    *pch_ahbso = &topLeon3mp.stSlv2Ctrl[AHB_SLAVE_MEM];//  : out ahb_slv_out_type;
+  ahb_slv_out_type    *pch_ahbso = &topLeon3mp.stSlv2Ctrl.arr[AHB_SLAVE_RAM];//  : out ahb_slv_out_type;
   l3_debug_out_vector *pin_dbgo = &topLeon3mp.dbgo;//   : in l3_debug_out_vector(0 to NCPU-1);
   l3_debug_in_vector  *pch_dbgi = &topLeon3mp.dbgi;//   : out l3_debug_in_vector(0 to NCPU-1);
   dsu_in_type         *pin_dsui = &topLeon3mp.dsui;//   : in dsu_in_type;

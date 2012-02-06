@@ -486,6 +486,26 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="mem"
+					>
+					<File
+						RelativePath="..\..\source\lib\leon3_ml605\mem\ahbmem_my.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\source\lib\leon3_ml605\mem\ahbmem_my.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\source\lib\leon3_ml605\mem\ahbram.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\source\lib\leon3_ml605\mem\ahbram.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="common"
@@ -528,6 +548,10 @@
 				</File>
 				<File
 					RelativePath="..\..\source\lib\dbg_tb\ahbmst_tb.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\source\lib\dbg_tb\ahbram_tb.cpp"
 					>
 				</File>
 				<File
@@ -622,18 +646,6 @@
 				</File>
 				<File
 					RelativePath="..\..\source\lib\dbg_tb\tbufmem_tb.cpp"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="mem"
-				>
-				<File
-					RelativePath="..\..\source\lib\leon3_ml605\mem\ahbmem.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\source\lib\leon3_ml605\mem\ahbmem.h"
 					>
 				</File>
 			</Filter>

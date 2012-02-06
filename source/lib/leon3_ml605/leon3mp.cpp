@@ -4,17 +4,24 @@ extern dbg     clDbg;
 //****************************************************************************
 leon3mp::leon3mp()
 {
+  clkZero.eClock = clkZero.eClock_z = SClock::CLK_NEGATIVE;
+
   for(int32 i=0; i<CFG_NCPU; i++)
     pclLeon3s[i] = new leon3s(AHB_MASTER_LEON3+i);
     
-  pclAhbSlaveMem = new AhbSlaveMem( AHB_SLAVE_MEM, VENDOR_GAISLER, GAISLER_AHBRAM, 0x400, 0xFFF);
-  pclDsu3x = new dsu3x(AHB_SLAVE_DSU, 0x900, 0xf00);
+  pclDsu3x = new dsu3x(AHB_SLAVE_DSU, 0x900, 0xf00);    
+  
+#ifdef USE_PURE_GAISLER
+  pclAhbRAM = new ahbram(AHB_SLAVE_RAM, 0x400, 0xfff);
+#else
+  pclAhbRAM = new AhbSlaveMem( AHB_SLAVE_RAM, VENDOR_GAISLER, GAISLER_AHBRAM, 0x400, 0xFFF);
+#endif
 }
 
 //****************************************************************************
 leon3mp::~leon3mp()
 {
-  free(pclAhbSlaveMem);
+  free(pclAhbRAM);
   for(int32 i=0; i<CFG_NCPU; i++) free(pclLeon3s[i]);
   free(pclDsu3x);
 }
@@ -29,34 +36,28 @@ void leon3mp::Update( uint32 inNRst,
                       uint32 TDI,
                       uint32 &TDO )
 {
-
-  clAhbMasterJtag.Update( inNRst,
-                          inClk,
-                          // JTAG interface:
-                          nTRST,
-                          TCK,
-                          TMS,
-                          TDI,
-                          TDO,
-                          stCtrl2Mst,
-                          stMst2Ctrl[AHB_MASTER_JTAG]);
-                          
-  pclAhbSlaveMem->Update( inNRst,
-                          inClk,
-                          stCtrl2Slv,
-                          stSlv2Ctrl[AHB_SLAVE_MEM] );
-
-
+  // AHB controller:
   clAhbControl.Update(inNRst,
                       inClk,
                       stMst2Ctrl,
                       stCtrl2Mst,
                       stSlv2Ctrl,
                       stCtrl2Slv );
-                      
-  memcpy(in_slvo.arr, stSlv2Ctrl, AHB_SLAVE_TOTAL*sizeof(ahb_slv_out_type));
+
+  // JTAG unit:
+  clAhbMasterJtag.Update( inNRst,
+                          inClk,
+                          // JTAG interface:
+                          nTRST, TCK, TMS, TDI, TDO,
+                          // AMBA intefrace:
+                          stCtrl2Mst,
+                          stMst2Ctrl[AHB_MASTER_JTAG]);
+
+  // Internal RAM:
+  pclAhbRAM->Update( inNRst, inClk, stCtrl2Slv, stSlv2Ctrl.arr[AHB_SLAVE_RAM] );
+
   
-               
+  // Core and Dunbug support units
   for(int32 i=0; i<CFG_NCPU; i++)
   {
     pclLeon3s[i]->Update(inClk, 
@@ -64,21 +65,19 @@ void leon3mp::Update( uint32 inNRst,
                         stCtrl2Mst,
                         stMst2Ctrl[AHB_MASTER_LEON3+i],
                         stCtrl2Slv,
-                        in_slvo,
+                        stSlv2Ctrl,
                         irqi,
                         irqo,
                         dbgi.arr[i],
                         dbgo.arr[i]);
   }
 
-  SClock clkZero;
-  clkZero.eClock = clkZero.eClock_z = SClock::CLK_NEGATIVE;
   pclDsu3x->Update(inNRst, 
                    clkZero,
                    inClk,
                    stCtrl2Mst,  // only to make AHB trace
                    stCtrl2Slv,
-                   stSlv2Ctrl[AHB_SLAVE_DSU],
+                   stSlv2Ctrl.arr[AHB_SLAVE_DSU],
                    dbgo,
                    dbgi,
                    dsui,

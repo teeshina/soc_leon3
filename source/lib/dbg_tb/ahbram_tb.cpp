@@ -10,13 +10,14 @@ extern void PrintIndexStr();
 void dbg::ahbram_tb(SystemOnChipIO &io)
 {
   ahb_slv_in_type *pin_ahbsi = &topLeon3mp.stCtrl2Slv;//   : in  ahb_slv_in_type;
-  ahb_slv_out_type *pch_ahbso = &topLeon3mp.stSlv2Ctrl[AHB_SLAVE_MEM];//   : out ahb_slv_out_type
+  ahb_slv_out_type *pch_ahbso = &topLeon3mp.stSlv2Ctrl.arr[AHB_SLAVE_RAM];//   : out ahb_slv_out_type
+  ahbram *p_ahbram = topLeon3mp.pclAhbRAM;
 
 #ifdef DBG_ahbram
   if(io.inClk.eClock_z==SClock::CLK_POSEDGE)
   {
     //
-    in_ahbsi.hsel = rand()&MSK32(AHB_SLAVES_MAX-1,0);//  : (0 to AHB_SLAVES_MAX-1);     -- slave select
+    in_ahbsi.hsel = 0x1<<2;//rand()&MSK32(AHB_SLAVES_MAX-1,0);//  : (0 to AHB_SLAVES_MAX-1);     -- slave select
     in_ahbsi.haddr = 0x90000000|((rand()&0xF)<<20)|rand();//(rand()<<17) + rand();// : (31 downto 0);  -- address bus (byte)
     in_ahbsi.hwrite = rand()&0x1;//  ;                           -- read/write
     in_ahbsi.htrans = rand()&0x3;//  : (1 downto 0);   -- transfer type
@@ -45,6 +46,7 @@ void dbg::ahbram_tb(SystemOnChipIO &io)
 
   pin_ahbsi = &in_ahbsi;//  : in  ahb_slv_in_type;
   pch_ahbso = &ch_ahbso;//  : out ahb_slv_out_type;
+  p_ahbram  = ptst_ahbram;
 #endif
 
 
@@ -94,6 +96,10 @@ void dbg::ahbram_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pch_ahbso->hconfig.arr[7],32,"ch_ahbso.hconfig(7)");
     pStr = PutToStr(pStr, pch_ahbso->hindex,4,"conv_integer(ch_ahbso.hindex)");//    : integer range 0 to AHB_SLAVES_MAX-1;   -- diagnostic use only
 
+    // internal 
+    pStr = PutToStr(pStr, p_ahbram->ramaddr,8,"t_ramaddr");
+    pStr = PutToStr(pStr, p_ahbram->ramsel,1,"t_ramsel");
+    pStr = PutToStr(pStr, p_ahbram->write,4,"t_write");
 
     PrintIndexStr();
 

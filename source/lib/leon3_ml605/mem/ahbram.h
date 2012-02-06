@@ -34,10 +34,10 @@ class ahbram
     uint32 raddr;//   : std_logic_vector(3 downto 2);
     syncram **ppSyncram;
 
-  private:
+  public:
     ahbram(uint32 hindex_,
-           uint32 addr_=0x0,
-           uint32 hmask_=0xfff);
+           uint32 addr_=CFG_AHBRAMADDR,
+           uint32 hmask_=CFG_AHBRAMMASK);
     ~ahbram();
 
     void Update( uint32 rst,//     : in  std_ulogic;

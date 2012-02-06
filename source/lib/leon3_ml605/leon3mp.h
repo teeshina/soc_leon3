@@ -1,17 +1,24 @@
 #pragma once
 
+#define USE_PURE_GAISLER
+
 class leon3mp
 {
   friend class dbg;
   private:
+    SClock clkZero;
+  
     ahb_mst_in_type   stCtrl2Mst;// : ahb_dma_in_type;
     ahb_mst_out_type  stMst2Ctrl[AHB_MASTERS_MAX];// : ahb_dma_out_type;
     ahb_slv_in_type   stCtrl2Slv;
-    ahb_slv_out_type  stSlv2Ctrl[AHB_SLAVES_MAX];
-    ahb_slv_out_vector  in_slvo;//    : in  ahb_slv_out_vector;
+    ahb_slv_out_vector  stSlv2Ctrl;
 
     AhbMasterJtag clAhbMasterJtag;
-    AhbSlaveMem   *pclAhbSlaveMem;
+#ifdef USE_PURE_GAISLER
+    ahbram *pclAhbRAM;
+#else
+    AhbSlaveMem   *pclAhbRAM;
+#endif
     AhbControl    clAhbControl;
     
     //
@@ -46,7 +53,7 @@ class leon3mp
     {
       clAhbMasterJtag.ClkUpdate();
       clAhbControl.ClkUpdate();
-      pclAhbSlaveMem->ClkUpdate();
+      pclAhbRAM->ClkUpdate();
       
       for(int32 i=0; i<CFG_NCPU; i++)
         pclLeon3s[i]->ClkUpdate();

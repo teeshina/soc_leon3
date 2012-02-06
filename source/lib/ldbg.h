@@ -19,7 +19,7 @@
 //#define DBG_tbufmem
 //#define DBG_leon3s
 //#define DBG_dsu3x
-#define DBG_ahbram
+//#define DBG_ahbram
 
 extern char* PutToStr(char *p, uint32 v, int size, char *comment=NULL, bool inv=false);
 extern char* PutToStr(char *p, uint64 v, int size, char *comment=NULL, bool inv=false);

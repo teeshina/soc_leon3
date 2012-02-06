@@ -14,7 +14,7 @@ dbg::dbg()
   ptst_mmulru = new mmulru(CFG_ITLBNUM); // index in a range CFG_ITLBNUM or CFG_DTLBNUM
 #endif
 #ifdef DBG_ahbram
-  ptst_ahbram = new ahbram(AHB_SLAVE_MEM, 0x300, 0xfff);
+  ptst_ahbram = new ahbram(AHB_SLAVE_RAM, 0x300, 0xfff);
 #endif
 }
 

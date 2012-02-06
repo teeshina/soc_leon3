@@ -98,7 +98,7 @@ void AhbMaster::Update( uint32 inNRst,
   ahbo.hconfig = hconfig;
   ahbo.hlock   = 0;
   ahbo.hwrite  = inDmaWrite;
-  ahbo.hsize   = inDmaSize;
+  ahbo.hsize   = HSIZE_WORD;
   ahbo.hburst  = inDmaBurst ? HBURST_INCR: HBURST_SINGLE; // 3 bit width state value
   ahbo.hprot   = BITS32(PROTECT_BITS,3,0);               // non-cached supervise data
   ahbo.hirq    = inDmaIrq<<IRQ_BIT_INDEX;

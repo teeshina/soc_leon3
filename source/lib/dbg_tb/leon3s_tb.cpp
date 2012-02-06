@@ -13,7 +13,7 @@ void dbg::leon3s_tb(SystemOnChipIO &io)
   ahb_mst_in_type     *pin_ahbi = &topLeon3mp.stCtrl2Mst;
   ahb_mst_out_type    *pch_ahbo = &topLeon3mp.stMst2Ctrl[AHB_MASTER_LEON3];
   ahb_slv_in_type     *pin_ahbsi = &topLeon3mp.stCtrl2Slv;
-  ahb_slv_out_vector  *pin_ahbso = &topLeon3mp.in_slvo;
+  ahb_slv_out_vector  *pin_ahbso = &topLeon3mp.stSlv2Ctrl;
   l3_irq_in_type      *pin_irqi = &topLeon3mp.irqi;
   l3_irq_out_type     *pch_irqo = &topLeon3mp.irqo;
   l3_debug_in_type    *pin_dbgi = &topLeon3mp.dbgi.arr[0];

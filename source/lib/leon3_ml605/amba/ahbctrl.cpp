@@ -12,7 +12,7 @@ void AhbControl::Update( uint32 inNRst,
                          SClock inClk,
                          ahb_mst_out_type *inMst2Ctrl,
                          ahb_mst_in_type  &outCtrl2Mst,
-                         ahb_slv_out_type *inSlv2Ctrl,
+                         ahb_slv_out_vector &inSlv2Ctrl,
                          ahb_slv_in_type  &outCtrl2Slv )
 {
   // select master
@@ -99,7 +99,7 @@ void AhbControl::Update( uint32 inNRst,
   ahb_membar_type *pBank;
   for(int32 slv=0; slv<AHB_SLAVE_TOTAL; slv++)
   {
-    pSlv = &inSlv2Ctrl[slv];
+    pSlv = &inSlv2Ctrl.arr[slv];
     for(int32 i=0; i<AHB_MEM_ID_WIDTH; i++)
     {
       pBank = (ahb_membar_type*)&pSlv->hconfig.arr[AHB_REG_ID_WIDTH+i];
@@ -123,11 +123,11 @@ void AhbControl::Update( uint32 inNRst,
   uint32 wAdrError = ((rbMstSel[0].Q!=-1)&(wbSlvSel==-1)&!wCfgSel);
   uint32 wAdrReady = wCfgSel ? 1
                    : wAdrError ? 0
-                   : ((rbMstSel[0].Q!=-1)&inSlv2Ctrl[wbSlvSel].hready);
+                   : ((rbMstSel[0].Q!=-1)&inSlv2Ctrl.arr[wbSlvSel].hready);
   uint32 wDataError = ((rbMstSel[1].Q!=-1)&(rbSlvSel.Q==-1)&!rCfgSel.Q);
   uint32 wDataReady = rCfgSel.Q ? 1
                     : wDataError ? 0
-                    : ((rbMstSel[1].Q!=-1)&inSlv2Ctrl[rbSlvSel.Q].hready);
+                    : ((rbMstSel[1].Q!=-1)&inSlv2Ctrl.arr[rbSlvSel.Q].hready);
 
   wHReady = ((rbMstSel[0].Q==-1)&&(rbMstSel[1].Q==-1)||wAdrError||wDataError) ? 1
                                                                               : (wAdrReady|wDataReady);
@@ -172,20 +172,20 @@ void AhbControl::Update( uint32 inNRst,
   if(!inNRst)                       rbCfgData.D = 0;
   else if(wHReady&wCfgSel&wLibArea) rbCfgData.D = (XILINX_ML401<<16)|LIBVHDL_BUILD;
   else if(wHReady&wCfgSel&wMstArea) rbCfgData.D = inMst2Ctrl[wbBusInd].hconfig.arr[wbCfgInd];
-  else if(wHReady&wCfgSel&wSlvArea) rbCfgData.D = inSlv2Ctrl[wbBusInd].hconfig.arr[wbCfgInd];
+  else if(wHReady&wCfgSel&wSlvArea) rbCfgData.D = inSlv2Ctrl.arr[wbBusInd].hconfig.arr[wbCfgInd];
   else if(wHReady)                  rbCfgData.D = 0;
 
 
   outCtrl2Mst.hready = wHReady;
   outCtrl2Mst.hgrant = (wbMstSel==-1) ? 0 : (0x1<<wbMstSel);
   outCtrl2Mst.hrdata = wDataReady&rCfgSel.Q ? rbCfgData.Q
-                     : wDataReady ? inSlv2Ctrl[rbSlvSel.Q].hrdata
+                     : wDataReady ? inSlv2Ctrl.arr[rbSlvSel.Q].hrdata
                      : 0;
   outCtrl2Mst.hcache = wDataReady&rCfgSel.Q ? 1
-                     : wDataReady ? inSlv2Ctrl[rbSlvSel.Q].hcache
+                     : wDataReady ? inSlv2Ctrl.arr[rbSlvSel.Q].hcache
                      : 0;
   outCtrl2Mst.hresp  = wDataReady&rCfgSel.Q ? HRESP_OKAY
-                     : wDataReady ? inSlv2Ctrl[rbSlvSel.Q].hresp
+                     : wDataReady ? inSlv2Ctrl.arr[rbSlvSel.Q].hresp
                      : (wDataError|wAdrError) ? HRESP_ERROR
                      : 0;
   outCtrl2Mst.hirq = 0;

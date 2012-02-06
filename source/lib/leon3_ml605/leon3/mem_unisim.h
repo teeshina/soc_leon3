@@ -84,14 +84,16 @@ class syncram
     TDFF<uint32>ra;//std_logic_vector((abits -1) downto 0);
     uint32 *memarr;
     uint64 *memarr64;
+    uint32 datamsk;
+    uint64 datamsk64;
   public:
     syncram( uint32 abits_= 10, uint32 dbits_ = 8 )
     {
       abits = abits_;
       dbits = dbits_;
       size = (0x1<<abits);
-      if(dbits<=32) memarr = (uint32*)malloc(sizeof(uint32)*size);
-      else          memarr64 = (uint64*)malloc(sizeof(uint64)*size);
+      if(dbits<=32) {memarr = (uint32*)malloc(sizeof(uint32)*size); datamsk = MSK32(dbits-1,0); }
+      else          {memarr64 = (uint64*)malloc(sizeof(uint64)*size); datamsk64 = MSK64(dbits-1,0); }
     }
     ~syncram() 
     {
@@ -116,7 +118,7 @@ class syncram
       
       ra.CLK = clk;
       ra.D = address;
-      dataout = memarr[ra.Q];
+      dataout = memarr[ra.Q]&datamsk;
     }
     void Update( SClock clk,//      : in std_ulogic;
                 uint32 address,//  : in std_logic_vector((abits -1) downto 0);
@@ -135,7 +137,7 @@ class syncram
       
       ra.CLK = clk;
       ra.D = address;
-      dataout = memarr64[ra.Q];
+      dataout = memarr64[ra.Q]&datamsk64;
     }
     
     void ClkUpdate()

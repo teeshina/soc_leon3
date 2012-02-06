@@ -17,7 +17,7 @@ use work.util_tb.all;
 
 entity ahbram_tb is
   constant CLK_HPERIOD : time := 10 ps;
-  constant STRING_SIZE : integer := 485; -- string size = index of the last element
+  constant STRING_SIZE : integer := 498; -- string size = index of the last element
 
   
 end ahbram_tb;
@@ -29,6 +29,9 @@ architecture behavior of ahbram_tb is
   signal in_ahbsi  : ahb_slv_in_type;
   signal ch_ahbso  : ahb_slv_out_type;
   signal ahbso  : ahb_slv_out_type;
+  signal t_ramaddr  : std_logic_vector(7 downto 0);
+  signal t_ramsel  : std_logic;
+  signal t_write  : std_logic_vector(3 downto 0);
 
                      					
   signal U: std_ulogic_vector(STRING_SIZE-1 downto 0);
@@ -60,7 +63,7 @@ begin
       wait until rising_edge(inClk);
       --wait until falling_edge(inClk);
       iClkCnt := iClkCnt + 1;
-      if(iClkCnt=365) then
+      if(iClkCnt=7) then
         print("break");
       end if;
 
@@ -104,7 +107,10 @@ begin
   ch_ahbso.hconfig(6) <= S(448 downto 417);
   ch_ahbso.hconfig(7) <= S(480 downto 449);
   ch_ahbso.hindex <= conv_integer(S(484 downto 481));
-  
+  t_ramaddr <= S(492 downto 485);
+  t_ramsel <= S(493);
+  t_write <= S(497 downto 494);
+
 
   tt : ahbram generic map 
   (
@@ -124,8 +130,18 @@ begin
   begin
     if(rising_edge(inClk) and (iClkCnt>3)) then
       if(ch_ahbso.hready/=ahbso.hready) then print("Err: ahbso.hready");  iErrCnt:=iErrCnt+1; end if;
-      if((ahbso.hrdata(31)/='U')and(ahbso.hrdata(20)/='U')and(ahbso.hrdata(10)/='U')and(ahbso.hrdata(10)/='X')) then
-        if(ch_ahbso.hrdata/=ahbso.hrdata) then print("Err: ahbso.hrdata");  iErrCnt:=iErrCnt+1; end if;
+
+      if((ahbso.hrdata(31)/='U')and(ahbso.hrdata(31)/='X')) then
+        if(ch_ahbso.hrdata(31 downto 24)/=ahbso.hrdata(31 downto 24)) then print("Err: ahbso.hrdata(31 downto 24)");  iErrCnt:=iErrCnt+1; end if;
+      end if;
+      if((ahbso.hrdata(23)/='U')and(ahbso.hrdata(23)/='X')) then
+        if(ch_ahbso.hrdata(23 downto 16)/=ahbso.hrdata(23 downto 16)) then print("Err: ahbso.hrdata(23 downto 16)");  iErrCnt:=iErrCnt+1; end if;
+      end if;
+      if((ahbso.hrdata(15)/='U')and(ahbso.hrdata(15)/='X')) then
+        if(ch_ahbso.hrdata(15 downto 8)/=ahbso.hrdata(15 downto 8)) then print("Err: ahbso.hrdata(15 downto 8)");  iErrCnt:=iErrCnt+1; end if;
+      end if;
+      if((ahbso.hrdata(7)/='U')and(ahbso.hrdata(7)/='X')) then
+        if(ch_ahbso.hrdata(7 downto 0)/=ahbso.hrdata(7 downto 0)) then print("Err: ahbso.hrdata(7 downto 0)");  iErrCnt:=iErrCnt+1; end if;
       end if;
     end if;
   end process check;
