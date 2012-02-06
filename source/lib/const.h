@@ -1,3 +1,10 @@
+//****************************************************************************
+// Author:      Khabarov Sergey
+// License:     GNU2
+// Contact:     sergey.khabarov@gnss-sensor.com
+// Repository:  git@github.com:teeshina/soc_leon3.git
+//****************************************************************************
+
 #pragma once
 
 const uint32 HTRANS_IDLE   = 0;//   (1 downto 0) := "00";

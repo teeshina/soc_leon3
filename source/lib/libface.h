@@ -1,3 +1,10 @@
+//****************************************************************************
+// Author:      Khabarov Sergey
+// License:     GNU2
+// Contact:     sergey.khabarov@gnss-sensor.com
+// Repository:  git@github.com:teeshina/soc_leon3.git
+//****************************************************************************
+
 #pragma once
 
 #if !defined(DECLSPEC_TYPE)
@@ -11,7 +18,7 @@
 enum ETestBenchName
 {
   TB_jtagcom,
-  TB_AHBMASTER,
+  TB_ahbmaster,
   TB_AHBJTAG,
   TB_AHBCTRL,
   

@@ -43,30 +43,10 @@ void AhbMasterJtag::Update( uint32 inNRst,//         : in  std_ulogic;
 
   ahbmst0->Update( inNRst,
                   inClk,
-                  //DMA input:
-                  jcomout_dmai.address,
-                  jcomout_dmai.wdata,
-                  jcomout_dmai.start,
-                  jcomout_dmai.burst,
-                  jcomout_dmai.write,
-                  jcomout_dmai.busy,
-                  jcomout_dmai.irq,
-                  jcomout_dmai.size,
-                  // DMA output:
-                  ahbmstout_dmao.start,
-                  ahbmstout_dmao.active,
-                  ahbmstout_dmao.ready,
-                  ahbmstout_dmao.retry,
-                  ahbmstout_dmao.mexc,
-                  ahbmstout_dmao.haddr,
-                  ahbmstout_dmao.rdata,
-                  // AHB response:
-                  in_ahbi.hgrant,
-                  in_ahbi.hready,
-                  in_ahbi.hresp,
-                  in_ahbi.hrdata,
-                  // Request to AHB
-                  out_ahbo );
+                  jcomout_dmai,   //DMA input:
+                  ahbmstout_dmao, // DMA output:
+                  in_ahbi,        // AHB response:
+                  out_ahbo );     // Request to AHB
   
 }
 

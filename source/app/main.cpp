@@ -1,5 +1,9 @@
-// leon3.cpp : Defines the entry point for the console application.
-//
+//****************************************************************************
+// Author:      Khabarov Sergey
+// License:     GNU2
+// Contact:     sergey.khabarov@gnss-sensor.com
+// Repository:  git@github.com:teeshina/soc_leon3.git
+//****************************************************************************
 
 #include "headers.h"
 
@@ -20,7 +24,7 @@ int _tmain(int argc, _TCHAR* argv[])
     sLibInitData.uiBenchEna[i] = PRINT_TESTBENCH_DISABLE;
   
   //sLibInitData.uiBenchEna[TB_jtagcom] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_AHBMASTER] = PRINT_TESTBENCH_ENABLE;
+  sLibInitData.uiBenchEna[TB_ahbmaster] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_AHBJTAG] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_AHBCTRL] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_mmutlbcam] = PRINT_TESTBENCH_ENABLE;

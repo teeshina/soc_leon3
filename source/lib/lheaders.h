@@ -1,7 +1,9 @@
-// stdafx.h : include file for standard system include files,
-// or project specific include files that are used frequently, but
-// are changed infrequently
-//
+//****************************************************************************
+// Author:      Khabarov Sergey
+// License:     GNU2
+// Contact:     sergey.khabarov@gnss-sensor.com
+// Repository:  git@github.com:teeshina/soc_leon3.git
+//****************************************************************************
 
 #pragma once
 

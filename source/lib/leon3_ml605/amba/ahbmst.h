@@ -1,3 +1,10 @@
+//****************************************************************************
+// Author:      Khabarov Sergey
+// License:     GNU2
+// Contact:     sergey.khabarov@gnss-sensor.com
+// Repository:  git@github.com:teeshina/soc_leon3.git
+//****************************************************************************
+
 #pragma once
 
 class AhbMaster
@@ -57,30 +64,12 @@ class AhbMaster
     void Update(
         uint32 inNRst,
         SClock inClk,
-        uint32 address,
-        uint32 wdata,//           : std_logic_vector(AHBDW-1 downto 0);
-        uint32 start,//           : std_ulogic;
-        uint32 burst,//           : std_ulogic;
-        uint32 write,//           : std_ulogic;
-        uint32 busy,//            : std_ulogic;
-        uint32 irq,//             : std_ulogic;
-        uint32 size,//            : std_logic_vector(2 downto 0);
-        // DMA response:
-        uint32& outDmaStart,//           : std_ulogic;
-        uint32& outDmaActive,//          : std_ulogic;
-        uint32& outDmaReady,//           : std_ulogic;
-        uint32& outDmaRetry,//           : std_ulogic;
-        uint32& outDmaMexc,//            : std_ulogic;
-        uint32& outDmaAdr,//           : std_logic_vector(9 downto 0);
-        uint32& outDmaRdData,//           : std_logic_vector(AHBDW-1 downto 0);
-        // AHB bus response:
-        uint32 inAhbGrant,//[0:15]  : (0 to AHB_MASTERS_MAX-1);     -- bus grant
-        uint32 inAhbReady,//  ;                           -- transfer done
-        uint32 inAhbResponse,//[1:0] : (1 downto 0);   -- response type
-        uint32 inAhbRdData,//[31:0]  : (AHBDW-1 downto 0);   -- read data bus
-        // Request to AHB
-        ahb_mst_out_type& ahbo
+        ahb_dma_in_type &in_dmai,
+        ahb_dma_out_type &out_dmao,
+        ahb_mst_in_type &in_ahbi,
+        ahb_mst_out_type &out_ahbo
       );
+
     void ClkUpdate()
     {
       rStart.ClkUpdate();

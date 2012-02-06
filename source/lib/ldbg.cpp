@@ -1,3 +1,10 @@
+//****************************************************************************
+// Author:      Khabarov Sergey
+// License:     GNU2
+// Contact:     sergey.khabarov@gnss-sensor.com
+// Repository:  git@github.com:teeshina/soc_leon3.git
+//****************************************************************************
+
 #include "lheaders.h"
 
 uint32 iClkCnt = 0;
@@ -111,7 +118,7 @@ void dbg::Update(SystemOnChipIO &io)
 
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_jtagcom]) jtagcom_tb(io);
 
-  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_AHBMASTER]) ahbmst_tb(io);  
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_ahbmaster]) ahbmst_tb(io);  
 
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_AHBJTAG]) ahbjtag_tb(io);   // (jtagcom + ahbmst)
   
