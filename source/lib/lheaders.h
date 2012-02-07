@@ -54,13 +54,14 @@
 #include "leon3_ml605\leon3\mem_unisim.h"
 
 #include "leon3_ml605\amba\amba.h"
-#include "leon3_ml605\amba\ahbmst.h"
+#include "leon3_ml605\amba\ahbmst_v.h"
 #include "leon3_ml605\amba\ahbctrl.h"
+#include "leon3_ml605\amba\ahbctrl_v.h"
 #include "leon3_ml605\jtag\jtagpad.h"
-#include "leon3_ml605\jtag\jtagcom.h"
+#include "leon3_ml605\jtag\jtagcom_v.h"
 #include "leon3_ml605\jtag\ahbjtag.h"
 #include "leon3_ml605\mem\ahbram.h"
-#include "leon3_ml605\mem\ahbmem_my.h"
+#include "leon3_ml605\mem\ahbmem_v.h"
 
 
 #include "leon3_ml605\leon3\arith.h"

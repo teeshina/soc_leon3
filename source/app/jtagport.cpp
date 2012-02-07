@@ -1,3 +1,10 @@
+//****************************************************************************
+// Author:      Khabarov Sergey
+// License:     GNU2
+// Contact:     sergey.khabarov@gnss-sensor.com
+// Repository:  git@github.com:teeshina/soc_leon3.git
+//****************************************************************************
+
 #include "headers.h"
 
 //****************************************************************************
@@ -44,7 +51,7 @@ void jtag_port::Update(uint32 inNRst,
   {
     ulRdAdr = (stCommand.uiAddr&0xFFFFF000) | ((stCommand.uiAddr + 4*uiSeqCnt)&0xFFF);
     if(eR==IR)                                               ulWrShift = uint64(ulSelIR);
-    else if(ulSelIR==JTAG_INSTRUCTION_USER1)                 ulWrShift = (uint64(stCommand.bWrite)<<34)|(uint64(stCommand.uiSize)<<32)|uint64(ulRdAdr);
+    else if(ulSelIR==JTAG_INSTRUCTION_USER1)                 ulWrShift = (uint64(stCommand.bWrite)<<34)|(uint64(0x2)<<32)|uint64(ulRdAdr);
     else if((ulSelIR==JTAG_INSTRUCTION_USER2)&&(uiSeqCnt<3)) ulWrShift = uint64(stCommand.uiWrData[uiSeqCnt]) | 0x100000000;
     else if(ulSelIR==JTAG_INSTRUCTION_USER2)                 ulWrShift = uint64(stCommand.uiWrData[uiSeqCnt]);
   }

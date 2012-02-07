@@ -24,7 +24,7 @@ int _tmain(int argc, _TCHAR* argv[])
     sLibInitData.uiBenchEna[i] = PRINT_TESTBENCH_DISABLE;
   
   //sLibInitData.uiBenchEna[TB_jtagcom] = PRINT_TESTBENCH_ENABLE;
-  sLibInitData.uiBenchEna[TB_ahbmaster] = PRINT_TESTBENCH_ENABLE;
+  //sLibInitData.uiBenchEna[TB_ahbmaster] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_AHBJTAG] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_AHBCTRL] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_mmutlbcam] = PRINT_TESTBENCH_ENABLE;

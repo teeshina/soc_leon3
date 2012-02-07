@@ -4,6 +4,8 @@
 // Contact:     sergey.khabarov@gnss-sensor.com
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
+//              Verilog styled AHB master controller
+//****************************************************************************
 
 #pragma once
 
@@ -30,6 +32,7 @@ class AhbMaster
     uint32 wRetry;//   : std_ulogic;
     uint32 wErrResponse;//    : std_ulogic;
     uint32 wbAdrInc;//     : std_logic_vector(5 downto 0);    -- address increment ?? SH: Maybe [7:0] width???
+    uint32 wRespEnd;
 
     uint32 wbCurAdr;//   : std_logic_vector(31 downto 0);   -- AHB address
     uint32 wbTransferType;//  : std_logic_vector(1 downto 0);    -- transfer type

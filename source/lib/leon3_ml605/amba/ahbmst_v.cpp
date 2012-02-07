@@ -4,6 +4,12 @@
 // Contact:     sergey.khabarov@gnss-sensor.com
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
+//              Verilog styled AHB master controller
+//
+//              This implementation is analog to the Gaisler one, and it has 
+//              disadvantage, it rises "hbusreq" signal on 2 clocks instead of
+//              one
+//****************************************************************************
 
 #include "lheaders.h"
 
@@ -34,22 +40,19 @@ void AhbMaster::Update( uint32 inNRst,
   else if(in_dmai.busy)                wbTransferType = HTRANS_BUSY;
   else                                 wbTransferType = HTRANS_SEQ;
 
+  wRespEnd = ((in_ahbi.hresp==HRESP_OKAY)||(in_ahbi.hresp==HRESP_ERROR)) ? 1: 0;
 
   // Ready bit
-  if(rActive.Q&&in_ahbi.hready&&((in_ahbi.hresp==HRESP_OKAY)||(in_ahbi.hresp==HRESP_ERROR)))
-    wReady = 1;
-  else wReady = 0;
+  if(rActive.Q & in_ahbi.hready & wRespEnd) wReady = 1;
+  else                                      wReady = 0;
 
   // Retry bit:
-  if(rActive.Q&&in_ahbi.hready&&((in_ahbi.hresp==HRESP_RETRY)||(in_ahbi.hresp==HRESP_SPLIT)) )
-    wRetry = 1;
-  else wRetry = 0;
+  if(rActive.Q & in_ahbi.hready & !wRespEnd ) wRetry = 1;
+  else                                        wRetry = 0;
 
   // Error state occures:
-  if(rActive.Q&&in_ahbi.hready&&(in_ahbi.hresp==HRESP_ERROR) )
-    wErrResponse = 1;
-  else wErrResponse = 0;
-
+  if(rActive.Q&&in_ahbi.hready&&(in_ahbi.hresp==HRESP_ERROR) )  wErrResponse = 1;
+  else                                                          wErrResponse = 0;
 
   
   // bus granted to "hindex" master:
@@ -69,14 +72,10 @@ void AhbMaster::Update( uint32 inNRst,
 
   // retry strob:
   rRetry.CLK = inClk;
-  if(!inNRst)                                                                                            rRetry.D = 0;
-  else if(rActive.Q && !in_ahbi.hready && ((in_ahbi.hresp==HRESP_RETRY)||(in_ahbi.hresp==HRESP_SPLIT)) ) rRetry.D = 1;
-  else if(rActive.Q)                                                                                     rRetry.D = 0;
+  if(!inNRst)                                       rRetry.D = 0;
+  else if(rActive.Q & !in_ahbi.hready & !wRespEnd ) rRetry.D = 1;
+  else if(rActive.Q)                                rRetry.D = 0;
 
-#if 1
-  if((iClkCnt>=136)&&(inClk.eClock==SClock::CLK_POSEDGE))
-    bool stop = true;
-#endif
   
   out_ahbo.haddr   = wbCurAdr;
   out_ahbo.htrans  = wbTransferType;
@@ -85,7 +84,7 @@ void AhbMaster::Update( uint32 inNRst,
   out_ahbo.hconfig = hconfig;
   out_ahbo.hlock   = 0;
   out_ahbo.hwrite  = in_dmai.write;
-  out_ahbo.hsize   = HSIZE_WORD;
+  out_ahbo.hsize   = in_dmai.size;
   out_ahbo.hburst  = in_dmai.burst ? HBURST_INCR: HBURST_SINGLE; // 3 bit width state value
   out_ahbo.hprot   = BITS32(PROTECT_BITS,3,0);               // non-cached supervise data
   out_ahbo.hirq    = in_dmai.irq<<IRQ_BIT_INDEX;

@@ -126,7 +126,7 @@ begin
   
   tt : ahbmst generic map 
   (
-    hindex => 3,
+    hindex => 1,
     venid => VENDOR_GAISLER,
     devid => GAISLER_AHBJTAG,
     version => REVISION
@@ -145,6 +145,7 @@ procCheck : process (inClk,ch_dmao,ch_ahbo)
 begin
   if(rising_edge(inClk)and(iClkCnt>2)) then
     if(ch_ahbo/=ahbo) then print("Err: ahbo");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_dmao/=dmao) then print("Err: dmao");  iErrCnt:=iErrCnt+1; end if;
   end if;
 end process procCheck;
 
