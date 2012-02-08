@@ -7,3 +7,5 @@ leon3.vcproj.*.user
 ProjectFiles2005/debug/
 ProjectFiles2005/libleon/debug/
 ProjectFiles2010/
+source/firmware/makefiles/
+source/firmware/HelloWorld/target_VIRTEX_ML605

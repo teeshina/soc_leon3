@@ -30,7 +30,7 @@ void dbg::Output()
     adr = portJTAG.GetRdAdr();
     rd = portJTAG.GetRdData();
     if(false==TEST[iJtagInstrCnt-1].bWrite)
-      printf_s("\t{JTag}: [0x%08x] = 0x%08x\n", adr, rd);
+      printf_s("%6i:{JTag}R [0x%08x] => 0x%08x\n", iClkCnt,adr, rd);
   }
   
   
@@ -38,14 +38,8 @@ void dbg::Output()
   {
     const JTagTestInput *t = &TEST[iJtagInstrCnt];
     portJTAG.Put(t);
-    printf_s("%i: %s\n",iClkCnt,t->pchComment);
     if(t->bWrite)
-    {
-      printf_s("  Writting %i to [0x%08x] <= 0x%08x, 0x%08x, 0x%08x, 0x%08x;\n",
-        t->uiSize, t->uiAddr,
-        t->uiWrData[0], t->uiWrData[1], t->uiWrData[2], t->uiWrData[3]);
-    }else
-      printf_s("  Read %i from [0x%08x];\n",t->uiSize,t->uiAddr);
+      printf_s("%6i:{JTag}W [0x%08x] <= 0x%08x //%s\n", iClkCnt, t->uiAddr,t->uiWrData,t->pchComment);
       
     iJtagInstrCnt++;
   }else if(portJTAG.IsEmpty())

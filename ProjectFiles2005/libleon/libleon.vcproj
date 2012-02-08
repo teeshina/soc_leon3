@@ -230,11 +230,11 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\source\lib\leon3_ml605\jtag\jtagcom.cpp"
+						RelativePath="..\..\source\lib\leon3_ml605\jtag\jtagcom_v.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\source\lib\leon3_ml605\jtag\jtagcom.h"
+						RelativePath="..\..\source\lib\leon3_ml605\jtag\jtagcom_v.h"
 						>
 					</File>
 					<File
@@ -258,11 +258,19 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\source\lib\leon3_ml605\amba\ahbmst.cpp"
+						RelativePath="..\..\source\lib\leon3_ml605\amba\ahbctrl_v.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\source\lib\leon3_ml605\amba\ahbmst.h"
+						RelativePath="..\..\source\lib\leon3_ml605\amba\ahbctrl_v.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\source\lib\leon3_ml605\amba\ahbmst_v.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\source\lib\leon3_ml605\amba\ahbmst_v.h"
 						>
 					</File>
 					<File
@@ -490,11 +498,11 @@
 					Name="mem"
 					>
 					<File
-						RelativePath="..\..\source\lib\leon3_ml605\mem\ahbmem_my.cpp"
+						RelativePath="..\..\source\lib\leon3_ml605\mem\ahbmem_v.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\source\lib\leon3_ml605\mem\ahbmem_my.h"
+						RelativePath="..\..\source\lib\leon3_ml605\mem\ahbmem_v.h"
 						>
 					</File>
 					<File

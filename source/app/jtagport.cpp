@@ -37,7 +37,6 @@ void jtag_port::Update(uint32 inNRst,
     outTMS   = 1;
     outTDI   = 1;
     bEmpty   = true;
-    uiSeqCnt  = 0;
     bRdDataRdy = false;
     return;
   }
@@ -49,11 +48,10 @@ void jtag_port::Update(uint32 inNRst,
   // output data bit:
   if(eState==STATE_CAPTURE)
   {
-    ulRdAdr = (stCommand.uiAddr&0xFFFFF000) | ((stCommand.uiAddr + 4*uiSeqCnt)&0xFFF);
-    if(eR==IR)                                               ulWrShift = uint64(ulSelIR);
-    else if(ulSelIR==JTAG_INSTRUCTION_USER1)                 ulWrShift = (uint64(stCommand.bWrite)<<34)|(uint64(0x2)<<32)|uint64(ulRdAdr);
-    else if((ulSelIR==JTAG_INSTRUCTION_USER2)&&(uiSeqCnt<3)) ulWrShift = uint64(stCommand.uiWrData[uiSeqCnt]) | 0x100000000;
-    else if(ulSelIR==JTAG_INSTRUCTION_USER2)                 ulWrShift = uint64(stCommand.uiWrData[uiSeqCnt]);
+    ulRdAdr = stCommand.uiAddr;
+    if(eR==IR)                               ulWrShift = uint64(ulSelIR);
+    else if(ulSelIR==JTAG_INSTRUCTION_USER1) ulWrShift = (uint64(stCommand.bWrite)<<34)|(uint64(0x2)<<32)|uint64(ulRdAdr);
+    else if(ulSelIR==JTAG_INSTRUCTION_USER2) ulWrShift = uint64(stCommand.uiWrData) | 0x100000000;
   }
 
   if(eState==STATE_SHIFT)
@@ -87,7 +85,6 @@ void jtag_port::Update(uint32 inNRst,
         eState  = STATE_SELECT_DR;
         ulSelIR = JTAG_INSTRUCTION_USER1;
         eR      = IR;
-        uiSeqCnt = 0;
       }else
         outTMS   = 0;
     break;
@@ -136,13 +133,6 @@ void jtag_port::Update(uint32 inNRst,
         outTMS = 1;
         eState = STATE_SELECT_DR;
         ulSelIR = JTAG_INSTRUCTION_USER2;
-      }else if(uiSeqCnt<stCommand.uiSize)
-      {
-        eR = IR;
-        outTMS = 1;
-        uiSeqCnt++;
-        eState = STATE_SELECT_DR;
-        ulSelIR = JTAG_INSTRUCTION_USER1;
       }else
       {
         outTMS = 0;

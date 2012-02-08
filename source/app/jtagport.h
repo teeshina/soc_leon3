@@ -24,7 +24,6 @@ class jtag_port//TODO: rename it a bit later
     ESelector eR;
     uint32 ulSelIR;  // 10 bits for Virtex6 compatibility
     uint64 ulSelDR;
-    uint32 uiSeqCnt;
 
     bool   bRdDataRdy;
     uint32 ulRdShift;

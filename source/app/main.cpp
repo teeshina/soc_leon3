@@ -15,9 +15,12 @@ jtag_port portJTAG;
 dbg clDbg;
 
 
+ElfFile clElfFile;
+
 int _tmain(int argc, _TCHAR* argv[])
 {
-  int *const a = (int*const)5;
+  clElfFile.Update();
+
   LibInitData sLibInitData;
   // Select testbench to print:
   for (int i=0; i<TB_TOTAL; i++)

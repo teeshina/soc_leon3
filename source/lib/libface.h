@@ -86,6 +86,9 @@ const uint32 JTAG_INSTRUCTION_WIDTH = 10;
 const uint32 JTAG_INSTRUCTION_USER1 = 0x3C2;  // instruction to accept address (35 bits)
 const uint32 JTAG_INSTRUCTION_USER2 = 0x3C3;  // instruction to accept data (33 bits)
 
+//****************************************************************************
+// Address fields:
+
 
 //****************************************************************************
 struct SystemOnChipIO

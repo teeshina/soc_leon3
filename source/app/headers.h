@@ -13,6 +13,7 @@
 
 #include <stdio.h>
 #include <tchar.h>
+#include <stdarg.h>
 #include <memory>
 #include <iostream>
 #include <fstream>
@@ -30,6 +31,7 @@
 #include "clkgen.h"
 #include "jtagport.h"
 
+#include "elfloader\elfloader.h"
 #include "dbg.h"
 
 const double SYS_CLOCK_F = 66000000; //Hz
