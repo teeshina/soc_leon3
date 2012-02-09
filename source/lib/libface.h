@@ -1,7 +1,7 @@
 //****************************************************************************
-// Author:      Khabarov Sergey
+// Property:    GNSS Sensor Limited
 // License:     GNU2
-// Contact:     sergey.khabarov@gnss-sensor.com
+// Contact:     chief@gnss-sensor.com
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
@@ -20,8 +20,7 @@ enum ETestBenchName
   TB_jtagcom,
   TB_ahbmaster,
   TB_AHBJTAG,
-  TB_AHBCTRL,
-  
+  TB_ahbctrl,
   TB_mmutlbcam,
   TB_mmutlb,
   TB_mul32,
@@ -41,6 +40,7 @@ enum ETestBenchName
   TB_leon3s,
   TB_dsu3x,
   TB_ahbram,
+  TB_apbctrl,
   
   TB_TOTAL
 };
@@ -71,6 +71,7 @@ const char chBenchFile[TB_TOTAL][64]=
   "leon3s_tb.txt",
   "dsu3x_tb.txt",
   "ahbram_tb.txt",
+  "apbctrl_tb.txt",
 };
 
 

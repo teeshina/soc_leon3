@@ -1,7 +1,7 @@
 //****************************************************************************
-// Author:      Khabarov Sergey
+// Property:    GNSS Sensor Limited
 // License:     GNU2
-// Contact:     sergey.khabarov@gnss-sensor.com
+// Contact:     chief@gnss-sensor.com
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
@@ -27,6 +27,7 @@
 //#define DBG_leon3s
 //#define DBG_dsu3x
 //#define DBG_ahbram
+//#define DBG_ahbctrl
 
 extern char* PutToStr(char *p, uint32 v, int size, char *comment=NULL, bool inv=false);
 extern char* PutToStr(char *p, uint64 v, int size, char *comment=NULL, bool inv=false);
@@ -290,6 +291,7 @@ class dbg
     void leon3s_tb(SystemOnChipIO &ioData);
     void dsu3x_tb(SystemOnChipIO &ioData);
     void ahbram_tb(SystemOnChipIO &ioData);
+    void apbctrl_tb(SystemOnChipIO &ioData);
 
 #ifdef DBG_jtagcom
     uint32 inTCK;

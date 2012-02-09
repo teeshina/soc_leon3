@@ -1,7 +1,7 @@
 //****************************************************************************
-// Author:      Khabarov Sergey
+// Property:    GNSS Sensor Limited
 // License:     GNU2
-// Contact:     sergey.khabarov@gnss-sensor.com
+// Contact:     chief@gnss-sensor.com
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 

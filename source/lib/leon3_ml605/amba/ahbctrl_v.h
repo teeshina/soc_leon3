@@ -56,7 +56,7 @@ class AhbControl
   
     void Update( uint32 inNRst,
                  SClock inClk,
-                 ahb_mst_out_type *inMstToCtrl,
+                 ahb_mst_out_vector &inMstToCtrl,
                  ahb_mst_in_type  &outCtrl2Mst,
                  ahb_slv_out_vector &inSlv2Ctrl,
                  ahb_slv_in_type  &outCtrl2Slv

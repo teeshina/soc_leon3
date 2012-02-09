@@ -18,7 +18,7 @@ class ElfFile
     typedef signed   int   Elf32_Sword;
     typedef unsigned int   Elf32_Word;
   private:
-    struct Elf32_EhdrType
+    struct ElfHeaderType
     {
       enum E_EI
       {
@@ -76,12 +76,55 @@ class ElfFile
       Elf32_Half e_shnum;
       Elf32_Half e_shstrndx;
     };
-    Elf32_EhdrType Elf32_Ehdr;
+    ElfHeaderType Elf32_Ehdr;
+    
+    struct SectionHeaderType
+    {
+      Elf32_Word    sh_name;//Index in a header section table (gives name of section)
+      Elf32_Word    sh_type;
+      Elf32_Word    sh_flags;
+      Elf32_Addr    sh_addr;
+      Elf32_Off     sh_offset;
+      Elf32_Word    sh_size;
+      Elf32_Word    sh_link;
+      Elf32_Word    sh_info;
+      Elf32_Word    sh_addralign;
+      Elf32_Word    sh_entsize;
+      
+      //sh_type:
+      static const Elf32_Word SHT_NULL      = 0;
+      static const Elf32_Word SHT_PROGBITS  = 1;
+      static const Elf32_Word SHT_SYMTAB    = 2;
+      static const Elf32_Word SHT_STRTAB    = 3;
+      static const Elf32_Word SHT_RELA      = 4;
+      static const Elf32_Word SHT_HASH      = 5;
+      static const Elf32_Word SHT_DYNAMIC   = 6;
+      static const Elf32_Word SHT_NOTE      = 7;
+      static const Elf32_Word SHT_NOBITS    = 8;
+      static const Elf32_Word SHT_REL       = 9;
+      static const Elf32_Word SHT_SHLIB     = 10;
+      static const Elf32_Word SHT_DYNSYM    = 11;
+      static const Elf32_Word SHT_LOPROC    = 0x70000000;
+      static const Elf32_Word SHT_HIPROC    = 0x7fffffff;
+      static const Elf32_Word SHT_HIUSER    = 0xffffffff;
+      //sh_flags:
+      static const Elf32_Word SHF_WRITE     = 0x1;
+      static const Elf32_Word SHF_ALLOC     = 0x2;
+      static const Elf32_Word SHF_EXECINSTR = 0x4;
+      static const Elf32_Word SHF_MASKPROC  = 0xf0000000;
+      
+    };
+    SectionHeaderType *pSectionHeader;
 
   private:
     bool bFileOpened;
     int32 iElfSize;
     char  *arrElf;
+    
+    static const int32 STRINGS_IN_SECTION_MAX = 1<<16;
+    uint32 iTotalStrings;
+    char  *pStr[STRINGS_IN_SECTION_MAX];
+    
   public:
     ElfFile();
     ~ElfFile();
@@ -89,13 +132,20 @@ class ElfFile
     void Update();
 
     void ReadElfHeader();
+    void ReadProgramHeader();
+    void ReadSectionHeader();
+    
     void SwapBytes(Elf32_Half&);
     void SwapBytes(uint32&);
   
   public:
     static const int32 PUT_STRING_SIZE = 1024;
     char chPutString[PUT_STRING_SIZE];
-    void PUT_STRING(const char *_format, ... );
+    int32 PUT_STRING(const char *_format, ... );
+    int32 S_STRING(char *s,const char *_format, ... );
+
+    char chTmp[PUT_STRING_SIZE];
+
 };
 
 

@@ -1,7 +1,7 @@
 //****************************************************************************
-// Author:      Khabarov Sergey
+// Property:    GNSS Sensor Limited
 // License:     GNU2
-// Contact:     sergey.khabarov@gnss-sensor.com
+// Contact:     chief@gnss-sensor.com
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
@@ -29,7 +29,7 @@ int _tmain(int argc, _TCHAR* argv[])
   //sLibInitData.uiBenchEna[TB_jtagcom] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_ahbmaster] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_AHBJTAG] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_AHBCTRL] = PRINT_TESTBENCH_ENABLE;
+  //sLibInitData.uiBenchEna[TB_ahbctrl] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_mmutlbcam] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_mmutlb] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_mul32] = PRINT_TESTBENCH_ENABLE;
@@ -49,6 +49,7 @@ int _tmain(int argc, _TCHAR* argv[])
   //sLibInitData.uiBenchEna[TB_leon3s] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_dsu3x] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_ahbram] = PRINT_TESTBENCH_ENABLE;
+  sLibInitData.uiBenchEna[TB_apbctrl] = PRINT_TESTBENCH_ENABLE;
   
   // Library init procedure:
   LibInit(&sLibInitData);

@@ -172,7 +172,7 @@ struct apb_slv_out_type
 // array types
 struct apb_slv_out_vector
 {
-  apb_slv_out_type arr[APB_SLAVES_MAX-1];// is array (0 to APB_SLAVES_MAX-1) of apb_slv_out_type;
+  apb_slv_out_type arr[APB_SLAVES_MAX];// is array (0 to APB_SLAVES_MAX-1) of apb_slv_out_type;
 };
 
 

@@ -8,9 +8,9 @@ class leon3mp
   private:
     SClock clkZero;
   
-    ahb_mst_in_type   stCtrl2Mst;// : ahb_dma_in_type;
-    ahb_mst_out_type  stMst2Ctrl[AHB_MASTERS_MAX];// : ahb_dma_out_type;
-    ahb_slv_in_type   stCtrl2Slv;
+    ahb_mst_in_type     stCtrl2Mst;
+    ahb_mst_out_vector  stMst2Ctrl;
+    ahb_slv_in_type     stCtrl2Slv;
     ahb_slv_out_vector  stSlv2Ctrl;
 
     AhbMasterJtag clAhbMasterJtag;
@@ -31,7 +31,10 @@ class leon3mp
     dsu_in_type dsui;//   : in dsu_in_type;
     dsu_out_type dsuo;//   : out dsu_out_type;
     dsu3x *pclDsu3x;
-
+  
+    apb_slv_in_type    apbi;//    : out apb_slv_in_type;
+    apb_slv_out_vector apbo;
+    apbctrl *pApbControl;
 
   public:
     leon3mp();
@@ -58,6 +61,7 @@ class leon3mp
       for(int32 i=0; i<CFG_NCPU; i++)
         pclLeon3s[i]->ClkUpdate();
       pclDsu3x->ClkUpdate();
+      pApbControl->ClkUpdate();
     }
 };
 

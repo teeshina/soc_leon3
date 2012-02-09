@@ -20,13 +20,13 @@ AhbControl::AhbControl()
 //****************************************************************************
 void AhbControl::Update( uint32 inNRst,
                          SClock inClk,
-                         ahb_mst_out_type *inMst2Ctrl,
+                         ahb_mst_out_vector &inMst2Ctrl,
                          ahb_mst_in_type  &outCtrl2Mst,
                          ahb_slv_out_vector &inSlv2Ctrl,
                          ahb_slv_in_type  &outCtrl2Slv )
 {
   // select master
-  ahb_mst_out_type *pRqst = &inMst2Ctrl[AHB_MASTER_JTAG];
+  ahb_mst_out_type *pRqst = &inMst2Ctrl.arr[AHB_MASTER_JTAG];
   ahb_slv_out_type *pSlv;
   ahb_mst_in_type  *pRspn = &outCtrl2Mst;
   
@@ -39,7 +39,7 @@ void AhbControl::Update( uint32 inNRst,
   wbMstSel=-1;
   for (int32 i=0; i<AHB_MASTER_TOTAL; i++)
   {
-    if(inMst2Ctrl[i].hbusreq)
+    if(inMst2Ctrl.arr[i].hbusreq)
     {
       wbMstSel = i;
       break;
@@ -50,7 +50,7 @@ void AhbControl::Update( uint32 inNRst,
   wbMstReqAll = 0;
   for (int32 i=0; i<AHB_MASTER_TOTAL; i++)
   {
-    if(inMst2Ctrl[i].hbusreq)   wbMstReqAll |= (0x1<<i);
+    if(inMst2Ctrl.arr[i].hbusreq)   wbMstReqAll |= (0x1<<i);
   }
   wbMstReqMask = (MSK32(AHB_MASTER_TOTAL-1,0)<<(rbMstSel[0].Q+1)) & MSK32(AHB_MASTER_TOTAL-1,0);
 
@@ -87,11 +87,11 @@ void AhbControl::Update( uint32 inNRst,
   // Important:
   //      check condition of burst operation,
   //      don't change master index in case of (htrans==SEQ) (see page 66 of "AMBA specification")
-  wNewBurst = (inMst2Ctrl[rbMstSel[0].Q].hburst!=HBURST_SINGLE)&&(inMst2Ctrl[rbMstSel[0].Q].htrans==HTRANS_NONSEQ);
+  wNewBurst = (inMst2Ctrl.arr[rbMstSel[0].Q].hburst!=HBURST_SINGLE)&&(inMst2Ctrl.arr[rbMstSel[0].Q].htrans==HTRANS_NONSEQ);
   wGuardNewBurst = (rbMstSel[0].Q==rbLastBurstMst.Q)&&wNewBurst;
 
-  if( (inMst2Ctrl[rbMstSel[0].Q].hburst != HBURST_SINGLE)
-   && (inMst2Ctrl[rbMstSel[0].Q].hbusreq) && !wGuardNewBurst )
+  if( (inMst2Ctrl.arr[rbMstSel[0].Q].hburst != HBURST_SINGLE)
+   && (inMst2Ctrl.arr[rbMstSel[0].Q].hbusreq) && !wGuardNewBurst )
     wbMstSel = rbMstSel[0].Q;
   else
     wbMstSel = wbMstSelNext;
@@ -115,7 +115,7 @@ void AhbControl::Update( uint32 inNRst,
       pBank = (ahb_membar_type*)&pSlv->hconfig.arr[AHB_REG_ID_WIDTH+i];
       // Warning!! This valid only for area_id = AHB memory area. 
       if( (rbMstSel[0].Q!=-1) && pBank->addrmask &&
-         ((pBank->memaddr&pBank->addrmask)==(BITS32(inMst2Ctrl[rbMstSel[0].Q].haddr,31,20) & pBank->addrmask)) )
+         ((pBank->memaddr&pBank->addrmask)==(BITS32(inMst2Ctrl.arr[rbMstSel[0].Q].haddr,31,20) & pBank->addrmask)) )
       {
         wbSlvSel = slv;
       }
@@ -124,9 +124,9 @@ void AhbControl::Update( uint32 inNRst,
 
   // Check what is slave address selected:
   // Control (plug'n'play) memory area
-  if( (inMst2Ctrl[rbMstSel[0].Q].haddr>=ADDR_CONFIG_MIN)
-    &&(inMst2Ctrl[rbMstSel[0].Q].haddr<=ADDR_CONFIG_MAX))  wCfgSel = 1;
-  else                                                     wCfgSel = 0;
+  if( (inMst2Ctrl.arr[rbMstSel[0].Q].haddr>=ADDR_CONFIG_MIN)
+    &&(inMst2Ctrl.arr[rbMstSel[0].Q].haddr<=ADDR_CONFIG_MAX))  wCfgSel = 1;
+  else                                                         wCfgSel = 0;
 
 
   uint32 wHReady;
@@ -166,23 +166,23 @@ void AhbControl::Update( uint32 inNRst,
 #ifdef AHBCTRL_FULLPNP_ENABLE
   uint32 wFullPnp = 1;
 #else
-  uint32 wFullPnp = (BITS32(inMst2Ctrl[rbMstSel[0].Q].haddr,4,2)==0)? 1: 0;
+  uint32 wFullPnp = (BITS32(inMst2Ctrl.arr[rbMstSel[0].Q].haddr,4,2)==0)? 1: 0;
 #endif
   uint32 wLibArea = (rbMstSel[0].Q==-1) ? 0
-                  : ((inMst2Ctrl[rbMstSel[0].Q].haddr>=ADDR_BUILD_LIB_MIN)&&(inMst2Ctrl[rbMstSel[0].Q].haddr<=ADDR_BUILD_LIB_MAX));
+                  : ((inMst2Ctrl.arr[rbMstSel[0].Q].haddr>=ADDR_BUILD_LIB_MIN)&&(inMst2Ctrl.arr[rbMstSel[0].Q].haddr<=ADDR_BUILD_LIB_MAX));
   uint32 wMstArea = ((rbMstSel[0].Q==-1) | !wFullPnp) ? 0
-                  : ((inMst2Ctrl[rbMstSel[0].Q].haddr>=ADDR_MSTCFG_MIN)&&(inMst2Ctrl[rbMstSel[0].Q].haddr<=ADDR_MSTCFG_MAX));
+                  : ((inMst2Ctrl.arr[rbMstSel[0].Q].haddr>=ADDR_MSTCFG_MIN)&&(inMst2Ctrl.arr[rbMstSel[0].Q].haddr<=ADDR_MSTCFG_MAX));
   uint32 wSlvArea = ((rbMstSel[0].Q==-1) | !wFullPnp) ? 0
-                  : ((inMst2Ctrl[rbMstSel[0].Q].haddr>=ADDR_SLVCFG_MIN)&&(inMst2Ctrl[rbMstSel[0].Q].haddr<=ADDR_SLVCFG_MAX));
+                  : ((inMst2Ctrl.arr[rbMstSel[0].Q].haddr>=ADDR_SLVCFG_MIN)&&(inMst2Ctrl.arr[rbMstSel[0].Q].haddr<=ADDR_SLVCFG_MAX));
 
-  uint32 wbBusInd = (rbMstSel[0].Q==-1) ? 0: BITS32(inMst2Ctrl[rbMstSel[0].Q].haddr,8,5);
-  uint32 wbCfgInd = (rbMstSel[0].Q==-1) ? 0: BITS32(inMst2Ctrl[rbMstSel[0].Q].haddr,4,2);
+  uint32 wbBusInd = (rbMstSel[0].Q==-1) ? 0: BITS32(inMst2Ctrl.arr[rbMstSel[0].Q].haddr,8,5);
+  uint32 wbCfgInd = (rbMstSel[0].Q==-1) ? 0: BITS32(inMst2Ctrl.arr[rbMstSel[0].Q].haddr,4,2);
 
   // Config data latched:
   rbCfgData.CLK = inClk;
   if(!inNRst)                       rbCfgData.D = 0;
   else if(wHReady&wCfgSel&wLibArea) rbCfgData.D = (XILINX_ML401<<16)|LIBVHDL_BUILD;
-  else if(wHReady&wCfgSel&wMstArea) rbCfgData.D = inMst2Ctrl[wbBusInd].hconfig.arr[wbCfgInd];
+  else if(wHReady&wCfgSel&wMstArea) rbCfgData.D = inMst2Ctrl.arr[wbBusInd].hconfig.arr[wbCfgInd];
   else if(wHReady&wCfgSel&wSlvArea) rbCfgData.D = inSlv2Ctrl.arr[wbBusInd].hconfig.arr[wbCfgInd];
   else if(wHReady)                  rbCfgData.D = 0;
 
@@ -205,11 +205,11 @@ void AhbControl::Update( uint32 inNRst,
 
   outCtrl2Slv.hsel = (wbSlvSel==-1) ? 0: (0x1<<wbSlvSel);
   outCtrl2Slv.hready = wHReady;
-  outCtrl2Slv.haddr = (wbSlvSel==-1) ? 0 : inMst2Ctrl[rbMstSel[0].Q].haddr;
-  outCtrl2Slv.hwdata = (wbSlvSel==-1) ? 0 : inMst2Ctrl[rbMstSel[0].Q].hwdata;
-  outCtrl2Slv.hwrite = (wbSlvSel==-1) ? 0 : inMst2Ctrl[rbMstSel[0].Q].hwrite;
-  outCtrl2Slv.htrans = (wbSlvSel==-1) ? 0 : inMst2Ctrl[rbMstSel[0].Q].htrans;
-  outCtrl2Slv.hsize = (wbSlvSel==-1) ? 0 : inMst2Ctrl[rbMstSel[0].Q].hsize;
+  outCtrl2Slv.haddr = (wbSlvSel==-1) ? 0 : inMst2Ctrl.arr[rbMstSel[0].Q].haddr;
+  outCtrl2Slv.hwdata = (wbSlvSel==-1) ? 0 : inMst2Ctrl.arr[rbMstSel[0].Q].hwdata;
+  outCtrl2Slv.hwrite = (wbSlvSel==-1) ? 0 : inMst2Ctrl.arr[rbMstSel[0].Q].hwrite;
+  outCtrl2Slv.htrans = (wbSlvSel==-1) ? 0 : inMst2Ctrl.arr[rbMstSel[0].Q].htrans;
+  outCtrl2Slv.hsize = (wbSlvSel==-1) ? 0 : inMst2Ctrl.arr[rbMstSel[0].Q].hsize;
 
 }
 

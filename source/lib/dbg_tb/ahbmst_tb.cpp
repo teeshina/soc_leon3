@@ -1,4 +1,5 @@
 //****************************************************************************
+// Property:    GNSS Sensor Limited
 // Author:      Khabarov Sergey
 // License:     GNU2
 // Contact:     sergey.khabarov@gnss-sensor.com
@@ -18,7 +19,7 @@ void dbg::ahbmst_tb(SystemOnChipIO &io)
   ahb_dma_in_type *pin_dmai = &topLeon3mp.clAhbMasterJtag.jcomout_dmai;
   ahb_dma_out_type *pch_dmao = &topLeon3mp.clAhbMasterJtag.ahbmstout_dmao;
   ahb_mst_in_type *pin_ahbi = &topLeon3mp.stCtrl2Mst;
-  ahb_mst_out_type  *pch_ahbo = &topLeon3mp.stMst2Ctrl[AHB_MASTER_JTAG];
+  ahb_mst_out_type  *pch_ahbo = &topLeon3mp.stMst2Ctrl.arr[AHB_MASTER_JTAG];
 
   if(io.inClk.eClock==SClock::CLK_POSEDGE)
   {

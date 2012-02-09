@@ -1,4 +1,5 @@
 //****************************************************************************
+// Property:    GNSS Sensor Limited
 // Author:      Khabarov Sergey
 // License:     GNU2
 // Contact:     sergey.khabarov@gnss-sensor.com
@@ -122,13 +123,15 @@ void dbg::Update(SystemOnChipIO &io)
 
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_AHBJTAG]) ahbjtag_tb(io);   // (jtagcom + ahbmst)
   
-  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_AHBCTRL]) ahbctrl_tb(io);
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_ahbctrl]) ahbctrl_tb(io);
   
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_leon3s]) leon3s_tb(io);
   
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_dsu3x]) dsu3x_tb(io);
 
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_ahbram]) ahbram_tb(io);
+
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_apbctrl]) apbctrl_tb(io);
 
   if(io.inClk.eClock==SClock::CLK_POSEDGE)
     iClkCnt++;
@@ -154,9 +157,30 @@ void PutWidth(int32 size, char *comment)
   if(!bDoStrOutput)
     return;
 
+  bool bConvInteger=true;
+  int32 iSeekCnt = 0;
+  char chTemplate[]="conv_integer:";
+  while((comment[iSeekCnt]!=0)&&bConvInteger&&(iSeekCnt<13))
+  {
+    if(chTemplate[iSeekCnt]!=comment[iSeekCnt])
+    {
+      bConvInteger=false;
+      break;
+    }
+    iSeekCnt++;
+  }
+
+
   int32 tmp;
-  if(size==1) tmp = sprintf_s(pchIndS,64,"  %s <= S(%i);\n", comment, iIndS);
-  else        tmp = sprintf_s(pchIndS,64,"  %s <= S(%i downto %i);\n", comment, iIndS+size-1, iIndS);
+  if(bConvInteger)
+  {
+    if(size==1) tmp = sprintf_s(pchIndS,64,"  %s <= conv_integer(S(%i));\n", &comment[13], iIndS);
+    else        tmp = sprintf_s(pchIndS,64,"  %s <= conv_integer(S(%i downto %i));\n", &comment[13], iIndS+size-1, iIndS);
+  }else
+  {
+    if(size==1) tmp = sprintf_s(pchIndS,64,"  %s <= S(%i);\n", comment, iIndS);
+    else        tmp = sprintf_s(pchIndS,64,"  %s <= S(%i downto %i);\n", comment, iIndS+size-1, iIndS);
+  }
   pchIndS += tmp;
   iIndS += size;
 
