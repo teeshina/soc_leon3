@@ -1,24 +1,37 @@
-Site:    http://www.gnss-sensor.com
-Authour: Sergey Khabarov
-license: GNU2
+Author:   GNSS Sensor Limited
+Site:     http://www.gnss-sensor.com
+Contact:  chief@gnss-sensor.com
+license:  GNU2
 
-This project splited on several parts:
-  1. C++ bit-to bit model of the full system. This part is implemented as a library 
-  and describes next modules:
-		- CPU Leon3 + DSU3
-		- AHB controller
-		- JTAG module
-		- AHB RAM
-		- GNSS channels module
-  
-  2. C++ host software. This part is used to generate the whole set of signals
-  for the SoC library, such as:
-  	- SCLK (66 MHz), SRESET
-  	- JTag signals: TCK, TMS, TDO, TRESET
-  	- GNSS sensor signals: ClkADC, I, Q
-  This software layer may be directly used to generate testbench patterns for verification,
-  power consumption evaluation and other of the whole System On Chip on real signal 
-  processing.
+  The main objective of this project is to provide a reference 
+C++ design for the development of the processor system, which is
+build on the Leon3 core by Aeroflex Gaisler and includes our
+proprietary GNSS navigation module. This software allows:
+  - Load execution code into internal RAM of SoC using 
+    compilation output file (.elf).
+  - generates test-bench vectors of the whole system or
+    any single module and use them directly in VHDL 
+    during simulation as reference or compute switching activity.
+  - JTAG and UART signal generators are also included.
 
-  3. Source VHDL files by Gaisler
+
+Project structure:
+  |
+  +-- source-- lib: Is a cycle truth C++ system simulator, which includes
+          |         CPU Leon3 + DSU3; Internal RAM; JTAG; APB bridge; APB UART
+          |         GNSS module (only by request)
+          |
+          +---- app: It is a Control application which includes: 
+          |          Elf file loader; JTAG; signal generator, UART port tansmitter.
+          |          Generated signals:
+          |          Common: SRESETn, SCLK(66MHz)
+          |          JTAG signals: TCK, TMS, TDO, TRESET;
+          |          UART signals: TX, RX, CTS, CRS
+          |          GNSS signals: AdcClk, I, Q;
+          |
+          +---- firmware: Firmware soruce code and makefiles to
+          |         generate *.elf file.
+          |
+          +---- vhdl: Source VHDL code by Aeroflex Gaisler
+                   
 

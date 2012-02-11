@@ -9,3 +9,4 @@ ProjectFiles2005/libleon/debug/
 ProjectFiles2010/
 source/firmware/makefiles/
 source/firmware/HelloWorld/target_VIRTEX_ML605
+source/firmware/GNSS_FW/

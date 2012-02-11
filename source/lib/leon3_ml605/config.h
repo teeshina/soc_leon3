@@ -21,7 +21,15 @@ const enum
 {
   IRQ_DSU,
   IRQ_GNSS_ENGINE,
+  IRQ_UART_CFG,
   IRQ_TOTAL
+};
+
+const enum
+{
+  APB_UART_CFG,
+  APB_IRQ_CONTROL,
+  APB_TOTAL
 };
 
 // Set REREAD to 1 to include support for re-read operation when host reads
@@ -187,7 +195,7 @@ const uint32 ADDR_BUILD_LIB_MAX  = 0xFFFFFFFF;
 #define CFG_DISAS                     (0 + 0)
 #define CFG_PCLOW                     2
 
-#define CFG_AHBRAMSZ                  1//[kBytes]
+#define CFG_AHBRAMSZ                  256//[kBytes]
 #define CFG_AHBRAMADDR                0x400
 #define CFG_AHBRAMMASK                0xFFF
 
@@ -200,4 +208,7 @@ const uint32 ADDR_BUILD_LIB_MAX  = 0xFFFFFFFF;
 #define CFG_FABTECH         0
 #define CFG_CLK2X           0
 #define CFG_DSU_TBITS       30
-
+#define CFG_APBUART_FIFOSZ  1 // 1 to 32
+#define CFG_APBUART_ABITS   8
+#define CFG_APBUART_SBITS   12//: integer range 12 to 32 := 12);
+#define CFG_APBUART_FLOW    1

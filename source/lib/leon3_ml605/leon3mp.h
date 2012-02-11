@@ -36,6 +36,10 @@ class leon3mp
     apb_slv_out_vector apbo;
     apbctrl *pApbControl;
 
+    uart_in_type uarti;//  : in  uart_in_type;
+    uart_out_type uarto;//  : out uart_out_type);
+    apbuart *pclApbUartA;
+
   public:
     leon3mp();
     ~leon3mp();

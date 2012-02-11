@@ -8,19 +8,18 @@
 #include "headers.h"
 
 int32 iClkCnt = 0;
-SystemOnChipIO ioSoC;
 
-ClockGenerator clkSys(SYS_CLOCK_F, timescale);
-jtag_port portJTAG;
-dbg clDbg;
+#define ELF_FILE "..\\source\\firmware\\HelloWorld\\target_VIRTEX_ML605\\elf\\HelloWorld.elf"
+ElfFile         clElfFile(ELF_FILE);
+SystemOnChipIO  ioSoC;
+ClockGenerator  clkSys(SYS_CLOCK_F, timescale);
+jtag_port       portJTAG;
+dbg             clDbg;
 
 
-ElfFile clElfFile;
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-  clElfFile.Update();
-
   LibInitData sLibInitData;
   // Select testbench to print:
   for (int i=0; i<TB_TOTAL; i++)
@@ -49,10 +48,13 @@ int _tmain(int argc, _TCHAR* argv[])
   //sLibInitData.uiBenchEna[TB_leon3s] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_dsu3x] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_ahbram] = PRINT_TESTBENCH_ENABLE;
-  sLibInitData.uiBenchEna[TB_apbctrl] = PRINT_TESTBENCH_ENABLE;
+  //sLibInitData.uiBenchEna[TB_apbctrl] = PRINT_TESTBENCH_ENABLE;
+  sLibInitData.uiBenchEna[TB_apbuart] = PRINT_TESTBENCH_ENABLE;
   
   // Library init procedure:
   LibInit(&sLibInitData);
+
+  clElfFile.Load();   // load execution code from *.elf file into SoC Internal RAM
   
   while (!clDbg.IsEnd())
   {

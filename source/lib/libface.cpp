@@ -44,3 +44,8 @@ DECLSPEC_TYPE void __stdcall LibLeonClkUpdate(void)
   topLeon3mp.ClkUpdate();
 }
 
+//****************************************************************************
+DECLSPEC_TYPE void __stdcall LibBackDoorLoadRAM(uint32 adr, uint32 v)
+{
+  clDbg.BackDoorLoadRAM(adr, v);
+}

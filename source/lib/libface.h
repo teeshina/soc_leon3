@@ -41,6 +41,7 @@ enum ETestBenchName
   TB_dsu3x,
   TB_ahbram,
   TB_apbctrl,
+  TB_apbuart,
   
   TB_TOTAL
 };
@@ -72,6 +73,7 @@ const char chBenchFile[TB_TOTAL][64]=
   "dsu3x_tb.txt",
   "ahbram_tb.txt",
   "apbctrl_tb.txt",
+  "apbuart_tb.txt",
 };
 
 
@@ -121,5 +123,6 @@ extern "C" DECLSPEC_TYPE void __stdcall LibInit(LibInitData *);
 extern "C" DECLSPEC_TYPE void __stdcall LibClose(void);
 extern "C" DECLSPEC_TYPE void __stdcall LibLeonUpdate(SystemOnChipIO &ioData);
 extern "C" DECLSPEC_TYPE void __stdcall LibLeonClkUpdate(void);
+extern "C" DECLSPEC_TYPE void __stdcall LibBackDoorLoadRAM(uint32 adr, uint32 v);
 
 

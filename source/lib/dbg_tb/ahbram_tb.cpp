@@ -94,7 +94,7 @@ void dbg::ahbram_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pch_ahbso->hconfig.arr[5],32,"ch_ahbso.hconfig(5)");
     pStr = PutToStr(pStr, pch_ahbso->hconfig.arr[6],32,"ch_ahbso.hconfig(6)");
     pStr = PutToStr(pStr, pch_ahbso->hconfig.arr[7],32,"ch_ahbso.hconfig(7)");
-    pStr = PutToStr(pStr, pch_ahbso->hindex,4,"conv_integer(ch_ahbso.hindex)");//    : integer range 0 to AHB_SLAVES_MAX-1;   -- diagnostic use only
+    pStr = PutToStr(pStr, pch_ahbso->hindex,4,"conv_integer:ch_ahbso.hindex");//    : integer range 0 to AHB_SLAVES_MAX-1;   -- diagnostic use only
 
     // internal 
     pStr = PutToStr(pStr, p_ahbram->ramaddr,8,"t_ramaddr");

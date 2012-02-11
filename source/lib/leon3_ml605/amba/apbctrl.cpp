@@ -12,14 +12,14 @@
 //#define haddr       : integer := 0;
 //#define hmask       : integer := 16#fff#;
 //#define nslaves     APB_SLAVES_MAX//: integer range 1 to NAPBSLV := NAPBSLV;
-#define debug       : integer range 0 to 2 := 2;
-#define icheck      : integer range 0 to 1 := 1;
-#define enbusmon    0//: integer range 0 to 1 := 0;
-#define asserterr   : integer range 0 to 1 := 0;
-#define assertwarn  : integer range 0 to 1 := 0;
-#define pslvdisable : integer := 0;
-#define mcheck      : integer range 0 to 1 := 1;
-#define ccheck      : integer range 0 to 1 := 1
+//#define debug       : integer range 0 to 2 := 2;
+//#define icheck      : integer range 0 to 1 := 1;
+//#define enbusmon    0//: integer range 0 to 1 := 0;
+//#define asserterr   : integer range 0 to 1 := 0;
+//#define assertwarn  : integer range 0 to 1 := 0;
+//#define pslvdisable : integer := 0;
+//#define mcheck      : integer range 0 to 1 := 1;
+//#define ccheck      : integer range 0 to 1 := 1
 
 //****************************************************************************
 apbctrl::apbctrl(uint32 hind_, uint32 addr_, uint32 mask_)

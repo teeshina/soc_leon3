@@ -16,7 +16,6 @@ extern void PrintIndexStr();
 //****************************************************************************
 void dbg::ahbctrl_tb(SystemOnChipIO &io)
 {
-  int32 iMstTotal = AHB_MASTER_TOTAL;
   char chTmp[256];
   ahb_mst_in_type    *pstCtrl2Mst = &topLeon3mp.stCtrl2Mst;
   ahb_mst_out_vector *pstMst2Ctrl = &topLeon3mp.stMst2Ctrl;

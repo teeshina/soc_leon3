@@ -42,6 +42,13 @@ struct ahb_membar_type//function ahb_membar
   uint32 memaddr    : 12;
 };
 
+struct apb_iobar
+{
+  uint32 area_id    : 4;  // 0001=APB I/O space; 0010=AHB memory space; 0011 AHB I/O space
+  uint32 addrmask   : 12;
+  uint32 zero       : 4;
+  uint32 memaddr    : 12;
+};
 
 struct ahb_dma_in_type
 {
@@ -130,13 +137,13 @@ struct ahb_slv_in_type
 struct ahb_slv_out_type
 {
   uint32 hready;//                           -- transfer done
-  uint32 hresp;//[1:0] : (1 downto 0);   -- response type
+  uint32 hresp;// : (1 downto 0);   -- response type
   uint32 hrdata;//[31:0]  : (AHBDW-1 downto 0);   -- read data bus
-  uint32 hsplit;//[15:0]  : (15 downto 0);  -- split completion
+  uint32 hsplit;//  : (15 downto 0);  -- split completion
   uint32 hcache;//                           -- cacheable
   uint32 hirq;//[31:0]    : (AHB_IRQ_MAX-1 downto 0); -- interrupt bus
   ahb_config_type hconfig;//   : ahb_config_type;      -- memory access reg.
-  uint32         hindex;//[15:0]    : integer range 0 to AHB_SLAVES_MAX-1;   -- diagnostic use only
+  uint32         hindex;//    : integer range 0 to AHB_SLAVES_MAX-1;   -- diagnostic use only
 };
 
 struct ahb_slv_out_vector
@@ -150,9 +157,9 @@ struct apb_slv_in_type
 {
   uint32 psel;//[0:15]  : (0 to APB_SLAVES_MAX-1); -- slave select
   uint32 penable;// ;                       -- strobe
-  uint32 paddr;//[31:0] : (31 downto 0);  -- address bus (byte)
+  uint32 paddr;// : (31 downto 0);  -- address bus (byte)
   uint32 pwrite;//  ;                       -- write
-  uint32 pwdata;//[31:0]  : (31 downto 0);  -- write data bus
+  uint32 pwdata;//  : (31 downto 0);  -- write data bus
   uint32 pirq;//[31:0]  : (AHB_IRQ_MAX-1 downto 0); -- interrupt result bus
   uint32 testen;//                          -- scan test enable
   uint32 testrst;//                         -- scan test reset
@@ -163,10 +170,10 @@ struct apb_slv_in_type
 // APB slave outputs
 struct apb_slv_out_type
 {
-  uint32 prdata;//[31:0]  : (31 downto 0);  -- read data bus
+  uint32 prdata;//  : (31 downto 0);  -- read data bus
   uint32 pirq;//[31:0]  : (AHB_IRQ_MAX-1 downto 0); -- interrupt bus
   apb_config_type pconfig;//   : apb_config_type;      -- memory access reg.
-  int             pindex;//[0:15]      : integer range 0 to APB_SLAVES_MAX -1;  -- diag use only
+  uint32 pindex;//      : integer range 0 to APB_SLAVES_MAX -1;  -- diag use only
 };
 
 // array types

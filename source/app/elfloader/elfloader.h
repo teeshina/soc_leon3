@@ -117,23 +117,29 @@ class ElfFile
     SectionHeaderType *pSectionHeader;
 
   private:
+    static const int32 FILE_NAME_STRING_MAX = 1024;
+    char chElfFile[FILE_NAME_STRING_MAX];
+    char chMapFile[FILE_NAME_STRING_MAX];
     bool bFileOpened;
     int32 iElfSize;
-    char  *arrElf;
+    uint8 *arrElf;
+    std::ofstream *posMapFile;
     
     static const int32 STRINGS_IN_SECTION_MAX = 1<<16;
     uint32 iTotalStrings;
-    char  *pStr[STRINGS_IN_SECTION_MAX];
+    uint8  *pStr[STRINGS_IN_SECTION_MAX];
     
   public:
-    ElfFile();
+    ElfFile(char *pchElfFile);
     ~ElfFile();
 
-    void Update();
+    void Load();
 
     void ReadElfHeader();
     void ReadProgramHeader();
     void ReadSectionHeader();
+    
+    void WriteMemoryMap(SectionHeaderType *);
     
     void SwapBytes(Elf32_Half&);
     void SwapBytes(uint32&);

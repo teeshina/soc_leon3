@@ -271,7 +271,7 @@ void dbg::dsu3x_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pch_ahbso->hconfig.arr[5],32,"ch_ahbso.hconfig(5)");
     pStr = PutToStr(pStr, pch_ahbso->hconfig.arr[6],32,"ch_ahbso.hconfig(6)");
     pStr = PutToStr(pStr, pch_ahbso->hconfig.arr[7],32,"ch_ahbso.hconfig(7)");
-    pStr = PutToStr(pStr, pch_ahbso->hindex,4,"conv_integer(ch_ahbso.hindex)");//    : integer range 0 to AHB_SLAVES_MAX-1;   -- diagnostic use only
+    pStr = PutToStr(pStr, pch_ahbso->hindex,4,"conv_integer:ch_ahbso.hindex");//    : integer range 0 to AHB_SLAVES_MAX-1;   -- diagnostic use only
     //
     pStr = PutToStr(pStr, pch_dbgi->arr[0].dsuen,1,"ch_dbgo(0).dsuen");//   : std_ulogic;  -- DSU enable
     pStr = PutToStr(pStr, pch_dbgi->arr[0].denable,1,"ch_dbgo(0).denable");// : std_ulogic;  -- diagnostic register access enable

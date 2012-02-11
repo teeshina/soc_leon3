@@ -71,7 +71,7 @@ void dbg::ahbmst_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pch_ahbo->hconfig.arr[5],32,"ch_ahbo.hconfig(5)");//   : ahb_config_type;      -- memory access reg.
     pStr = PutToStr(pStr, pch_ahbo->hconfig.arr[6],32,"ch_ahbo.hconfig(6)");//   : ahb_config_type;      -- memory access reg.
     pStr = PutToStr(pStr, pch_ahbo->hconfig.arr[7],32,"ch_ahbo.hconfig(7)");//   : ahb_config_type;      -- memory access reg.
-    pStr = PutToStr(pStr, pch_ahbo->hindex, 4,"conv_integer(ch_ahbo.hindex)");//    : integer range 0 to AHB_MASTERS_MAX-1;   -- diagnostic use only
+    pStr = PutToStr(pStr, pch_ahbo->hindex, 4,"conv_integer:ch_ahbo.hindex");//    : integer range 0 to AHB_MASTERS_MAX-1;   -- diagnostic use only
 
     PrintIndexStr();
     

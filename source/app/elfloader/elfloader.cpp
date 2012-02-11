@@ -1,12 +1,13 @@
 #include "headers.h"
-#define ELF_FILE "E:\\Projects\\CppProjects\\20110817_leon3\\source\\firmware\\HelloWorld\\target_VIRTEX_ML605\\elf\\HelloWorld.elf"
+//#define PRINT_MAP_FILE
+
 //****************************************************************************
-ElfFile::ElfFile()
+ElfFile::ElfFile(char *pchElfFile)
 {
   using namespace std;
   bFileOpened = false;
   iElfSize = 0;
-  ifstream *pisElf = new ifstream(ELF_FILE,ios::binary);
+  ifstream *pisElf = new ifstream(pchElfFile,ios::binary);
   if (pisElf->is_open())
   {
     bFileOpened = true;
@@ -14,23 +15,36 @@ ElfFile::ElfFile()
     iElfSize = (int32)pisElf->tellg();
     if(iElfSize)
     {
-      arrElf = (char*)malloc(iElfSize);
+      arrElf = (uint8*)malloc(iElfSize);
       pisElf->seekg(0,ios::beg);
-      pisElf->read(arrElf,iElfSize);
+      pisElf->read((int8*)arrElf,iElfSize);
     }
     pisElf->close();
+#ifdef PRINT_MAP_FILE
+    strcpy_s(chElfFile, FILE_NAME_STRING_MAX,pchElfFile);
+    strcpy_s(chMapFile, FILE_NAME_STRING_MAX,pchElfFile);
+    strcat_s(chMapFile, FILE_NAME_STRING_MAX, ".map");
+    posMapFile = new ofstream(chMapFile,ios::out);
+#endif
   }
   free(pisElf);
 }
 
 ElfFile::~ElfFile()
 {
-  if(bFileOpened) free(arrElf);
+  if(bFileOpened)
+  {
+    free(arrElf);
+#ifdef PRINT_MAP_FILE
+    posMapFile->close();
+    free(posMapFile);
+#endif
+  }
   if((Elf32_Ehdr.e_shoff)&&(Elf32_Ehdr.e_shnum)) free(pSectionHeader);
 }
 
 //****************************************************************************
-void ElfFile::Update()
+void ElfFile::Load()
 {
   if(!bFileOpened) return;
 
@@ -48,7 +62,7 @@ void ElfFile::ReadElfHeader()
     if(Elf32_Ehdr.e_ident[i]!=chMagic[i]) bMagicPass=false;
   }
   if(bMagicPass) PUT_STRING("{elf} ELF file has been opened\n");
-  else           PUT_STRING("{elf} Err: \"%s\" isn't ELF file\n",ELF_FILE);
+  else           PUT_STRING("{elf} Err: \"%s\" isn't ELF file\n",chElfFile);
 
   switch(Elf32_Ehdr.e_ident[ElfHeaderType::EI_CLASS])
   {
@@ -157,39 +171,69 @@ void ElfFile::ReadSectionHeader()
   // Print implemented sections:
   for(int32 i=0; i<Elf32_Ehdr.e_shnum; i++)
   {
+    //If the section will appear in the memory image of a process, this member gives the
+    //address at which the section’s first byte should reside. Otherwise, the member contains 0.
     if(pSectionHeader[i].sh_addr)
     {
-
-      switch(pSectionHeader[i].sh_type)
-      {
-        case SectionHeaderType::SHT_NULL: S_STRING(chTmp,"inactive ");break;
-        case SectionHeaderType::SHT_PROGBITS: S_STRING(chTmp,"defined program");break;
-        case SectionHeaderType::SHT_SYMTAB:
-        case SectionHeaderType::SHT_DYNSYM: S_STRING(chTmp,"Symbol table ");break;
-        case SectionHeaderType::SHT_STRTAB: S_STRING(chTmp,"String table ");break;
-        case SectionHeaderType::SHT_RELA:   S_STRING(chTmp,"Relocation table ");break;
-        case SectionHeaderType::SHT_HASH: S_STRING(chTmp,"Hash table ");break;
-        case SectionHeaderType::SHT_DYNAMIC: S_STRING(chTmp,"Dynamic section ");break;
-        case SectionHeaderType::SHT_NOTE: S_STRING(chTmp,"Note section ");break;
-        case SectionHeaderType::SHT_NOBITS: S_STRING(chTmp,"Allocate space ");break;
-        case SectionHeaderType::SHT_REL: S_STRING(chTmp,"Relocation entries ");break;
-        case SectionHeaderType::SHT_SHLIB: S_STRING(chTmp,"Reserved ");break;
-        case SectionHeaderType::SHT_HIUSER:S_STRING(chTmp,"user "); break;
-
-        default: S_STRING(chTmp,"processor specific ");
-      }
-
-      PUT_STRING("{elf} Sec %i: 0x%08x..0x%08x %s (%s)\n",
-        i,
-        pSectionHeader[i].sh_addr,
-        pSectionHeader[i].sh_addr+pSectionHeader[i].sh_size,
+      PUT_STRING("{elf} Loading section \"%s\": 0x%08x..0x%08x\n",
         pStr[pSectionHeader[i].sh_name],
-        chTmp
+        pSectionHeader[i].sh_addr,
+        pSectionHeader[i].sh_addr+pSectionHeader[i].sh_size
       );
+      
+      WriteMemoryMap(&pSectionHeader[i]);
     }
   }
 }
 
+//****************************************************************************
+void ElfFile::WriteMemoryMap(SectionHeaderType *p)
+{
+  // source code or data:
+  uint32 word;
+  int32 MsbOrder[4]={0,1,2,3};
+  int32 LsbOrder[4]={3,2,1,0};
+  int32 *byte;
+  // select byte order:
+  if(Elf32_Ehdr.e_ident[ElfHeaderType::EI_DATA]==ElfHeaderType::ELFDATA2MSB) byte = MsbOrder;
+  else                                                                       byte = LsbOrder;
+  
+  // print Program defined section:
+  if(p->sh_type==SectionHeaderType::SHT_PROGBITS)
+  {
+    for(uint32 n=0; n<p->sh_size;n+=4)
+    {
+      word = uint32(arrElf[p->sh_offset+n+byte[0]])<<24;
+      word |= uint32(arrElf[p->sh_offset+n+byte[1]])<<16;
+      word |= uint32(arrElf[p->sh_offset+n+byte[2]])<<8;
+      word |= uint32(arrElf[p->sh_offset+n+byte[3]])<<0;
+      LibBackDoorLoadRAM(p->sh_addr+n, word);
+#ifdef PRINT_MAP_FILE
+      S_STRING(chTmp,"0x%08x: 0x%08x ", p->sh_addr+n, word );
+      *posMapFile << chTmp;
+
+      if(n==0)*posMapFile << pStr[p->sh_name];
+      *posMapFile << "\n";
+#endif
+    }
+  }
+  
+  // print allocated space:
+  if(p->sh_type==SectionHeaderType::SHT_NOBITS)
+  {
+    for(uint32 n=0; n<p->sh_size;n+=4)
+    {
+      LibBackDoorLoadRAM(p->sh_addr+n, 0);
+#ifdef PRINT_MAP_FILE
+      S_STRING(chTmp,"0x%08x: 0x%08x ", p->sh_addr+n, 0);
+      *posMapFile << chTmp;
+      if(n==0)*posMapFile << pStr[p->sh_name] ;
+      *posMapFile << "\n";
+#endif
+    }
+  }
+
+}
 
 //****************************************************************************
 void ElfFile::SwapBytes(Elf32_Half& v)

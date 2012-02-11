@@ -63,7 +63,8 @@
 #include "leon3_ml605\jtag\ahbjtag.h"
 #include "leon3_ml605\mem\ahbram.h"
 #include "leon3_ml605\mem\ahbmem_v.h"
-
+#include "leon3_ml605\uart\uart.h"
+#include "leon3_ml605\uart\apbuart.h"
 
 #include "leon3_ml605\leon3\arith.h"
 #include "leon3_ml605\leon3\leon3.h"

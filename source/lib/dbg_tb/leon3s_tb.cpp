@@ -181,7 +181,7 @@ void dbg::leon3s_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[5],32,"in_ahbso(0).hconfig(5)");
     pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[6],32,"in_ahbso(0).hconfig(6)");
     pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[7],32,"in_ahbso(0).hconfig(7)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hindex,4,"conv_integer(in_ahbso(0).hindex)",true);//    : integer range 0 to AHB_SLAVES_MAX-1;   -- diagnostic use only
+    pStr = PutToStr(pStr, pin_ahbso->arr[i].hindex,4,"conv_integer:in_ahbso(0).hindex",true);//    : integer range 0 to AHB_SLAVES_MAX-1;   -- diagnostic use only
     i=1;
     pStr = PutToStr(pStr, pin_ahbso->arr[i].hready,1,"in_ahbso(1).hready");//                           -- transfer done
     pStr = PutToStr(pStr, pin_ahbso->arr[i].hresp,2,"in_ahbso(1).hresp");//[1:0] : (1 downto 0);   -- response type
@@ -197,7 +197,7 @@ void dbg::leon3s_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[5],32,"in_ahbso(1).hconfig(5)");
     pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[6],32,"in_ahbso(1).hconfig(6)");
     pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[7],32,"in_ahbso(1).hconfig(7)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hindex,4,"conv_integer(in_ahbso(1).hindex)",true);//    : integer range 0 to AHB_SLAVES_MAX-1;   -- diagnostic use only
+    pStr = PutToStr(pStr, pin_ahbso->arr[i].hindex,4,"conv_integer:in_ahbso(1).hindex",true);//    : integer range 0 to AHB_SLAVES_MAX-1;   -- diagnostic use only
     i=2;
     pStr = PutToStr(pStr, pin_ahbso->arr[i].hready,1,"in_ahbso(2).hready");//                           -- transfer done
     pStr = PutToStr(pStr, pin_ahbso->arr[i].hresp,2,"in_ahbso(2).hresp");//[1:0] : (1 downto 0);   -- response type
@@ -213,7 +213,7 @@ void dbg::leon3s_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[5],32,"in_ahbso(2).hconfig(5)");
     pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[6],32,"in_ahbso(2).hconfig(6)");
     pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[7],32,"in_ahbso(2).hconfig(7)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hindex,4,"conv_integer(in_ahbso(2).hindex)",true);//    : integer range 0 to AHB_SLAVES_MAX-1;   -- diagnostic use only
+    pStr = PutToStr(pStr, pin_ahbso->arr[i].hindex,4,"conv_integer:in_ahbso(2).hindex",true);//    : integer range 0 to AHB_SLAVES_MAX-1;   -- diagnostic use only
     //
     pStr = PutToStr(pStr, pin_irqi->irl,4,"in_irqi.irl");//     : std_logic_vector(3 downto 0);
     pStr = PutToStr(pStr, pin_irqi->rst,1,"in_irqi.rst");//     : std_ulogic;
@@ -260,7 +260,7 @@ void dbg::leon3s_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pch_ahbo->hconfig.arr[5],32,"ch_ahbo.hconfig(5)");
     pStr = PutToStr(pStr, pch_ahbo->hconfig.arr[6],32,"ch_ahbo.hconfig(6)");
     pStr = PutToStr(pStr, pch_ahbo->hconfig.arr[7],32,"ch_ahbo.hconfig(7)");
-    pStr = PutToStr(pStr, pch_ahbo->hindex,4,"conv_integer(ch_ahbo.hindex)",true);// integer range 0 to AHB_MASTERS_MAX-1;   -- diagnostic use only
+    pStr = PutToStr(pStr, pch_ahbo->hindex,4,"conv_integer:ch_ahbo.hindex",true);// integer range 0 to AHB_MASTERS_MAX-1;   -- diagnostic use only
     //
     pStr = PutToStr(pStr, pch_irqo->intack,1,"ch_irqo.intack");//  : std_ulogic;
     pStr = PutToStr(pStr, pch_irqo->irl,4,"ch_irqo.irl");//   : std_logic_vector(3 downto 0);

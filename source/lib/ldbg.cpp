@@ -24,6 +24,12 @@ dbg::dbg()
 #ifdef DBG_ahbram
   ptst_ahbram = new ahbram(AHB_SLAVE_RAM, 0x300, 0xfff);
 #endif
+#ifdef DBG_apbctrl
+  ptst_apbctrl = new apbctrl(AHB_SLAVE_APBBRIDGE, 0x800, 0xfff);
+#endif
+#ifdef DBG_apbuart
+  ptst_apbuart = new apbuart(APB_UART_CFG,0x1,0xfff); // total address 0x800001xx  = 256 bytes
+#endif
 }
 
 dbg::~dbg()
@@ -36,6 +42,12 @@ dbg::~dbg()
 #endif
 #ifdef DBG_ahbram
   free(ptst_ahbram);
+#endif
+#ifdef DBG_apbctrl
+  free(ptst_apbctrl);
+#endif
+#ifdef DBG_apbuart
+  free(ptst_apbuart);
 #endif
 }
 
@@ -133,164 +145,29 @@ void dbg::Update(SystemOnChipIO &io)
 
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_apbctrl]) apbctrl_tb(io);
 
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_apbuart]) apbuart_tb(io);
+
   if(io.inClk.eClock==SClock::CLK_POSEDGE)
     iClkCnt++;
 }
 
-
 //****************************************************************************
-bool bDoStrOutput=true;
-int32 iIndS=0;
-char chIndS[3*64386];
-char *pchIndS = chIndS;
-char chIndS2[3*64386];
-char *pchIndS2 = chIndS2;
-
-void ResetPutStr()
-{  
-  pchIndS = chIndS;
-  pchIndS2 = chIndS2;
-  iIndS = 0;
-}
-void PutWidth(int32 size, char *comment)
+void dbg::BackDoorLoadRAM(uint32 adr, uint32 v)
 {
-  if(!bDoStrOutput)
+  // check address:
+  if( topLeon3mp.pclAhbRAM->addr != (BITS32(adr,31,20)&topLeon3mp.pclAhbRAM->hmask) )
     return;
 
-  bool bConvInteger=true;
-  int32 iSeekCnt = 0;
-  char chTemplate[]="conv_integer:";
-  while((comment[iSeekCnt]!=0)&&bConvInteger&&(iSeekCnt<13))
-  {
-    if(chTemplate[iSeekCnt]!=comment[iSeekCnt])
-    {
-      bConvInteger=false;
-      break;
-    }
-    iSeekCnt++;
-  }
+  // check size overflow:
+  uint32 ulRamAdr = adr & ~(topLeon3mp.pclAhbRAM->hmask<<20);
+  if(ulRamAdr>=(CFG_AHBRAMSZ*1024)) 
+    return;
 
-
-  int32 tmp;
-  if(bConvInteger)
-  {
-    if(size==1) tmp = sprintf_s(pchIndS,64,"  %s <= conv_integer(S(%i));\n", &comment[13], iIndS);
-    else        tmp = sprintf_s(pchIndS,64,"  %s <= conv_integer(S(%i downto %i));\n", &comment[13], iIndS+size-1, iIndS);
-  }else
-  {
-    if(size==1) tmp = sprintf_s(pchIndS,64,"  %s <= S(%i);\n", comment, iIndS);
-    else        tmp = sprintf_s(pchIndS,64,"  %s <= S(%i downto %i);\n", comment, iIndS+size-1, iIndS);
-  }
-  pchIndS += tmp;
-  iIndS += size;
-
-  if(size==1) tmp = sprintf_s(pchIndS2,256,"  signal %s  : std_logic;\n", comment);
-  else        tmp = sprintf_s(pchIndS2,256,"  signal %s  : std_logic_vector(%i downto 0);\n", comment, size-1);
-  pchIndS2 += tmp;
-}
-
-void PrintIndexStr()
-{
-  bDoStrOutput = false;
-  std::ofstream osStr("e:\\str.txt",ios::out);
-  osStr << chIndS2;
-  osStr << "\n";
-  osStr << chIndS;
-  osStr.close();
-}
-
-//****************************************************************************
-
-//****************************************************************************
-char* PutToStr(char *p, uint32 v, int size, char *comment, bool inv)
-{
-  if(comment!=NULL) PutWidth(size, comment);  
-
-  if(!inv)
-  {
-    for (int i=0; i<size; i++)
-    {
-      if((v>>i)&0x1)  *p = '1';
-      else            *p = '0';
-      p++;
-    }
-  }else
-  {
-    for (int i=size-1; i>=0; i--)
-    {
-      if((v>>i)&0x1)  *p = '1';
-      else            *p = '0';
-      p++;
-    }
-  }
-  *p = '\0';
-  return p;
-}
-
-//****************************************************************************
-char* PutToStr(char *p, uint64 v, int size, char *comment, bool inv)
-{
-  if(comment!=NULL) PutWidth(size, comment);
-
-  if(!inv)
-  {
-    for (int i=0; i<size; i++)
-    {
-      if((v>>i)&0x1)  *p = '1';
-      else            *p = '0';
-      p++;
-    }
-  }else
-  {
-    for (int i=size-1; i>=0; i--)
-    {
-      if((v>>i)&0x1)  *p = '1';
-      else            *p = '0';
-      p++;
-    }
-  }
-  *p = '\0';
-  return p;
-}
-
-
-//****************************************************************************
-char* PutToStr(char *p, uint32* bus, int size, char *comment, bool inv)
-{
-  if(comment!=NULL) PutWidth(size, comment);
-  if(!inv)
-  {
-    for (int i=0; i<size; i++)
-    {
-      if(bus[i])  *p = '1';
-      else        *p = '0';
-      p++;
-    }
-  }else
-  {
-    for (int i=size-1; i>=0; i--)
-    {
-      if(bus[i])  *p = '1';
-      else        *p = '0';
-      p++;
-    }
-  }
-  *p = '\0';
-  return p;
-}
-
-//****************************************************************************
-char* PutToStr(char *p, char *str)
-{
-  uint32 i=0;
-  while(*str!='\0')
-  {
-    *p = *str;
-    str++;
-    p++;
-  }
-  *p = '\0';
-  return p;
+  ulRamAdr>>=2;
+  topLeon3mp.pclAhbRAM->ppSyncram[0]->memarr[ulRamAdr] = v&0xFF;
+  topLeon3mp.pclAhbRAM->ppSyncram[1]->memarr[ulRamAdr] = (v>>8)&0xFF;
+  topLeon3mp.pclAhbRAM->ppSyncram[2]->memarr[ulRamAdr] = (v>>16)&0xFF;
+  topLeon3mp.pclAhbRAM->ppSyncram[3]->memarr[ulRamAdr] = (v>>24)&0xFF;
 }
 
 

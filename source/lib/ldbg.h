@@ -28,6 +28,8 @@
 //#define DBG_dsu3x
 //#define DBG_ahbram
 //#define DBG_ahbctrl
+//#define DBG_apbctrl
+#define DBG_apbuart
 
 extern char* PutToStr(char *p, uint32 v, int size, char *comment=NULL, bool inv=false);
 extern char* PutToStr(char *p, uint64 v, int size, char *comment=NULL, bool inv=false);
@@ -278,6 +280,7 @@ class dbg
     ~dbg();
     
     void Update(SystemOnChipIO &ioData);
+    void BackDoorLoadRAM(uint32 adr, uint32 v);
     // library:
     void Init(LibInitData *p);
     void Close();
@@ -292,6 +295,7 @@ class dbg
     void dsu3x_tb(SystemOnChipIO &ioData);
     void ahbram_tb(SystemOnChipIO &ioData);
     void apbctrl_tb(SystemOnChipIO &ioData);
+    void apbuart_tb(SystemOnChipIO &ioData);
 
 #ifdef DBG_jtagcom
     uint32 inTCK;
@@ -527,6 +531,22 @@ class dbg
   ahb_slv_out_type ch_ahbso;//   : out ahb_slv_out_type
 
   ahbram *ptst_ahbram;
+#endif
+#ifdef DBG_apbctrl
+  ahb_slv_in_type    in_ahbsi;//    : in  ahb_slv_in_type;
+  ahb_slv_out_type   ch_ahbso;//    : out ahb_slv_out_type;
+  apb_slv_in_type    ch_apbi;//    : out apb_slv_in_type;
+  apb_slv_out_vector in_apbo;//    : in  apb_slv_out_vector
+  
+  apbctrl *ptst_apbctrl;
+#endif
+#ifdef DBG_apbuart
+  apb_slv_in_type in_apbi;//   : in  apb_slv_in_type;
+  apb_slv_out_type ch_apbo;//   : out apb_slv_out_type;
+  uart_in_type in_uarti;//  : in  uart_in_type;
+  uart_out_type ch_uarto;//  : out uart_out_type);
+
+  apbuart *ptst_apbuart;
 #endif
 };
 
