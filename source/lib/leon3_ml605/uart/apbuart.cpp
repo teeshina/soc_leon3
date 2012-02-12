@@ -105,9 +105,12 @@ void apbuart::Update(  uint32 rst,//    : in  std_ulogic;
 
   //-- read/write registers
 #if 1
-  if(iClkCnt>=407)
+  if(iClkCnt>=131)
   bool sr = true;
 #endif
+
+  paddr = 0;
+  paddr = apbi.paddr & MSK32(CFG_APBUART_ABITS-1,2);
 
   if (BIT32(apbi.psel,pindex) & apbi.penable & !apbi.pwrite)
   {
@@ -168,8 +171,6 @@ void apbuart::Update(  uint32 rst,//    : in  std_ulogic;
     }
   }
   
-  paddr = 0;
-  paddr = apbi.paddr & MSK32(CFG_APBUART_ABITS-1,2);
   if (BIT32(apbi.psel,pindex) & apbi.penable & apbi.pwrite)
   {
     switch(BITS32(paddr,7,2))

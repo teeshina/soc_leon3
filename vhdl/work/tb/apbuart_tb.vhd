@@ -19,7 +19,7 @@ use work.util_tb.all;
 
 entity apbuart_tb is
   constant CLK_HPERIOD : time := 10 ps;
-  constant STRING_SIZE : integer := 291; -- string size = index of the last element
+  constant STRING_SIZE : integer := 329; -- string size = index of the last element
 
   constant REVISION : integer := 1;
 end apbuart_tb;
@@ -36,7 +36,9 @@ architecture behavior of apbuart_tb is
   signal in_uarti  : uart_in_type;
   signal ch_uarto  : uart_out_type;
   signal uarto     : uart_out_type;
-
+  signal t_paddr  : std_logic_vector(7 downto 2);
+  signal t_rdata  : std_logic_vector(31 downto 0);
+  
   signal U: std_ulogic_vector(STRING_SIZE-1 downto 0);
   signal S: std_logic_vector(STRING_SIZE-1 downto 0);
   shared variable iClkCnt : integer := 0;
@@ -67,7 +69,10 @@ begin
       wait until rising_edge(inClk);
       --wait until falling_edge(inClk);
       iClkCnt := iClkCnt + 1;
-      if(iClkCnt=407) then
+      if(iClkCnt=131) then
+        print("break");
+      end if;
+      if(iClkCnt=132) then
         print("break");
       end if;
     end loop;
@@ -100,12 +105,13 @@ begin
   ch_uarto.txen <= S(288);
   ch_uarto.flow <= S(289);
   ch_uarto.rxen <= S(290);
-
-  
+  t_paddr <= S(296 downto 291);
+  t_rdata <= S(328 downto 297);
+    
   tt : apbuart generic map 
   (
     pindex   => 0, 
-    paddr => 1, 
+    cfg_paddr => 1, 
     pirq => 2, 
     console => 0, 
     fifosize => 1--CFG_UART1_FIFO

@@ -48,8 +48,8 @@ end record;
 component apbuart
   generic (
     pindex   : integer := 0; 
-    paddr    : integer := 0;
-    pmask    : integer := 16#fff#;
+    cfg_paddr    : integer := 0;
+    cfg_pmask    : integer := 16#fff#;
     console  : integer := 0; 
     pirq     : integer := 0;
     parity   : integer := 1; 

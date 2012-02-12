@@ -10,28 +10,31 @@ proprietary GNSS navigation module. This software allows:
   - Load execution code into internal RAM of SoC using 
     compilation output file (.elf).
   - generates test-bench vectors of the whole system or
-    any single module and use them directly in VHDL 
-    during simulation as reference or compute switching activity.
+    any single module and use them directly during RTL 
+    simulation as reference or use them to compute switching 
+    activity.
   - JTAG and UART signal generators are also included.
 
 
 Project structure:
   |
-  +-- source-- lib: Is a cycle truth C++ system simulator, which includes
-          |         CPU Leon3 + DSU3; Internal RAM; JTAG; APB bridge; APB UART
-          |         GNSS module (only by request)
-          |
-          +---- app: It is a Control application which includes: 
-          |          Elf file loader; JTAG; signal generator, UART port tansmitter.
-          |          Generated signals:
-          |          Common: SRESETn, SCLK(66MHz)
-          |          JTAG signals: TCK, TMS, TDO, TRESET;
-          |          UART signals: TX, RX, CTS, CRS
-          |          GNSS signals: AdcClk, I, Q;
-          |
-          +---- firmware: Firmware soruce code and makefiles to
-          |         generate *.elf file.
-          |
-          +---- vhdl: Source VHDL code by Aeroflex Gaisler
-                   
-
+  +-- source:- lib: Is a cycle truth C++ system simulator, which includes
+  |       |         CPU Leon3 + DSU3; Internal RAM; JTAG; APB bridge; APB UART
+  |       |         GNSS module (only by request)
+  |       |
+  |       +--- app: This is a Control application which includes: 
+  |       |         Elf file loader; JTAG; signal generator, UART port tansmitter.
+  |       |         Generated signals:
+  |       |         Common: SRESETn, SCLK(66MHz)
+  |       |          JTAG signals: TCK, TMS, TDO, TRESET;
+  |       |          UART signals: TX, RX, CTS, RTS
+  |       |          GNSS signals: AdcClk, I, Q;
+  |       |
+  |       +--- firmware: Firmware source code and makefiles to
+  |       |         generate *.elf file.
+  |       |
+  |       +--- common: Common constants and interface structure description
+  |                
+  +-- vhdl:- Source VHDL code by Aeroflex Gaisler
+  |
+  +-- ProjectFiles2005:- MS Visual Studion 2005 project files

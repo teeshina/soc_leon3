@@ -21,6 +21,7 @@ void dbg::apbuart_tb(SystemOnChipIO &io)
   apb_slv_out_type  *pch_apbo = &topLeon3mp.apbo.arr[APB_UART_CFG];//    : in  apb_slv_out_vector
   uart_in_type      *pin_uarti = &topLeon3mp.uarti;//  : in  uart_in_type;
   uart_out_type     *pch_uarto = &topLeon3mp.uarto;//  : out uart_out_type);
+  apbuart           *p_apbuart = topLeon3mp.pclApbUartA;
 
 
 #ifdef DBG_apbuart
@@ -55,6 +56,7 @@ void dbg::apbuart_tb(SystemOnChipIO &io)
   pch_apbo = &ch_apbo;//    : in  apb_slv_out_vector
   pin_uarti = &in_uarti;
   pch_uarto = &ch_uarto;
+  p_apbuart = ptst_apbuart;
 #endif
 
   if(io.inClk.eClock==SClock::CLK_POSEDGE)
@@ -97,6 +99,9 @@ void dbg::apbuart_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pch_uarto->flow,1,"ch_uarto.flow");//   	: std_ulogic;
     pStr = PutToStr(pStr, pch_uarto->rxen,1,"ch_uarto.rxen");//     	: std_ulogic;
 
+    // Internal:
+    pStr = PutToStr(pStr, (p_apbuart->paddr>>2), 6, "t_paddr");
+    pStr = PutToStr(pStr, (p_apbuart->rdata), 32, "t_rdata");
 
     PrintIndexStr();
 

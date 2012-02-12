@@ -47,8 +47,8 @@ use std.textio.all;
 entity apbuart is
   generic (
     pindex   : integer := 0;
-    paddr    : integer := 0;
-    pmask    : integer := 16#fff#;
+    cfg_paddr    : integer := 0;
+    cfg_pmask    : integer := 16#fff#;
     console  : integer := 0;
     pirq     : integer := 0;
     parity   : integer := 1;
@@ -71,7 +71,7 @@ constant REVISION : integer := 1;
 
 constant pconfig : apb_config_type := (
   0 => ahb_device_reg ( VENDOR_GAISLER, GAISLER_APBUART, 0, REVISION, pirq),
-  1 => apb_iobar(paddr, pmask));
+  1 => apb_iobar(cfg_paddr, cfg_pmask));
 
 type rxfsmtype is (idle, startbit, data, cparity, stopbit);
 type txfsmtype is (idle, data, cparity, stopbit);
