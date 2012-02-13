@@ -24,6 +24,7 @@ leon3mp::leon3mp()
 #endif
 
   pApbControl = new apbctrl(AHB_SLAVE_APBBRIDGE, 0x800, 0xfff);
+  pclApbUartA = new apbuart(APB_UART_CFG, 0x1, 0xfff); // total address 0x800001xx  = 256 bytes
 }
 
 //****************************************************************************
@@ -33,6 +34,7 @@ leon3mp::~leon3mp()
   for(int32 i=0; i<CFG_NCPU; i++) free(pclLeon3s[i]);
   free(pclDsu3x);
   free(pApbControl);
+  free(pclApbUartA);
 }
 
 //****************************************************************************
@@ -43,7 +45,13 @@ void leon3mp::Update( uint32 inNRst,
                       SClock TCK,
                       uint32 TMS,
                       uint32 TDI,
-                      uint32 &TDO )
+                      uint32 &TDO,
+                      // UART 1 (cfg) interface:
+                      uint32 inCTS, // if CTS=0. then may send data via TX, otherwise wait sending
+                      uint32 inRX,
+                      uint32 &outRTS,// If this uart can't recieve data RX, then rise this to "1"
+                      uint32 &outTX
+                    )
 {
   // AHB controller:
   clAhbControl.Update(inNRst,
@@ -95,6 +103,15 @@ void leon3mp::Update( uint32 inNRst,
 
   // AHB/APB bridge
   pApbControl->Update(inNRst, inClk, stCtrl2Slv, stSlv2Ctrl.arr[AHB_SLAVE_APBBRIDGE], apbi, apbo);
-
+  
+  // APB UART 1 (config)
+  uarti.rxd    = inRX;
+  uarti.ctsn   = inCTS;
+  uarti.extclk = 0;
+  pclApbUartA->Update(inNRst, inClk, apbi, apbo.arr[APB_UART_CFG], uarti, uarto);
+  outTX  = uarto.txd;
+  outRTS = uarto.rtsn;
+  if(!outTX) 
+  bool st = true;
 }
 

@@ -196,6 +196,7 @@ begin
     if r.extclken = '1' then v.tick := r.extclk and not uarti.extclk; end if;
 
 -- read/write registers
+  paddr := "000000"; paddr(abits-1 downto 2) := apbi.paddr(abits-1 downto 2);
 
   if (apbi.psel(pindex) and apbi.penable and (not apbi.pwrite)) = '1' then
     case paddr(7 downto 2) is
@@ -251,7 +252,6 @@ begin
     end case;
   end if;
 
-    paddr := "000000"; paddr(abits-1 downto 2) := apbi.paddr(abits-1 downto 2);
     if (apbi.psel(pindex) and apbi.penable and apbi.pwrite) = '1' then
       case paddr(7 downto 2) is
       when "000000" =>

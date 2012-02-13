@@ -29,7 +29,7 @@
 //#define DBG_ahbram
 //#define DBG_ahbctrl
 //#define DBG_apbctrl
-#define DBG_apbuart
+//#define DBG_apbuart
 
 extern char* PutToStr(char *p, uint32 v, int size, char *comment=NULL, bool inv=false);
 extern char* PutToStr(char *p, uint64 v, int size, char *comment=NULL, bool inv=false);

@@ -114,7 +114,7 @@ struct SystemOnChipIO
     uint32 RD;  // Receive Data
     uint32 RTS; // Request To Send
     uint32 CTS; // Clear To Send
-  } uart;
+  } uart1;
 };
 
 

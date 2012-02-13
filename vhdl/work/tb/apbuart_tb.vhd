@@ -19,7 +19,7 @@ use work.util_tb.all;
 
 entity apbuart_tb is
   constant CLK_HPERIOD : time := 10 ps;
-  constant STRING_SIZE : integer := 329; -- string size = index of the last element
+  constant STRING_SIZE : integer := 330; -- string size = index of the last element
 
   constant REVISION : integer := 1;
 end apbuart_tb;
@@ -38,6 +38,7 @@ architecture behavior of apbuart_tb is
   signal uarto     : uart_out_type;
   signal t_paddr  : std_logic_vector(7 downto 2);
   signal t_rdata  : std_logic_vector(31 downto 0);
+  signal t_r_tsempty  : std_logic;
   
   signal U: std_ulogic_vector(STRING_SIZE-1 downto 0);
   signal S: std_logic_vector(STRING_SIZE-1 downto 0);
@@ -69,12 +70,6 @@ begin
       wait until rising_edge(inClk);
       --wait until falling_edge(inClk);
       iClkCnt := iClkCnt + 1;
-      if(iClkCnt=131) then
-        print("break");
-      end if;
-      if(iClkCnt=132) then
-        print("break");
-      end if;
     end loop;
   end process procReadingFile;
   
@@ -107,6 +102,7 @@ begin
   ch_uarto.rxen <= S(290);
   t_paddr <= S(296 downto 291);
   t_rdata <= S(328 downto 297);
+  t_r_tsempty <= S(329);
     
   tt : apbuart generic map 
   (
@@ -114,7 +110,7 @@ begin
     cfg_paddr => 1, 
     pirq => 2, 
     console => 0, 
-    fifosize => 1--CFG_UART1_FIFO
+    fifosize => 8--CFG_UART1_FIFO
   )port map 
   (
     inNRst,
@@ -129,9 +125,9 @@ begin
 procCheck : process (inClk,ch_apbo,ch_uarto)
 begin
   if(rising_edge(inClk)and(iClkCnt>2)) then
-    if(ch_apbo/=apbo) then print("Err: apbo");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_apbo/=apbo) then print("Err: apbo: prdata=" & tost(apbo.prdata));  iErrCnt:=iErrCnt+1; end if;
     if(uarto.scaler(0)/='U') then
-      if(ch_uarto/=uarto) then print("Err: uarto");  iErrCnt:=iErrCnt+1; end if;
+      if(ch_uarto/=uarto) then print("Err: uarto" );  iErrCnt:=iErrCnt+1; end if;
     end if;
   end if;
 end process procCheck;

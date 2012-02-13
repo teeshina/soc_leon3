@@ -14,6 +14,7 @@ ElfFile         clElfFile(ELF_FILE);
 SystemOnChipIO  ioSoC;
 ClockGenerator  clkSys(SYS_CLOCK_F, timescale);
 jtag_port       portJTAG;
+uart_port       portUART1;
 dbg             clDbg;
 
 
@@ -68,6 +69,11 @@ int _tmain(int argc, _TCHAR* argv[])
                     ioSoC.jtag.TMS,
                     ioSoC.jtag.TDI );
     
+    portUART1.Update(ioSoC.inNRst,
+                     ioSoC.uart1.TD,
+                     ioSoC.uart1.RTS,
+                     ioSoC.uart1.RD,
+                     ioSoC.uart1.CTS );
 
     LibLeonUpdate(ioSoC);
     

@@ -32,7 +32,11 @@ DECLSPEC_TYPE void __stdcall LibLeonUpdate(SystemOnChipIO &ioData)
     ioData.jtag.TCK,
     ioData.jtag.TMS,
     ioData.jtag.TDI,
-    ioData.jtag.TDO
+    ioData.jtag.TDO,
+    ioData.uart1.CTS,
+    ioData.uart1.RD,
+    ioData.uart1.RTS,
+    ioData.uart1.TD
   );
 
   clDbg.Update(ioData);

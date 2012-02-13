@@ -30,14 +30,15 @@
 #include "id.h"
 #include "clkgen.h"
 #include "jtagport.h"
+#include "uartport.h"
 
 #include "elfloader\elfloader.h"
 #include "dbg.h"
 
-const double SYS_CLOCK_F = 66000000; //Hz
-const double JTAG_CLOCK_F = 20000000; //Hz
+static const double SYS_CLOCK_F = 66000000; //Hz
+static const double JTAG_CLOCK_F = 20000000; //Hz
 
-const double timescale = 1.0/SYS_CLOCK_F/4.0;
+static const double timescale = 1.0/SYS_CLOCK_F/4.0;
 
 
 

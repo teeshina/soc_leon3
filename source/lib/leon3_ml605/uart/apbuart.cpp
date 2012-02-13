@@ -104,11 +104,6 @@ void apbuart::Update(  uint32 rst,//    : in  std_ulogic;
   if (r.Q.extclken) v.tick = r.Q.extclk & !uarti.extclk;
 
   //-- read/write registers
-#if 1
-  if(iClkCnt>=131)
-  bool sr = true;
-#endif
-
   paddr = 0;
   paddr = apbi.paddr & MSK32(CFG_APBUART_ABITS-1,2);
 
@@ -123,8 +118,8 @@ void apbuart::Update(  uint32 rst,//    : in  std_ulogic;
 #else
 	      if (r.Q.rcnt != 0)
         {
-	        v.rraddr = r.Q.rraddr + 1;
-          v.rcnt   = r.Q.rcnt - 1;
+	        v.rraddr = BITS32(r.Q.rraddr+1,log2x[CFG_APBUART_FIFOSZ]-1,0);;
+          v.rcnt   = BITS32(r.Q.rcnt-1,log2x[CFG_APBUART_FIFOSZ],0);
 	      }
 #endif
       break;
@@ -162,7 +157,7 @@ void apbuart::Update(  uint32 rst,//    : in  std_ulogic;
 #if (CFG_APBUART_FIFOSZ == 1)
           v.tcnt &= ~(0x1);
 #else
-          v.traddr = BITS32(r.Q.traddr+1, log2x[CFG_APBUART_FIFOSZ], 0);
+          v.traddr = BITS32(r.Q.traddr+1, log2x[CFG_APBUART_FIFOSZ]-1, 0);
           v.tcnt = BITS32(r.Q.tcnt-1, log2x[CFG_APBUART_FIFOSZ], 0);
 #endif
         }
@@ -213,7 +208,7 @@ void apbuart::Update(  uint32 rst,//    : in  std_ulogic;
         v.rcnt |= 0x1;
 #else 
         v.rwaddr = BITS32(r.Q.rwaddr+1, log2x[CFG_APBUART_FIFOSZ]-1, 0);
-        v.rcnt = BITS32(v.rcnt+1, log2x[CFG_APBUART_FIFOSZ]-1, 0);
+        v.rcnt = BITS32(v.rcnt+1, log2x[CFG_APBUART_FIFOSZ], 0);
 #endif
         if (r.Q.debug == 1)
           v.irq = v.irq | r.Q.rirqen;
@@ -299,13 +294,13 @@ void apbuart::Update(  uint32 rst,//    : in  std_ulogic;
         v.tsempty = 0;
         v.txclk = r.Q.tick;
         v.txtick = 0;
-        v.tshift = (0x1<<9) | (r.Q.thold.arr[r.Q.traddr]<<1) | 0;
+        v.tshift = (0x1<<10) | (r.Q.thold.arr[r.Q.traddr]<<1) | 0;// {1,0,thold[7:0],0}
 #if (CFG_APBUART_FIFOSZ == 1)
         v.irq = r.Q.irq | r.Q.tirqen;
         v.tcnt &= ~0x1;
 #else
         v.traddr = BITS32(r.Q.traddr+1,log2x[CFG_APBUART_FIFOSZ]-1,0);
-        v.tcnt = BITS32(r.Q.tcnt-1,log2x[CFG_APBUART_FIFOSZ]-1,0);
+        v.tcnt = BITS32(r.Q.tcnt-1,log2x[CFG_APBUART_FIFOSZ],0);
 #endif
       }
     break;
@@ -362,7 +357,7 @@ void apbuart::Update(  uint32 rst,//    : in  std_ulogic;
 	      if (!(tfull == 1))
         {
 	        v.twaddr = BITS32(r.Q.twaddr+1,log2x[CFG_APBUART_FIFOSZ]-1,0);
-          v.tcnt   = BITS32(v.tcnt+1,log2x[CFG_APBUART_FIFOSZ]-1,0);
+          v.tcnt   = BITS32(v.tcnt+1,log2x[CFG_APBUART_FIFOSZ],0);
 	      }
 #endif
       break;
@@ -383,7 +378,7 @@ void apbuart::Update(  uint32 rst,//    : in  std_ulogic;
         v.rcnt |= 0x1;
 #else 
         v.rwaddr = BITS32(r.Q.rwaddr+1,log2x[CFG_APBUART_FIFOSZ]-1,0);
-        v.rcnt = BITS32(v.rcnt+1,log2x[CFG_APBUART_FIFOSZ]-1,0);
+        v.rcnt = BITS32(v.rcnt+1,log2x[CFG_APBUART_FIFOSZ],0);
 #endif
       }
       if (r.Q.rxen & BIT32(r.Q.rxdb,1) & !rxd)
@@ -453,7 +448,7 @@ void apbuart::Update(  uint32 rst,//    : in  std_ulogic;
             v.rcnt |= 0x1;
 #else 
             v.rwaddr = BITS32(r.Q.rwaddr+1,log2x[CFG_APBUART_FIFOSZ]-1,0);
-            v.rcnt = BITS32(v.rcnt+1,log2x[CFG_APBUART_FIFOSZ]-1,0);
+            v.rcnt = BITS32(v.rcnt+1,log2x[CFG_APBUART_FIFOSZ],0);
 #endif
 	        }
         }else

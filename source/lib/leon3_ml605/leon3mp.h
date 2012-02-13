@@ -53,7 +53,12 @@ class leon3mp
       SClock TCK,
       uint32 TMS,
       uint32 TDI,
-      uint32 &TDO
+      uint32 &TDO,
+      // UART 1 (cfg) interface:
+      uint32 inCTS, // if CTS=0. then may send data via TX, otherwise wait sending
+      uint32 inRX,
+      uint32 &outRTS,// If this uart can't recieve data RX, then rise this to "1"
+      uint32 &outTX
     );
     
     void ClkUpdate()
@@ -66,6 +71,7 @@ class leon3mp
         pclLeon3s[i]->ClkUpdate();
       pclDsu3x->ClkUpdate();
       pApbControl->ClkUpdate();
+      pclApbUartA->ClkUpdate();
     }
 };
 

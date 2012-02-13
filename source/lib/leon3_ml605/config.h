@@ -208,7 +208,7 @@ const uint32 ADDR_BUILD_LIB_MAX  = 0xFFFFFFFF;
 #define CFG_FABTECH         0
 #define CFG_CLK2X           0
 #define CFG_DSU_TBITS       30
-#define CFG_APBUART_FIFOSZ  1 // 1 to 32
+#define CFG_APBUART_FIFOSZ  8//1 // 1 to 32
 #define CFG_APBUART_ABITS   8
 #define CFG_APBUART_SBITS   12//: integer range 12 to 32 := 12);
 #define CFG_APBUART_FLOW    1
