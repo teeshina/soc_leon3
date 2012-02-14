@@ -220,12 +220,6 @@ void cachemem::Update(  SClock clk,//   : in  std_ulogic;
   dtenable  = crami.dcramin.tenable;
   dtenable2 = crami.dcramin.senable;
   ddenable  = crami.dcramin.denable;
-#if 1
-uint32 itw = ITWIDTH;
-uint32 dtw = DTWIDTH;
-if(iClkCnt>=18)
-bool st = true;
-#endif
 
 
 #if (CFG_ICEN==1)
@@ -362,10 +356,6 @@ bool st = true;
               crami.dcramin.ldramin.write);
 #endif
 
-#if 1
-if(iClkCnt>=19)
-bool st = true;
-#endif
 
   for (int32 i=0; i<CFG_ISETS; i++)
   {

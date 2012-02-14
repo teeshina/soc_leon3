@@ -286,17 +286,21 @@ class dbg
     void Close();
 
     // testbench generators:
+    void mul32_tb(SystemOnChipIO &io);
+    void div32_tb(SystemOnChipIO &io);
+    void mmu_icache_tb(SystemOnChipIO &io);
+    void mmu_dcache_tb(SystemOnChipIO &io);
+    void jtagcom_tb(SystemOnChipIO &io);
+    void ahbmst_tb(SystemOnChipIO &io);
+    void ahbjtag_tb(SystemOnChipIO &io);
+    void ahbctrl_tb(SystemOnChipIO &io);
+    void leon3s_tb(SystemOnChipIO &io);
+    void dsu3x_tb(SystemOnChipIO &io);
+    void ahbram_tb(SystemOnChipIO &io);
+    void apbctrl_tb(SystemOnChipIO &io);
+    void apbuart_tb(SystemOnChipIO &io);
+    void iu3_tb(SystemOnChipIO &io);
     
-    void jtagcom_tb(SystemOnChipIO &ioData);
-    void ahbmst_tb(SystemOnChipIO &ioData);
-    void ahbjtag_tb(SystemOnChipIO &ioData);
-    void ahbctrl_tb(SystemOnChipIO &ioData);
-    void leon3s_tb(SystemOnChipIO &ioData);
-    void dsu3x_tb(SystemOnChipIO &ioData);
-    void ahbram_tb(SystemOnChipIO &ioData);
-    void apbctrl_tb(SystemOnChipIO &ioData);
-    void apbuart_tb(SystemOnChipIO &ioData);
-
 #ifdef DBG_jtagcom
     uint32 inTCK;
     uint32 inTDI;
@@ -317,7 +321,6 @@ class dbg
     mul32_out_type mulo;//  : mul32_out_type;
 
     mul32 tst_mul32;
-    void mul32_tb(SystemOnChipIO &io);
 #endif
 #ifdef DBG_div32
     uint32 holdnx;//   : in  std_ulogic;
@@ -325,7 +328,6 @@ class dbg
     div32_out_type divo;//    : out div32_out_type
 
     div32 tst_div32;
-    void div32_tb(SystemOnChipIO &io);
 #endif
 #ifdef DBG_mmutlbcam
     mmutlbcam_in_type tlbcami;
@@ -358,7 +360,6 @@ class dbg
     uint32 fpuholdn;
 
     mmu_icache tst_mmu_icache;
-    void mmu_icache_tb(SystemOnChipIO &io);
 #endif
 #ifdef DBG_mmu_dcache
     dcache_in_type in_dci;// : in  dcache_in_type;
@@ -374,7 +375,6 @@ class dbg
     mmudc_out_type in_mmudco;// : in mmudc_out_type;
 
     mmu_dcache tst_mmu_dcache;
-    void mmu_dcache_tb(SystemOnChipIO &io);
 #endif
 #ifdef DBG_mmu_acache
     memory_ic_in_type in_mcii;//   : in  memory_ic_in_type;
@@ -467,7 +467,6 @@ class dbg
     tracebuf_out_type   tbo;
 
     iu3 tst_iu3;
-    void iu3_tb(SystemOnChipIO &io);
 #endif
 
 #ifdef DBG_cachemem

@@ -37,7 +37,7 @@ int _tmain(int argc, _TCHAR* argv[])
   //sLibInitData.uiBenchEna[TB_mmu_icache] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_mmu_dcache] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_mmu_acache] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_iu3] = PRINT_TESTBENCH_ENABLE;
+  sLibInitData.uiBenchEna[TB_iu3] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_mmutw] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_mmulrue] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_mmulru] = PRINT_TESTBENCH_ENABLE;
@@ -50,7 +50,7 @@ int _tmain(int argc, _TCHAR* argv[])
   //sLibInitData.uiBenchEna[TB_dsu3x] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_ahbram] = PRINT_TESTBENCH_ENABLE;
   //sLibInitData.uiBenchEna[TB_apbctrl] = PRINT_TESTBENCH_ENABLE;
-  sLibInitData.uiBenchEna[TB_apbuart] = PRINT_TESTBENCH_ENABLE;
+  //sLibInitData.uiBenchEna[TB_apbuart] = PRINT_TESTBENCH_ENABLE;
   
   // Library init procedure:
   LibInit(&sLibInitData);
@@ -70,6 +70,7 @@ int _tmain(int argc, _TCHAR* argv[])
                     ioSoC.jtag.TDI );
     
     portUART1.Update(ioSoC.inNRst,
+                     ioSoC.inClk,
                      ioSoC.uart1.TD,
                      ioSoC.uart1.RTS,
                      ioSoC.uart1.RD,

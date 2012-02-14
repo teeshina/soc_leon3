@@ -63,6 +63,8 @@
 #include "leon3_ml605\jtag\ahbjtag.h"
 #include "leon3_ml605\mem\ahbram.h"
 #include "leon3_ml605\mem\ahbmem_v.h"
+#include "leon3_ml605\mem\romdata.h"
+#include "leon3_ml605\mem\ahbrom.h"
 #include "leon3_ml605\uart\uart.h"
 #include "leon3_ml605\uart\apbuart.h"
 
@@ -93,6 +95,8 @@
 #include "leon3_ml605\leon3\tbufmem.h"
 #include "leon3_ml605\leon3\leon3s.h"
 #include "leon3_ml605\leon3\dsu3x.h"
+
+#include "leon3_ml605\gnss\topgnss.h"
 
 #include "leon3_ml605\leon3mp.h"
 #include "ldbg.h"

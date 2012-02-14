@@ -1,10 +1,11 @@
 #include "headers.h"
 
 extern int32 iClkCnt;
-extern SystemOnChipIO ioSoC;
-
 extern const JTagTestInput TEST[];
-extern jtag_port portJTAG;
+
+extern SystemOnChipIO ioSoC;
+extern jtag_port      portJTAG;
+extern uart_port      portUART1;
 
 //****************************************************************************
 
@@ -24,6 +25,13 @@ void dbg::GenerateReset(int32 cnt, uint32 outNRst)
 //****************************************************************************
 void dbg::Output()
 {
+  // Check UART port:
+  if(portUART1.IsRdDataRdy())
+  {
+    printf_s("%6i:{UART1}R \"%s\"\n", iClkCnt, portUART1.GetpDataString());
+  }
+
+  // Check JTAG port:
   if(portJTAG.IsRdDataRdy())
   {
     uint32 adr=0,rd=0;

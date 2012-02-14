@@ -90,8 +90,6 @@ const uint32 JTAG_INSTRUCTION_USER1 = 0x3C2;  // instruction to accept address (
 const uint32 JTAG_INSTRUCTION_USER2 = 0x3C3;  // instruction to accept data (33 bits)
 
 //****************************************************************************
-// Address fields:
-
 
 //****************************************************************************
 struct SystemOnChipIO
@@ -115,6 +113,26 @@ struct SystemOnChipIO
     uint32 RTS; // Request To Send
     uint32 CTS; // Clear To Send
   } uart1;
+  // DDR2/3 interface (ML605 = 512 MB)
+  struct SDDR
+  {
+  } ddr;
+  //GNSS inputs:
+  struct SGnss
+  {
+    uint32 I[2];    // [0]=Adc Re GPS/GALILEO L1; [1]=Adc Re GLONASS L1
+    uint32 Q[2];    // [0]=Adc Im GPS/GALILEO L1; [1]=Adc Im GLONASS L1
+    SClock adc_clk; // ADC clock ~16..32 MHz
+  } gnss;
+  // MAX2769 synthesizer interface:
+  struct SMax2769
+  {
+    uint32 LD;      // in: PLL locked
+    uint32 nSHDN;   // out: shutdown IC
+    uint32 nSDATA;  // spi interface data
+    uint32 SCLK;    // spi interface clock
+    uint32 nCS;     // spi interface ncs
+  }max_gpsl1, max_glol1;
 };
 
 

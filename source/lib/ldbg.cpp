@@ -62,7 +62,7 @@ void dbg::Init(LibInitData *p)
     if(PRINT_TESTBENCH_ENABLE==p->uiBenchEna[i])
     {
       sprintf_s(chName,"%s%s",chDirOut,chBenchFile[i]);
-      posBench[i] = new ofstream(chName);
+      posBench[i] = new ofstream(chName,ios::out);
     }
   }
 }
@@ -80,55 +80,6 @@ void dbg::Close()
 //****************************************************************************
 void dbg::Update(SystemOnChipIO &io)
 {
-#ifdef DBG_mul32
-  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mul32]) mul32_tb(io);
-#endif
-#ifdef DBG_div32
-  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_div32]) div32_tb(io);
-#endif
-#ifdef DBG_mmutlbcam
-  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mmutlbcam]) mmutlbcam_tb(io);
-#endif
-#ifdef DBG_mmutlb
-  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mmutlb]) mmutlb_tb(io);
-#endif
-#ifdef DBG_mmu_icache
-  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mmu_icache]) mmu_icache_tb(io);
-#endif
-#ifdef DBG_mmu_dcache
-  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mmu_dcache]) mmu_dcache_tb(io);
-#endif
-#ifdef DBG_mmu_acache
-  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mmu_acache]) mmu_acache_tb(io);
-#endif
-#ifdef DBG_mmutw
-  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mmutw]) mmutw_tb(io);
-#endif
-#ifdef DBG_mmulrue
-  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mmulrue]) mmulrue_tb(io);
-#endif
-#ifdef DBG_mmulru
-  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mmulru]) mmulru_tb(io);
-#endif
-#ifdef DBG_mmu
-  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mmu]) mmu_tb(io);
-#endif
-#ifdef DBG_mmu_cache
-  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mmu_cache]) mmu_cache_tb(io);
-#endif
-#ifdef DBG_iu3
-  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_iu3]) iu3_tb(io);
-#endif
-#ifdef DBG_cachemem
-  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_cachemem]) cachemem_tb(io);
-#endif
-#ifdef DBG_regfile_3p
-  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_regfile_3p]) regfile_3p_tb(io);
-#endif
-#ifdef DBG_tbufmem
-  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_tbufmem]) tbufmem_tb(io);
-#endif
-
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_jtagcom]) jtagcom_tb(io);
 
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_ahbmaster]) ahbmst_tb(io);  
@@ -146,6 +97,51 @@ void dbg::Update(SystemOnChipIO &io)
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_apbctrl]) apbctrl_tb(io);
 
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_apbuart]) apbuart_tb(io);
+
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mul32]) mul32_tb(io);
+
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_div32]) div32_tb(io);
+
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mmu_icache]) mmu_icache_tb(io);
+
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mmu_dcache]) mmu_dcache_tb(io);
+
+#ifdef DBG_mmu_acache
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mmu_acache]) mmu_acache_tb(io);
+#endif
+#ifdef DBG_mmu_cache
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mmu_cache]) mmu_cache_tb(io);
+#endif
+#ifdef DBG_mmutlbcam
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mmutlbcam]) mmutlbcam_tb(io);
+#endif
+#ifdef DBG_mmutlb
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mmutlb]) mmutlb_tb(io);
+#endif
+#ifdef DBG_mmutw
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mmutw]) mmutw_tb(io);
+#endif
+#ifdef DBG_mmulrue
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mmulrue]) mmulrue_tb(io);
+#endif
+#ifdef DBG_mmulru
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mmulru]) mmulru_tb(io);
+#endif
+#ifdef DBG_mmu
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mmu]) mmu_tb(io);
+#endif
+
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_iu3]) iu3_tb(io);
+
+#ifdef DBG_cachemem
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_cachemem]) cachemem_tb(io);
+#endif
+#ifdef DBG_regfile_3p
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_regfile_3p]) regfile_3p_tb(io);
+#endif
+#ifdef DBG_tbufmem
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_tbufmem]) tbufmem_tb(io);
+#endif
 
   if(io.inClk.eClock==SClock::CLK_POSEDGE)
     iClkCnt++;

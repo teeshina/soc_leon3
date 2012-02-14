@@ -7,13 +7,20 @@
 
 #include "headers.h"
 
+// Fclk/(8*(1+rate))=speed  => Fclk/speed/8 - 1
+//
+// baudrate values for SysClk = 66 MHz:
+//    1 = 4125 kBaud
+//    2 = 2750 kBaud
+//    4 = 1650 kBaud
+//   71 = 114583 Baud
+#define UART_BAUDRATE_VAL     4
+#define UART_BAUDRATE_CLKMAX (8*(1+UART_BAUDRATE_VAL))
+
 //****************************************************************************
 uart_port::uart_port()
 {
-  //This equals to baudrate=1 (uart setting)
-  double dClk = SYS_CLOCK_F/8.0;
-  double scale = 1.0/SYS_CLOCK_F/4.0;
-  pclkGen = new ClockGenerator(dClk,scale);
+  iClkDivider = 0;
   bEmpty     = true;
   bRdDataRdy = false;
   uiSymbCnt  = 0;
@@ -27,6 +34,7 @@ uart_port::~uart_port()
 
 //****************************************************************************
 void uart_port::Update(uint32 inNRst,
+                       SClock inSysClk,
                        uint32 inTD,
                        uint32 inRTS,
                        uint32 &outRD,
@@ -45,24 +53,25 @@ void uart_port::Update(uint32 inNRst,
     return;
   }
   
-  if(!pclkGen->Update(clk))
-    return;
+  if(inSysClk.eClock_z!=SClock::CLK_POSEDGE) return;
+
+  // In IDLE state pass to reset ClkDivider counter.
+  if( (eState!=UART_IDLE) && ((++iClkDivider)<UART_BAUDRATE_CLKMAX) ) return;
+  iClkDivider = 0;
 
   outCTS = 0;
   
   switch(eState)
   {
     case UART_IDLE:
-      if(inTD) eState = UART_WAIT;
-    break;
-    case UART_WAIT:
       if(!inTD) eState = UART_SHIFT;
       uiShiftCnt = 0;
+      iClkDivider = 0;                  // !!! some kind of edge tracking system
       uchString[uiSymbCnt+1] = '\0';
     break;
     case UART_SHIFT:
-      uchString[uiSymbCnt]<<=1; 
-      uchString[uiSymbCnt] |= (inTD&0x1);
+      uchString[uiSymbCnt]>>=1; 
+      uchString[uiSymbCnt] |= ((inTD&0x1)<<7);
       if((++uiShiftCnt)==8)
       {
         eState = UART_STOPBIT;
@@ -70,13 +79,20 @@ void uart_port::Update(uint32 inNRst,
       }
     break;
     case UART_STOPBIT:
-      if(!inTD) bCharReady = true;
-      else      uiSymbCnt = 0;
+      if(inTD) bCharReady = true;
+      else     uiSymbCnt = 0;
       eState = UART_IDLE;
     break;
     default:;
   }
 
-  if(bCharReady&&(uchString[uiSymbCnt]=='\n'))  bRdDataRdy = true;
+  if(bCharReady&&(uchString[uiSymbCnt-1]=='\n'))
+  {
+#if 1// This made only to align console output!!! May be removed at any time.
+    uchString[uiSymbCnt-1] = '\0';  // 
+#endif
+    uiSymbCnt  = 0;
+    bRdDataRdy = true;
+  }
 }
 

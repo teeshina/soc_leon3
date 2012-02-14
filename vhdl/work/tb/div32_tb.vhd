@@ -134,8 +134,12 @@ begin
   if(rising_edge(inClk) and (iClkCnt>13)) then
     if(ch_divo.ready /= divo.ready) then print("Err: ready");  iErrCnt:=iErrCnt+1; end if;
     if(ch_divo.nready /= divo.nready) then print("Err: nready");  iErrCnt:=iErrCnt+1; end if;
-    if(ch_divo.icc /= divo.icc) then print("Err: icc");  iErrCnt:=iErrCnt+1; end if;
-    if(ch_divo.result /= divo.result) then print("Err: result");  iErrCnt:=iErrCnt+1; end if;
+    if((divo.icc(3)/='U')and(divo.icc(2)/='U')and(divo.icc(1)/='U')and(divo.icc(0)/='U')) then
+      if(ch_divo.icc /= divo.icc) then print("Err: icc");  iErrCnt:=iErrCnt+1; end if;
+    end if;
+    if(divo.result(31)/='U') then
+      if(ch_divo.result /= divo.result) then print("Err: result");  iErrCnt:=iErrCnt+1; end if;
+    end if;
   end if;
 end process procCheck;
 

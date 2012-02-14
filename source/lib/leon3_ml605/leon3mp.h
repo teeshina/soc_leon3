@@ -40,6 +40,8 @@ class leon3mp
     uart_out_type uarto;//  : out uart_out_type);
     apbuart *pclApbUartA;
 
+    ahbrom *pclAhbRom;
+
   public:
     leon3mp();
     ~leon3mp();
@@ -72,6 +74,7 @@ class leon3mp
       pclDsu3x->ClkUpdate();
       pApbControl->ClkUpdate();
       pclApbUartA->ClkUpdate();
+      pclAhbRom->ClkUpdate();
     }
 };
 

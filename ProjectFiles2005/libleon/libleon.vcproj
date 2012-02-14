@@ -537,6 +537,30 @@
 						RelativePath="..\..\source\lib\leon3_ml605\mem\ahbram.h"
 						>
 					</File>
+					<File
+						RelativePath="..\..\source\lib\leon3_ml605\mem\ahbrom.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\source\lib\leon3_ml605\mem\ahbrom.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\source\lib\leon3_ml605\mem\romdata.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="gnss"
+					>
+					<File
+						RelativePath="..\..\source\lib\leon3_ml605\gnss\topgnss.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\source\lib\leon3_ml605\gnss\topgnss.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -600,10 +624,6 @@
 				</File>
 				<File
 					RelativePath="..\..\source\lib\dbg_tb\div32_tb.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\source\lib\dbg_tb\div_tb.cpp"
 					>
 				</File>
 				<File

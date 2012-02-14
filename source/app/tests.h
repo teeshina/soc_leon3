@@ -1,5 +1,5 @@
 //****************************************************************************
-// Author:      Khabarov Sergey
+// Author:      GNSS Sensor Limited
 // License:     GNU2
 // Contact:     sergey.khabarov@gnss-sensor.com
 // Repository:  git@github.com:teeshina/soc_leon3.git
@@ -29,7 +29,7 @@ static const JTagTestInput TEST[] =
   {false,   MST_ID(1),            0, "msto[1].hconfig[0]" },
   {false,   0x50000ffc,           0, "wrong addr" },
   {false,   0x50000000,           0, "wrong addr" },
-  {true,    0x8000010C,           1, "set UART scaler = 1"},
+  {true,    0x8000010C,           4, "set UART scaler"},
   {true,    0x80000108,  0x00000002, "set UART control txen = 1"},
   {true,    0x80000100, uint32('H'), "Write to UART \'H\'"},
   {true,    0x80000100, uint32('i'), "Write to UART \'i\'"},
