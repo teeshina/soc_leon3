@@ -26,6 +26,7 @@ leon3mp::leon3mp()
   pclAhbRom = new ahbrom(AHB_SLAVE_ROM, 0x000, 0xfff);
 
   pApbControl = new apbctrl(AHB_SLAVE_APBBRIDGE, 0x800, 0xfff);
+  
   pclApbUartA = new apbuart(APB_UART_CFG, 0x1, 0xfff); // total address 0x800001xx  = 256 bytes
 }
 
@@ -56,6 +57,7 @@ void leon3mp::Update( uint32 inNRst,
                       uint32 &outTX
                     )
 {
+
   // AHB controller:
   clAhbControl.Update(inNRst,
                       inClk,
@@ -73,8 +75,6 @@ void leon3mp::Update( uint32 inNRst,
                           stCtrl2Mst,
                           stMst2Ctrl.arr[AHB_MASTER_JTAG]);
 
-  // Internal RAM:
-  pclAhbRAM->Update( inNRst, inClk, stCtrl2Slv, stSlv2Ctrl.arr[AHB_SLAVE_RAM] );
 
   
   // Core and Dunbug support units
@@ -105,7 +105,12 @@ void leon3mp::Update( uint32 inNRst,
                    1);  
 
 
+  // Internal RAM:
   pclAhbRom->Update(inNRst, inClk, stCtrl2Slv, stSlv2Ctrl.arr[AHB_SLAVE_ROM]);
+
+  // Internal RAM:
+  pclAhbRAM->Update( inNRst, inClk, stCtrl2Slv, stSlv2Ctrl.arr[AHB_SLAVE_RAM] );
+
 
   // AHB/APB bridge
   pApbControl->Update(inNRst, inClk, stCtrl2Slv, stSlv2Ctrl.arr[AHB_SLAVE_APBBRIDGE], apbi, apbo);
@@ -117,7 +122,5 @@ void leon3mp::Update( uint32 inNRst,
   pclApbUartA->Update(inNRst, inClk, apbi, apbo.arr[APB_UART_CFG], uarti, uarto);
   outTX  = uarto.txd;
   outRTS = uarto.rtsn;
-  if(!outTX) 
-  bool st = true;
 }
 

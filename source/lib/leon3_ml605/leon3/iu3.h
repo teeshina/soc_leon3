@@ -260,6 +260,7 @@ class iu3
 {
   friend class dbg;
   private:
+    uint32 hindex;
     uint32 BPRED;// : std_logic;
     registers       r;
     TDFF<registers>       rbR;
@@ -364,7 +365,7 @@ class iu3
 
 	  
   public:
-    iu3();
+    iu3(uint32 hindex_=AHB_MASTER_LEON3);
 
     void Update
     (

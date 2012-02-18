@@ -90,6 +90,10 @@ void AhbMaster::Update( uint32 inNRst,
   out_ahbo.hirq    = in_dmai.irq<<IRQ_BIT_INDEX;
   out_ahbo.hindex  = HMST_INDEX;
 
+#if 1
+  if(iClkCnt>=199)
+  bool st = true;
+#endif
   out_dmao.start   = rStart.Q;
   out_dmao.active  = rActive.Q;
   out_dmao.ready   = wReady;

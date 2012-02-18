@@ -41,14 +41,14 @@ class ahbctrl
 
     
     static const int primst = 0;// AHB_MASTERS_MAX downto 0 = [16:0]
-    struct l0_type { int arr[16]; }; //[2:0]arr[0:15]
-    struct l1_type { int arr[8]; };  //[3:0]arr[0:7]
-    struct l2_type { int arr[4]; };  //[4:0]arr[0:3]
-    struct l3_type { int arr[2]; };  //[5:0]arr[0:1]
+    struct l0_type { uint32 arr[16]; }; //[2:0]arr[0:15]
+    struct l1_type { uint32 arr[8]; };  //[3:0]arr[0:7]
+    struct l2_type { uint32 arr[4]; };  //[4:0]arr[0:3]
+    struct l3_type { uint32 arr[2]; };  //[5:0]arr[0:1]
     
   private:
-    uint32 tz(uint32 inVect[],
-              uint32 inVectLength);
+    uint32 tz(uint32 in_vect,
+              uint32 in_length);
                    
     uint32 lz(uint32 vect_in, int vec_length);
 

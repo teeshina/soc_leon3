@@ -30,90 +30,68 @@ const tztab_type tztab = { 0x4, // 0000 = 100
 
 
 //****************************************************************************
-uint32 ahbctrl::tz( uint32 inVect[],
-                    uint32 inVectLength)
+uint32 ahbctrl::tz( uint32 in_vect,
+                    uint32 in_length)
 {
-  uint32 wbVect[64];// : std_logic_vector(63 downto 0);
+  uint64 vect;// : std_logic_vector(63 downto 0);
   l1_type l1;// : l1_type;
   l2_type l2;// : l2_type;
   l3_type l3;// : l3_type;
   uint32 l4;// : std_logic_vector(6 downto 0);
   uint32 bci_lsb, bci_msb;// : std_logic_vector(3 downto 0);
   uint32 bco_lsb, bco_msb;// : std_logic_vector(2 downto 0);    
-  int sel;// : std_logic;
+  uint32 sel;// : std_logic;
 
-  for (uint32 i=0; i<64; i++)
-  {
-    if(i<inVectLength) wbVect[i] = inVect[i];
-    else               wbVect[i] = 1;
-  }
-  
-#if 1
-#if 1
-  uint32 wbTZ[8];
-  uint32 wb4bits;
-  for(int32 i=0; i<8; i++)
-  {
-    wb4bits = BusToInt32(&wbVect[4*i], 4);
-    wbTZ[i] = wbVect[4*i]   ? 0:
-              wbVect[4*i+1] ? 1:
-              wbVect[4*i+2] ? 2:
-              wbVect[4*i+3] ? 3 : 4;
-  }
-#endif
+  vect = MSK64(63,in_length);
+  vect |= uint64(BITS32(in_vect,in_length-1,0));
+
   // level 0
   for (int i=0; i<8; i++)
   {
-    bci_lsb = BusToInt32(&wbVect[8*i], 4);
-    bci_msb = BusToInt32(&wbVect[8*i+4], 4);
+    bci_lsb = uint32(BITS64(vect, 8*i+3, 8*i));
+    bci_msb = uint32(BITS64(vect, 8*i+7, 8*i+4));
     //lookup the highest priority request in each nibble
     bco_lsb = tztab.arr[bci_lsb];
     bco_msb = tztab.arr[bci_msb];
     //select which of two nibbles contain the highest priority ACTIVE
     //signal, and forward the corresponding vector to the next level
-    sel = (bco_lsb>>2)&0x1;
+    sel = BIT32(bco_lsb,2);
     if(sel==0) l1.arr[i] = bco_lsb;
-    else       l1.arr[i] = (((bco_msb>>2)&0x1)<<3)
-                         | (((~bco_msb>>2)&0x1)<<2)
-                         | (bco_msb&0x3);
+    else       l1.arr[i] = (BIT32(bco_msb,2)<<3) | (BIT32(~bco_msb,2)<<2) | BITS32(bco_msb,1,0);
   }
   
   //level 1
   for (int i=0; i<4; i++)
   {
-    sel = (l1.arr[2*i]>>3)&0x1;
+    sel = BIT32(l1.arr[2*i],3);
     //select which of two 8-bit vectors contain the
     //highest priority ACTIVE signal. the msb set at the previous level
     //for each 8-bit slice determines this
     if(sel==0) l2.arr[i] = l1.arr[2*i];
-    else l2.arr[i] = (((l1.arr[2*i+1]>>3)&0x1)<<4)
-                   | (((~l1.arr[2*i+1]>>3)&0x1)<<3)
-                   | (l1.arr[2*i+1]&0x7);
+    else l2.arr[i] = (BIT32(l1.arr[2*i+1],3)<<4)
+                   | (BIT32(~l1.arr[2*i+1],3)<<3)
+                   | BITS32(l1.arr[2*i+1],2,0);
   }
 
   //level 2
   for (int i=0; i<2; i++)
   {
-    sel = (l2.arr[2*i]>>4)&0x1;
+    sel = BIT32(l2.arr[2*i],4);
     if(sel==0) l3.arr[i] = l2.arr[2*i];
-    else l3.arr[i] = (((l2.arr[2*i+1]>>4)&0x1)<<5)
-                   | (((~l2.arr[2*i+1]>>4)&0x1)<<4)
-                   | (l2.arr[2*i+1]&0xF);
+    else l3.arr[i] = (BIT32(l2.arr[2*i+1],4)<<5)
+                   | (BIT32(~l2.arr[2*i+1],4)<<4)
+                   | BITS32(l2.arr[2*i+1],3,0);
   }
   
   //level 3
-  sel = (l3.arr[0]>>5)&0x1;
+  sel = BIT32(l3.arr[0],5);
   if(sel==0) l4 = l3.arr[0];
-  else l4 = (((l3.arr[1]>>5)&0x1)<<6)
-          | (((~l3.arr[1]>>5)&0x1)<<5)
-          | (l3.arr[1]&0x1F);
+  else l4 = (BIT32(l3.arr[1],5)<<6)
+          | (BIT32(~l3.arr[1],5)<<5)
+          | BITS32(l3.arr[1],4,0);
 
 
   return l4;
-#else
-  return 0;
-#endif
-  
 }
 
 //****************************************************************************
@@ -130,9 +108,9 @@ uint32 ahbctrl::lz(uint32 vect_in, int vec_length)
   for (int i=0; i<vec_length; i++)
     vect2 |= ( ((vect>>(vec_length-1-i))&0x1) << i );
   
-  uint32 tmpVect2[64];
-  Int32ToBus(vect_in, tmpVect2, vec_length);
-  return(tz(tmpVect2, vec_length));
+  //uint32 tmpVect2[64];
+  //Int32ToBus(vect_in, tmpVect2, vec_length);
+  return(tz(vect_in, vec_length));
 };
 
 
@@ -146,7 +124,7 @@ void ahbctrl::selmast( uint32  inAhbMaster,
   uint32 wbbMasters[4] = {0};//[1:3]
   bool   wbValid[4] = {false};//[1:3]
 
-  uint32 rrvec[2*AHB_MASTERS_MAX];
+  uint32 rrvec;//[2*AHB_MASTERS_MAX];
   uint32 zcnt;//  : std_logic_vector(log2(nahbmx)+1 downto 0);
   
 #if!defined CONFIG_AHB_RROBIN
@@ -183,12 +161,14 @@ void ahbctrl::selmast( uint32  inAhbMaster,
   for (uint32 i=0; i<AHB_MASTERS_TOTAL_2n; i++)
   {
 #ifdef CONFIG_AHB_SPLIT
-    if(inAhbSplit[i])       rrvec[i] = 0;
-    else if(i<=inAhbMaster) rrvec[i] = 0;
-    else                    rrvec[i] = inAhbBusRequest[i];
+    rrvec &= ~MSK32(i,i);
+    if(inAhbSplit[i])       rrvec &= ~MSK32(i,i);
+    else if(i<=inAhbMaster) rrvec &= ~MSK32(i,i);
+    else                    rrvec |= (inAhbBusRequest[i]<<i);
 
-    if(inAhbSplit[i]) rrvec[i+AHB_MASTERS_TOTAL_2n] = 0;
-    else              rrvec[i+AHB_MASTERS_TOTAL_2n] = inAhbBusRequest[i];
+    rrvec &= ~MSK32(i+AHB_MASTERS_TOTAL_2n, i+AHB_MASTERS_TOTAL_2n);
+    if(inAhbSplit[i]) rrvec &= ~MSK32(i+AHB_MASTERS_TOTAL_2n, i+AHB_MASTERS_TOTAL_2n);
+    else              rrvec |= (inAhbBusRequest[i]<<(i+AHB_MASTERS_TOTAL_2n));
 #else
     if(i<=inAhbMaster) rrvec[i] = 0;
     else               rrvec[i] = inAhbBusRequest[i];

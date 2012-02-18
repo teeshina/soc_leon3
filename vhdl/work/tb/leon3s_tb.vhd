@@ -23,7 +23,7 @@ use work.util_tb.all;
 
 entity leon3s_tb is
   constant CLK_HPERIOD : time := 10 ps;
-  constant STRING_SIZE : integer := 1827; -- string size = index of the last element
+  constant STRING_SIZE : integer := 2171; -- string size = index of the last element
 
   
 end leon3s_tb;
@@ -74,8 +74,8 @@ begin
       wait until rising_edge(inClk);
       --wait until falling_edge(inClk);
       iClkCnt := iClkCnt + 1;
-      if(iClkCnt=152) then
-        --print("break");
+      if(iClkCnt>=770) then
+        print("break");
       end if;
 
     end loop;
@@ -158,74 +158,89 @@ begin
   in_ahbso(2).hconfig(6) <= S(1224 downto 1193);
   in_ahbso(2).hconfig(7) <= S(1256 downto 1225);
   in_ahbso(2).hindex <= conv_integer(S(1260 downto 1257));
-  in_irqi.irl <= S(1264 downto 1261);
-  in_irqi.rst <= S(1265);
-  in_irqi.run <= S(1266);
-  in_irqi.rstvec <= S(1286 downto 1267);
-  in_irqi.iact <= S(1287);
-  in_irqi.index <= S(1291 downto 1288);
-  in_dbgi.dsuen <= S(1292);
-  in_dbgi.denable <= S(1293);
-  in_dbgi.dbreak <= S(1294);
-  in_dbgi.step <= S(1295);
-  in_dbgi.halt <= S(1296);
-  in_dbgi.reset <= S(1297);
-  in_dbgi.dwrite <= S(1298);
-  in_dbgi.daddr <= S(1320 downto 1299);
-  in_dbgi.ddata <= S(1352 downto 1321);
-  in_dbgi.btrapa <= S(1353);
-  in_dbgi.btrape <= S(1354);
-  in_dbgi.berror <= S(1355);
-  in_dbgi.bwatch <= S(1356);
-  in_dbgi.bsoft <= S(1357);
-  in_dbgi.tenable <= S(1358);
-  in_dbgi.timer <= S(1389 downto 1359);
-  ch_ahbo.hbusreq <= S(1390);
-  ch_ahbo.hlock <= S(1391);
-  ch_ahbo.htrans <= S(1393 downto 1392);
-  ch_ahbo.haddr <= S(1425 downto 1394);
-  ch_ahbo.hwrite <= S(1426);
-  ch_ahbo.hsize <= S(1429 downto 1427);
-  ch_ahbo.hburst <= S(1432 downto 1430);
-  ch_ahbo.hprot <= S(1436 downto 1433);
-  ch_ahbo.hwdata <= S(1468 downto 1437);
-  ch_ahbo.hirq <= S(1500 downto 1469);
-  ch_ahbo.hconfig(0) <= S(1532 downto 1501);
-  ch_ahbo.hconfig(1) <= S(1564 downto 1533);
-  ch_ahbo.hconfig(2) <= S(1596 downto 1565);
-  ch_ahbo.hconfig(3) <= S(1628 downto 1597);
-  ch_ahbo.hconfig(4) <= S(1660 downto 1629);
-  ch_ahbo.hconfig(5) <= S(1692 downto 1661);
-  ch_ahbo.hconfig(6) <= S(1724 downto 1693);
-  ch_ahbo.hconfig(7) <= S(1756 downto 1725);
-  ch_ahbo.hindex <= conv_integer(S(1760 downto 1757));
-  ch_irqo.intack <= S(1761);
-  ch_irqo.irl <= S(1765 downto 1762);
-  ch_irqo.pwd <= S(1766);
-  --ch_irqo.fpen <= S(1767);
-  ch_dbgo.data <= S(1799 downto 1768);
-  ch_dbgo.crdy <= S(1800);
-  ch_dbgo.dsu <= S(1801);
-  ch_dbgo.dsumode <= S(1802);
-  ch_dbgo.error <= S(1803);
-  ch_dbgo.halt <= S(1804);
-  ch_dbgo.pwd <= S(1805);
-  ch_dbgo.idle <= S(1806);
-  ch_dbgo.ipend <= S(1807);
-  ch_dbgo.icnt <= S(1808);
-  --ch_dbgo.fcnt <= S(1809);
-  --ch_dbgo.optype <= S(1815 downto 1810);
-  --ch_dbgo.bpmiss <= S(1816);
-  --ch_dbgo.istat.cmiss <= S(1817);
-  --ch_dbgo.istat.tmiss <= S(1818);
-  --ch_dbgo.istat.chold <= S(1819);
-  --ch_dbgo.istat.mhold <= S(1820);
-  --ch_dbgo.dstat.cmiss <= S(1821);
-  --ch_dbgo.dstat.tmiss <= S(1822);
-  --ch_dbgo.dstat.chold <= S(1823);
-  --ch_dbgo.dstat.mhold <= S(1824);
-  --ch_dbgo.wbhold <= S(1825);
-  --ch_dbgo.su <= S(1826);
+  in_ahbso(3).hready <= S(1261);
+  in_ahbso(3).hresp <= S(1263 downto 1262);
+  in_ahbso(3).hrdata <= S(1295 downto 1264);
+  in_ahbso(3).hsplit <= S(1311 downto 1296);
+  in_ahbso(3).hcache <= S(1312);
+  in_ahbso(3).hirq <= S(1344 downto 1313);
+  in_ahbso(3).hconfig(0) <= S(1376 downto 1345);
+  in_ahbso(3).hconfig(1) <= S(1408 downto 1377);
+  in_ahbso(3).hconfig(2) <= S(1440 downto 1409);
+  in_ahbso(3).hconfig(3) <= S(1472 downto 1441);
+  in_ahbso(3).hconfig(4) <= S(1504 downto 1473);
+  in_ahbso(3).hconfig(5) <= S(1536 downto 1505);
+  in_ahbso(3).hconfig(6) <= S(1568 downto 1537);
+  in_ahbso(3).hconfig(7) <= S(1600 downto 1569);
+  in_ahbso(3).hindex <= conv_integer(S(1604 downto 1601));
+  in_irqi.irl <= S(1608 downto 1605);
+  in_irqi.rst <= S(1609);
+  in_irqi.run <= S(1610);
+  in_irqi.rstvec <= S(1630 downto 1611);
+  in_irqi.iact <= S(1631);
+  in_irqi.index <= S(1635 downto 1632);
+  in_dbgi.dsuen <= S(1636);
+  in_dbgi.denable <= S(1637);
+  in_dbgi.dbreak <= S(1638);
+  in_dbgi.step <= S(1639);
+  in_dbgi.halt <= S(1640);
+  in_dbgi.reset <= S(1641);
+  in_dbgi.dwrite <= S(1642);
+  in_dbgi.daddr <= S(1664 downto 1643);
+  in_dbgi.ddata <= S(1696 downto 1665);
+  in_dbgi.btrapa <= S(1697);
+  in_dbgi.btrape <= S(1698);
+  in_dbgi.berror <= S(1699);
+  in_dbgi.bwatch <= S(1700);
+  in_dbgi.bsoft <= S(1701);
+  in_dbgi.tenable <= S(1702);
+  in_dbgi.timer <= S(1733 downto 1703);
+  ch_ahbo.hbusreq <= S(1734);
+  ch_ahbo.hlock <= S(1735);
+  ch_ahbo.htrans <= S(1737 downto 1736);
+  ch_ahbo.haddr <= S(1769 downto 1738);
+  ch_ahbo.hwrite <= S(1770);
+  ch_ahbo.hsize <= S(1773 downto 1771);
+  ch_ahbo.hburst <= S(1776 downto 1774);
+  ch_ahbo.hprot <= S(1780 downto 1777);
+  ch_ahbo.hwdata <= S(1812 downto 1781);
+  ch_ahbo.hirq <= S(1844 downto 1813);
+  ch_ahbo.hconfig(0) <= S(1876 downto 1845);
+  ch_ahbo.hconfig(1) <= S(1908 downto 1877);
+  ch_ahbo.hconfig(2) <= S(1940 downto 1909);
+  ch_ahbo.hconfig(3) <= S(1972 downto 1941);
+  ch_ahbo.hconfig(4) <= S(2004 downto 1973);
+  ch_ahbo.hconfig(5) <= S(2036 downto 2005);
+  ch_ahbo.hconfig(6) <= S(2068 downto 2037);
+  ch_ahbo.hconfig(7) <= S(2100 downto 2069);
+  ch_ahbo.hindex <= conv_integer(S(2104 downto 2101));
+  ch_irqo.intack <= S(2105);
+  ch_irqo.irl <= S(2109 downto 2106);
+  ch_irqo.pwd <= S(2110);
+  --ch_irqo.fpen <= S(2111);
+  ch_dbgo.data <= S(2143 downto 2112);
+  ch_dbgo.crdy <= S(2144);
+  ch_dbgo.dsu <= S(2145);
+  ch_dbgo.dsumode <= S(2146);
+  ch_dbgo.error <= S(2147);
+  ch_dbgo.halt <= S(2148);
+  ch_dbgo.pwd <= S(2149);
+  ch_dbgo.idle <= S(2150);
+  ch_dbgo.ipend <= S(2151);
+  ch_dbgo.icnt <= S(2152);
+  --ch_dbgo.fcnt <= S(2153);
+  --ch_dbgo.optype <= S(2159 downto 2154);
+  --ch_dbgo.bpmiss <= S(2160);
+  --ch_dbgo.istat.cmiss <= S(2161);
+  --ch_dbgo.istat.tmiss <= S(2162);
+  --ch_dbgo.istat.chold <= S(2163);
+  --ch_dbgo.istat.mhold <= S(2164);
+  --ch_dbgo.dstat.cmiss <= S(2165);
+  --ch_dbgo.dstat.tmiss <= S(2166);
+  --ch_dbgo.dstat.chold <= S(2167);
+  --ch_dbgo.dstat.mhold <= S(2168);
+  --ch_dbgo.wbhold <= S(2169);
+  --ch_dbgo.su <= S(2170);
 
 
   tt : leon3s generic map 
@@ -292,22 +307,18 @@ begin
     dbgo
   );
   
-  comb : process(inNRst,inClk, ch_ahbo, ch_irqo, ch_dbgo)
+  procCheck : process(inNRst,inClk, ch_ahbo, ch_irqo, ch_dbgo)
   begin
     
     if(rising_edge(inClk) and (iClkCnt>14)) then
-     if(ch_dbgo/=dbgo) then print("Err: dbgo");  iErrCnt:=iErrCnt+1; end if;
+     if(ch_ahbo/=ahbo) then print("Err: ahbo");  iErrCnt:=iErrCnt+1; end if;
+     if((dbgo.data(31)/='U')and(dbgo.data(0)/='U')) then
+       if(ch_dbgo/=dbgo) then print("Err: dbgo");  iErrCnt:=iErrCnt+1; end if;
+     end if;
      if(ch_irqo/=irqo) then print("Err: irqo");  iErrCnt:=iErrCnt+1; end if;
     end if;
-  end process comb;
+  end process procCheck;
   
-
-procCheck : process (inClk)
-begin
-  if(rising_edge(inClk) and (iClkCnt>6)) then
---    if(ch_dbgm/=ch_ico.idle)then print("Err: ico.idle");  iErrCnt:=iErrCnt+1; end if;
-  end if;
-end process procCheck;
 
   
 end;

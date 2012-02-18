@@ -11,6 +11,7 @@ void dbg::iu3_tb(SystemOnChipIO &io)
   iu3 *ptst_iu3 = &topLeon3mp.pclLeon3s[0]->pclProc3->clIU3;
   
   uint32 *pin_holdn = &topLeon3mp.pclLeon3s[0]->pclProc3->holdnx;// : in  std_ulogic;
+  uint32 *pinNRst             = &topLeon3mp.pclLeon3s[0]->rst.Q;
   icache_in_type *pch_ici     = &topLeon3mp.pclLeon3s[0]->pclProc3->ici;//   : out icache_in_type;
   icache_out_type *pin_ico    = &topLeon3mp.pclLeon3s[0]->pclProc3->ico;//   : in  icache_out_type;
   dcache_in_type *pch_dci     = &topLeon3mp.pclLeon3s[0]->pclProc3->dci;//   : out dcache_in_type;
@@ -31,6 +32,10 @@ void dbg::iu3_tb(SystemOnChipIO &io)
   fpc_in_type *pch_cpi        = &topLeon3mp.pclLeon3s[0]->cpi;//   : out fpc_in_type;
   tracebuf_out_type *pin_tbo  = &topLeon3mp.pclLeon3s[0]->tbo;//   : in  tracebuf_out_type;
   tracebuf_in_type *pch_tbi   = &topLeon3mp.pclLeon3s[0]->tbi;//   : out tracebuf_in_type;
+  uint32 t_inClk;
+  if((io.inClk.eClock==SClock::CLK_POSEDGE)||(io.inClk.eClock==SClock::CLK_POSITIVE)) 
+    t_inClk = 1;
+  else                                                                                t_inClk = 0;
 
 #ifdef DBG_iu3
   if(io.inClk.eClock_z==SClock::CLK_POSEDGE)
@@ -385,9 +390,8 @@ void dbg::iu3_tb(SystemOnChipIO &io)
   tst_iu3.Update(io.inClk, io.inNRst, holdnx, ici, ico, dci, dco, rfi, rfo, irqi, irqo,
                  dbgi, dbgo, muli, mulo, divi, divo, fpo, fpi, cpo, cpi, tbo, tbi, io.inClk);
 
-  //tst_iu3.in_r = tst_iu3.rin; //single function debug purpose
-
   ptst_iu3 = &tst_iu3;
+  pinNRst  = &io.inNRst;
   pin_holdn = &holdnx;// : in  std_ulogic;
   pch_ici = &ici;
   pin_ico = &ico;
@@ -409,6 +413,8 @@ void dbg::iu3_tb(SystemOnChipIO &io)
   pch_cpi = &cpi;
   pin_tbo = &tbo;
   pch_tbi = &tbi;
+#else
+  ptst_iu3->in_r = ptst_iu3->rin; //single function debug purpose
 #endif
 
   if(io.inClk.eClock==SClock::CLK_POSEDGE)
@@ -419,7 +425,7 @@ void dbg::iu3_tb(SystemOnChipIO &io)
     ResetPutStr();
     
     // inputs:
-    pStr = PutToStr(pStr, io.inNRst, 1, "inNRst");
+    pStr = PutToStr(pStr, *pinNRst, 1, "inNRst");
     pStr = PutToStr(pStr, *pin_holdn, 1, "holdnx");
     pStr = PutToStr(pStr, pin_ico->data.arr[0],IDBITS,"ico.data(0)");
     pStr = PutToStr(pStr, pin_ico->data.arr[1],IDBITS,"ico.data(1)");
@@ -815,6 +821,10 @@ void dbg::iu3_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, ptst_iu3->in_dsur.err,1,"in_dsur.err");
     pStr = PutToStr(pStr, ptst_iu3->in_dsur.tt,8,"in_dsur.tt");
     pStr = PutToStr(pStr, ptst_iu3->in_dsur.crdy>>1,2,"in_dsur.crdy");
+    
+    pStr = PutToStr(pStr, t_inClk,1,"t_inClk");
+    pStr = PutToStr(pStr, topLeon3mp.pclLeon3s[0]->cramo.icramo.data.arr[0], 32, "t_cramo_data0");
+    pStr = PutToStr(pStr, topLeon3mp.pclLeon3s[0]->pclProc3->pclCacheMMU->mcio.data, 32, "t_mcio_data");
 
     PrintIndexStr();
 

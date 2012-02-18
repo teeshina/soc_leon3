@@ -5,11 +5,18 @@ extern leon3mp  topLeon3mp;
 extern void ResetPutStr();
 extern void PrintIndexStr();
 
-#ifdef DBG_mmu
-
 //****************************************************************************
 void dbg::mmu_tb(SystemOnChipIO &io)
 {
+  mmu *ptst_mmu = &topLeon3mp.pclLeon3s[0]->pclProc3->pclCacheMMU->clMMU;
+  mmudc_in_type *pin_mmudci     = &topLeon3mp.pclLeon3s[0]->pclProc3->pclCacheMMU->mmudci;// : in  mmudc_in_type;
+  mmudc_out_type *pch_mmudco    = &topLeon3mp.pclLeon3s[0]->pclProc3->pclCacheMMU->mmudco;// : out mmudc_out_type;
+  mmuic_in_type *pin_mmuici     = &topLeon3mp.pclLeon3s[0]->pclProc3->pclCacheMMU->mmuici;// : in  mmuic_in_type;
+  mmuic_out_type *pch_mmuico    = &topLeon3mp.pclLeon3s[0]->pclProc3->pclCacheMMU->mmuico;// : out mmuic_out_type;
+  memory_mm_out_type *pin_mcmmo = &topLeon3mp.pclLeon3s[0]->pclProc3->pclCacheMMU->mcmmo;//  : in  memory_mm_out_type;
+  memory_mm_in_type *pch_mcmmi  = &topLeon3mp.pclLeon3s[0]->pclProc3->pclCacheMMU->mcmmi;//  : out memory_mm_in_type
+
+#ifdef DBG_mmu
   if(io.inClk.eClock_z==SClock::CLK_POSEDGE)
   {
     //
@@ -58,7 +65,15 @@ void dbg::mmu_tb(SystemOnChipIO &io)
                   ch_mmuico,
                   in_mcmmo,
                   ch_mcmmi);
-
+                  
+  ptst_mmu = &tst_mmu;
+  pin_mmudci = &in_mmudci;
+  pch_mmudco = &ch_mmudco;
+  pin_mmuici = &in_mmuici;
+  pch_mmuico = &ch_mmuico;
+  pin_mcmmo = &in_mcmmo;
+  pch_mcmmi = &ch_mcmmi;
+#endif
 
   // output file writting:
   if(io.inClk.eClock==SClock::CLK_POSEDGE)
@@ -71,87 +86,88 @@ void dbg::mmu_tb(SystemOnChipIO &io)
     // inputs:
     pStr = PutToStr(pStr, io.inNRst, 1, "inNRst");
     //
-    pStr = PutToStr(pStr, in_mmudci.trans_op,1,"in_mmudci.trans_op");//std_logic; 
-    pStr = PutToStr(pStr, in_mmudci.transdata.data,32,"in_mmudci.transdata.data");//             : std_logic_vector(31 downto 0);
-    pStr = PutToStr(pStr, in_mmudci.transdata.su,1,"in_mmudci.transdata.su");//            : std_logic;
-    pStr = PutToStr(pStr, in_mmudci.transdata.read,1,"in_mmudci.transdata.read");//            : std_logic;
-    pStr = PutToStr(pStr, (uint32)in_mmudci.transdata.isid,1,"in_mmudci_transdata_isid");//             : mmu_idcache;
-    pStr = PutToStr(pStr, in_mmudci.transdata.wb_data,32,"in_mmudci.transdata.wb_data");//          : std_logic_vector(31 downto 0);
-    pStr = PutToStr(pStr, in_mmudci.flush_op,1,"in_mmudci.flush_op");//std_logic;
-    pStr = PutToStr(pStr, in_mmudci.diag_op,1,"in_mmudci.diag_op");//std_logic;
-    pStr = PutToStr(pStr, in_mmudci.wb_op,1,"in_mmudci.wb_op");//std_logic;
-    pStr = PutToStr(pStr, in_mmudci.fsread,1,"in_mmudci.fsread");;//std_logic;
-    pStr = PutToStr(pStr, in_mmudci.mmctrl1.e,1,"in_mmudci.mmctrl1.e");//    : std_logic;                -- enable
-    pStr = PutToStr(pStr, in_mmudci.mmctrl1.nf,1,"in_mmudci.mmctrl1.nf");//    : std_logic;                -- no fault
-    pStr = PutToStr(pStr, in_mmudci.mmctrl1.pso,1,"in_mmudci.mmctrl1.pso");//    : std_logic;                -- partial store order
-    pStr = PutToStr(pStr, in_mmudci.mmctrl1.pagesize,2,"in_mmudci.mmctrl1.pagesize");// std_logic_vector(1 downto 0);-- page size
-    pStr = PutToStr(pStr, in_mmudci.mmctrl1.ctx,M_CTX_SZ,"in_mmudci.mmctrl1.ctx");//     : std_logic_vector(M_CTX_SZ-1 downto 0);-- context nr
-    pStr = PutToStr(pStr, in_mmudci.mmctrl1.ctxp,MMCTRL_CTXP_SZ,"in_mmudci.mmctrl1.ctxp");//    : std_logic_vector(MMCTRL_CTXP_SZ-1 downto 0);  -- context table pointer
-    pStr = PutToStr(pStr, in_mmudci.mmctrl1.tlbdis,1,"in_mmudci.mmctrl1.tlbdis");// : std_logic;                            -- tlb disabled
-    pStr = PutToStr(pStr, in_mmudci.mmctrl1.bar,2,"in_mmudci.mmctrl1.bar");// : std_logic_vector(1 downto 0);         -- preplace barrier
+    pStr = PutToStr(pStr, pin_mmudci->trans_op,1,"in_mmudci.trans_op");//std_logic; 
+    pStr = PutToStr(pStr, pin_mmudci->transdata.data,32,"in_mmudci.transdata.data");//             : std_logic_vector(31 downto 0);
+    pStr = PutToStr(pStr, pin_mmudci->transdata.su,1,"in_mmudci.transdata.su");//            : std_logic;
+    pStr = PutToStr(pStr, pin_mmudci->transdata.read,1,"in_mmudci.transdata.read");//            : std_logic;
+    pStr = PutToStr(pStr, (uint32)pin_mmudci->transdata.isid,1,"in_mmudci_transdata_isid");//             : mmu_idcache;
+    pStr = PutToStr(pStr, pin_mmudci->transdata.wb_data,32,"in_mmudci.transdata.wb_data");//          : std_logic_vector(31 downto 0);
+    pStr = PutToStr(pStr, pin_mmudci->flush_op,1,"in_mmudci.flush_op");//std_logic;
+    pStr = PutToStr(pStr, pin_mmudci->diag_op,1,"in_mmudci.diag_op");//std_logic;
+    pStr = PutToStr(pStr, pin_mmudci->wb_op,1,"in_mmudci.wb_op");//std_logic;
+    pStr = PutToStr(pStr, pin_mmudci->fsread,1,"in_mmudci.fsread");;//std_logic;
+    pStr = PutToStr(pStr, pin_mmudci->mmctrl1.e,1,"in_mmudci.mmctrl1.e");//    : std_logic;                -- enable
+    pStr = PutToStr(pStr, pin_mmudci->mmctrl1.nf,1,"in_mmudci.mmctrl1.nf");//    : std_logic;                -- no fault
+    pStr = PutToStr(pStr, pin_mmudci->mmctrl1.pso,1,"in_mmudci.mmctrl1.pso");//    : std_logic;                -- partial store order
+    pStr = PutToStr(pStr, pin_mmudci->mmctrl1.pagesize,2,"in_mmudci.mmctrl1.pagesize");// std_logic_vector(1 downto 0);-- page size
+    pStr = PutToStr(pStr, pin_mmudci->mmctrl1.ctx,M_CTX_SZ,"in_mmudci.mmctrl1.ctx");//     : std_logic_vector(M_CTX_SZ-1 downto 0);-- context nr
+    pStr = PutToStr(pStr, pin_mmudci->mmctrl1.ctxp,MMCTRL_CTXP_SZ,"in_mmudci.mmctrl1.ctxp");//    : std_logic_vector(MMCTRL_CTXP_SZ-1 downto 0);  -- context table pointer
+    pStr = PutToStr(pStr, pin_mmudci->mmctrl1.tlbdis,1,"in_mmudci.mmctrl1.tlbdis");// : std_logic;                            -- tlb disabled
+    pStr = PutToStr(pStr, pin_mmudci->mmctrl1.bar,2,"in_mmudci.mmctrl1.bar");// : std_logic_vector(1 downto 0);         -- preplace barrier
     //
-    pStr = PutToStr(pStr, in_mmuici.trans_op,1,"in_mmuici.trans_op");//        : std_logic; 
-    pStr = PutToStr(pStr, in_mmuici.transdata.data,32,"in_mmuici.transdata.data");//             : std_logic_vector(31 downto 0);
-    pStr = PutToStr(pStr, in_mmuici.transdata.su,1,"in_mmuici.transdata.su");//            : std_logic;
-    pStr = PutToStr(pStr, in_mmuici.transdata.read,1,"in_mmuici.transdata.read");//            : std_logic;
-    pStr = PutToStr(pStr, (uint32)in_mmuici.transdata.isid,1,"in_mmuici_transdata_isid");//             : mmu_idcache;
-    pStr = PutToStr(pStr, in_mmuici.transdata.wb_data,32,"in_mmuici.transdata.wb_data");//          : std_logic_vector(31 downto 0);
+    pStr = PutToStr(pStr, pin_mmuici->trans_op,1,"in_mmuici.trans_op");//        : std_logic; 
+    pStr = PutToStr(pStr, pin_mmuici->transdata.data,32,"in_mmuici.transdata.data");//             : std_logic_vector(31 downto 0);
+    pStr = PutToStr(pStr, pin_mmuici->transdata.su,1,"in_mmuici.transdata.su");//            : std_logic;
+    pStr = PutToStr(pStr, pin_mmuici->transdata.read,1,"in_mmuici.transdata.read");//            : std_logic;
+    pStr = PutToStr(pStr, (uint32)pin_mmuici->transdata.isid,1,"in_mmuici_transdata_isid");//             : mmu_idcache;
+    pStr = PutToStr(pStr, pin_mmuici->transdata.wb_data,32,"in_mmuici.transdata.wb_data");//          : std_logic_vector(31 downto 0);
     //
-    pStr = PutToStr(pStr, in_mcmmo.data,32,"in_mcmmo.data");//             : std_logic_vector(31 downto 0); -- memory data
-    pStr = PutToStr(pStr, in_mcmmo.ready,1,"in_mcmmo.ready");//           : std_logic;         -- cycle ready
-    pStr = PutToStr(pStr, in_mcmmo.grant,1,"in_mcmmo.grant");//           : std_logic;         -- 
-    pStr = PutToStr(pStr, in_mcmmo.retry,1,"in_mcmmo.retry");//           : std_logic;         -- 
-    pStr = PutToStr(pStr, in_mcmmo.mexc,1,"in_mcmmo.mexc");//           : std_logic;         -- memory exception
-    pStr = PutToStr(pStr, in_mcmmo.werr,1,"in_mcmmo.werr");//           : std_logic;         -- memory write error
-    pStr = PutToStr(pStr, in_mcmmo.cache,1,"in_mcmmo.cache");//           : std_logic;               -- cacheable data
+    pStr = PutToStr(pStr, pin_mcmmo->data,32,"in_mcmmo.data");//             : std_logic_vector(31 downto 0); -- memory data
+    pStr = PutToStr(pStr, pin_mcmmo->ready,1,"in_mcmmo.ready");//           : std_logic;         -- cycle ready
+    pStr = PutToStr(pStr, pin_mcmmo->grant,1,"in_mcmmo.grant");//           : std_logic;         -- 
+    pStr = PutToStr(pStr, pin_mcmmo->retry,1,"in_mcmmo.retry");//           : std_logic;         -- 
+    pStr = PutToStr(pStr, pin_mcmmo->mexc,1,"in_mcmmo.mexc");//           : std_logic;         -- memory exception
+    pStr = PutToStr(pStr, pin_mcmmo->werr,1,"in_mcmmo.werr");//           : std_logic;         -- memory write error
+    pStr = PutToStr(pStr, pin_mcmmo->cache,1,"in_mcmmo.cache");//           : std_logic;               -- cacheable data
 
 
 
     // Outputs:
-    pStr = PutToStr(pStr, ch_mmudco.grant,1,"ch_mmudco.grant");//         : std_logic;
-    pStr = PutToStr(pStr, ch_mmudco.transdata.finish,1,"ch_mmudco.transdata.finish");;//          : std_logic;
-    pStr = PutToStr(pStr, ch_mmudco.transdata.data,32,"ch_mmudco.transdata.data");//          : std_logic_vector(31 downto 0);
-    pStr = PutToStr(pStr, ch_mmudco.transdata.cache,1,"ch_mmudco.transdata.cache");//          : std_logic;
-    pStr = PutToStr(pStr, ch_mmudco.transdata.accexc,1,"ch_mmudco.transdata.accexc");//          : std_logic;
-    pStr = PutToStr(pStr, ch_mmudco.mmctrl2.fs.ow,1,"ch_mmudco.mmctrl2.fs.ow");//std_logic;          
-    pStr = PutToStr(pStr, ch_mmudco.mmctrl2.fs.fav,1,"ch_mmudco.mmctrl2.fs.fav");
-    pStr = PutToStr(pStr, ch_mmudco.mmctrl2.fs.ft,3,"ch_mmudco.mmctrl2.fs.ft");//std_logic_vector(2 downto 0);           -- fault type
-    pStr = PutToStr(pStr, ch_mmudco.mmctrl2.fs.at_ls,1,"ch_mmudco.mmctrl2.fs.at_ls");//std_logic;                              -- access type, load/store
-    pStr = PutToStr(pStr, ch_mmudco.mmctrl2.fs.at_id,1,"ch_mmudco.mmctrl2.fs.at_id");//std_logic;                              -- access type, i/dcache
-    pStr = PutToStr(pStr, ch_mmudco.mmctrl2.fs.at_su,1,"ch_mmudco.mmctrl2.fs.at_su");//std_logic;                              -- access type, su/user
-    pStr = PutToStr(pStr, ch_mmudco.mmctrl2.fs.l,2,"ch_mmudco.mmctrl2.fs.l");//std_logic_vector(1 downto 0);           -- level 
-    pStr = PutToStr(pStr, ch_mmudco.mmctrl2.fs.ebe,8,"ch_mmudco.mmctrl2.fs.ebe");//std_logic_vector(7 downto 0);            
-    pStr = PutToStr(pStr, ch_mmudco.mmctrl2.valid,1,"ch_mmudco.mmctrl2.valid");// std_logic;
-    pStr = PutToStr(pStr, ch_mmudco.mmctrl2.fa,VA_I_SZ,"ch_mmudco.mmctrl2.fa");//    : std_logic_vector(VA_I_SZ-1 downto 0);   -- fault address register
-    pStr = PutToStr(pStr, ch_mmudco.wbtransdata.finish,1,"ch_mmudco.wbtransdata.finish");//          : std_logic;
-    pStr = PutToStr(pStr, ch_mmudco.wbtransdata.data,32,"ch_mmudco.wbtransdata.data");//          : std_logic_vector(31 downto 0);
-    pStr = PutToStr(pStr, ch_mmudco.wbtransdata.cache,1,"ch_mmudco.wbtransdata.cache");//          : std_logic;
-    pStr = PutToStr(pStr, ch_mmudco.wbtransdata.accexc,1,"ch_mmudco.wbtransdata.accexc");//          : std_logic;
-    pStr = PutToStr(pStr, ch_mmudco.tlbmiss,1,"ch_mmudco.tlbmiss");//         : std_logic;
+    pStr = PutToStr(pStr, pch_mmudco->grant,1,"ch_mmudco.grant");//         : std_logic;
+    pStr = PutToStr(pStr, pch_mmudco->transdata.finish,1,"ch_mmudco.transdata.finish");;//          : std_logic;
+    pStr = PutToStr(pStr, pch_mmudco->transdata.data,32,"ch_mmudco.transdata.data");//          : std_logic_vector(31 downto 0);
+    pStr = PutToStr(pStr, pch_mmudco->transdata.cache,1,"ch_mmudco.transdata.cache");//          : std_logic;
+    pStr = PutToStr(pStr, pch_mmudco->transdata.accexc,1,"ch_mmudco.transdata.accexc");//          : std_logic;
+    pStr = PutToStr(pStr, pch_mmudco->mmctrl2.fs.ow,1,"ch_mmudco.mmctrl2.fs.ow");//std_logic;          
+    pStr = PutToStr(pStr, pch_mmudco->mmctrl2.fs.fav,1,"ch_mmudco.mmctrl2.fs.fav");
+    pStr = PutToStr(pStr, pch_mmudco->mmctrl2.fs.ft,3,"ch_mmudco.mmctrl2.fs.ft");//std_logic_vector(2 downto 0);           -- fault type
+    pStr = PutToStr(pStr, pch_mmudco->mmctrl2.fs.at_ls,1,"ch_mmudco.mmctrl2.fs.at_ls");//std_logic;                              -- access type, load/store
+    pStr = PutToStr(pStr, pch_mmudco->mmctrl2.fs.at_id,1,"ch_mmudco.mmctrl2.fs.at_id");//std_logic;                              -- access type, i/dcache
+    pStr = PutToStr(pStr, pch_mmudco->mmctrl2.fs.at_su,1,"ch_mmudco.mmctrl2.fs.at_su");//std_logic;                              -- access type, su/user
+    pStr = PutToStr(pStr, pch_mmudco->mmctrl2.fs.l,2,"ch_mmudco.mmctrl2.fs.l");//std_logic_vector(1 downto 0);           -- level 
+    pStr = PutToStr(pStr, pch_mmudco->mmctrl2.fs.ebe,8,"ch_mmudco.mmctrl2.fs.ebe");//std_logic_vector(7 downto 0);            
+    pStr = PutToStr(pStr, pch_mmudco->mmctrl2.valid,1,"ch_mmudco.mmctrl2.valid");// std_logic;
+    pStr = PutToStr(pStr, pch_mmudco->mmctrl2.fa,VA_I_SZ,"ch_mmudco.mmctrl2.fa");//    : std_logic_vector(VA_I_SZ-1 downto 0);   -- fault address register
+    pStr = PutToStr(pStr, pch_mmudco->wbtransdata.finish,1,"ch_mmudco.wbtransdata.finish");//          : std_logic;
+    pStr = PutToStr(pStr, pch_mmudco->wbtransdata.data,32,"ch_mmudco.wbtransdata.data");//          : std_logic_vector(31 downto 0);
+    pStr = PutToStr(pStr, pch_mmudco->wbtransdata.cache,1,"ch_mmudco.wbtransdata.cache");//          : std_logic;
+    pStr = PutToStr(pStr, pch_mmudco->wbtransdata.accexc,1,"ch_mmudco.wbtransdata.accexc");//          : std_logic;
+    pStr = PutToStr(pStr, pch_mmudco->tlbmiss,1,"ch_mmudco.tlbmiss");//         : std_logic;
     //
-    pStr = PutToStr(pStr, ch_mmuico.transdata.data,32,"ch_mmuico.transdata.data");//          : std_logic_vector(31 downto 0);
-    pStr = PutToStr(pStr, ch_mmuico.grant,1,"ch_mmuico.grant");//           : std_logic;
-    pStr = PutToStr(pStr, ch_mmuico.transdata.finish,1,"ch_mmuico.transdata.finish");//          : std_logic;
-    pStr = PutToStr(pStr, ch_mmuico.transdata.cache,1,"ch_mmuico.transdata.cache");//          : std_logic;
-    pStr = PutToStr(pStr, ch_mmuico.transdata.accexc,1,"ch_mmuico.transdata.accexc");//          : std_logic;
-    pStr = PutToStr(pStr, ch_mmuico.tlbmiss,1,"ch_mmuico.tlbmiss");//         : std_logic;
+    pStr = PutToStr(pStr, pch_mmuico->transdata.data,32,"ch_mmuico.transdata.data");//          : std_logic_vector(31 downto 0);
+    pStr = PutToStr(pStr, pch_mmuico->grant,1,"ch_mmuico.grant");//           : std_logic;
+    pStr = PutToStr(pStr, pch_mmuico->transdata.finish,1,"ch_mmuico.transdata.finish");//          : std_logic;
+    pStr = PutToStr(pStr, pch_mmuico->transdata.cache,1,"ch_mmuico.transdata.cache");//          : std_logic;
+    pStr = PutToStr(pStr, pch_mmuico->transdata.accexc,1,"ch_mmuico.transdata.accexc");//          : std_logic;
+    pStr = PutToStr(pStr, pch_mmuico->tlbmiss,1,"ch_mmuico.tlbmiss");//         : std_logic;
     //
-    pStr = PutToStr(pStr, ch_mcmmi.address,32,"ch_mcmmi.address");//          : std_logic_vector(31 downto 0); 
-    pStr = PutToStr(pStr, ch_mcmmi.data,32,"ch_mcmmi.data");//             : std_logic_vector(31 downto 0);
-    pStr = PutToStr(pStr, ch_mcmmi.size,2,"ch_mcmmi.size");//          : std_logic_vector(1 downto 0);
-    pStr = PutToStr(pStr, ch_mcmmi.burst,1,"ch_mcmmi.burst");//          : std_logic;
-    pStr = PutToStr(pStr, ch_mcmmi.read,1,"ch_mcmmi.read");//          : std_logic;
-    pStr = PutToStr(pStr, ch_mcmmi.req,1,"ch_mcmmi.req");//          : std_logic;
-    pStr = PutToStr(pStr, ch_mcmmi.lock,1,"ch_mcmmi.lock");//          : std_logic;
+    pStr = PutToStr(pStr, pch_mcmmi->address,32,"ch_mcmmi.address");//          : std_logic_vector(31 downto 0); 
+    pStr = PutToStr(pStr, pch_mcmmi->data,32,"ch_mcmmi.data");//             : std_logic_vector(31 downto 0);
+    pStr = PutToStr(pStr, pch_mcmmi->size,2,"ch_mcmmi.size");//          : std_logic_vector(1 downto 0);
+    pStr = PutToStr(pStr, pch_mcmmi->burst,1,"ch_mcmmi.burst");//          : std_logic;
+    pStr = PutToStr(pStr, pch_mcmmi->read,1,"ch_mcmmi.read");//          : std_logic;
+    pStr = PutToStr(pStr, pch_mcmmi->req,1,"ch_mcmmi.req");//          : std_logic;
+    pStr = PutToStr(pStr, pch_mcmmi->lock,1,"ch_mcmmi.lock");//          : std_logic;
 
   
     PrintIndexStr();
 
     *posBench[TB_mmu] << chStr << "\n";
   }
-
+#ifdef DBG_mmu
   // Clock update:
   tst_mmu.ClkUpdate();
-}
 #endif
+}
+
 

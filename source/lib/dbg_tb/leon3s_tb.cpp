@@ -3,12 +3,14 @@
 extern leon3mp  topLeon3mp;
 
 extern void ResetPutStr();
+extern void SetSkipOutput(bool v);
 extern void PrintIndexStr();
 
 
 //****************************************************************************
 void dbg::leon3s_tb(SystemOnChipIO &io)
 {
+  char chTmp[256];
   // default output using SoC top level:
   ahb_mst_in_type     *pin_ahbi = &topLeon3mp.stCtrl2Mst;
   ahb_mst_out_type    *pch_ahbo = &topLeon3mp.stMst2Ctrl.arr[AHB_MASTER_LEON3];
@@ -132,6 +134,7 @@ void dbg::leon3s_tb(SystemOnChipIO &io)
     chStr[0] = '\0';
 
     ResetPutStr();
+    //SetSkipOutput(true);
   
     // inputs:
     pStr = PutToStr(pStr, io.inNRst, 1, "inNRst");
@@ -166,54 +169,28 @@ void dbg::leon3s_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pin_ahbsi->scanen,1,"in_ahbsi.scanen");//                        -- scan enable
     pStr = PutToStr(pStr, pin_ahbsi->testoen,1,"in_ahbsi.testoen");;//                       -- test output enable 
     //
-    int32 i=0;
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hready,1,"in_ahbso(0).hready");//                           -- transfer done
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hresp,2,"in_ahbso(0).hresp");//[1:0] : (1 downto 0);   -- response type
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hrdata,CFG_AHBDW,"in_ahbso(0).hrdata");//(AHBDW-1 downto 0);   -- read data bus
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hsplit,16,"in_ahbso(0).hsplit");//  : (15 downto 0);  -- split completion
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hcache,1,"in_ahbso(0).hcache");//                           -- cacheable
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hirq,AHB_IRQ_MAX,"in_ahbso(0).hirq");//    : (AHB_IRQ_MAX-1 downto 0); -- interrupt bus
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[0],32,"in_ahbso(0).hconfig(0)");//   : ahb_config_type;      -- memory access reg.
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[1],32,"in_ahbso(0).hconfig(1)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[2],32,"in_ahbso(0).hconfig(2)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[3],32,"in_ahbso(0).hconfig(3)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[4],32,"in_ahbso(0).hconfig(4)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[5],32,"in_ahbso(0).hconfig(5)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[6],32,"in_ahbso(0).hconfig(6)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[7],32,"in_ahbso(0).hconfig(7)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hindex,4,"conv_integer:in_ahbso(0).hindex",true);//    : integer range 0 to AHB_SLAVES_MAX-1;   -- diagnostic use only
-    i=1;
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hready,1,"in_ahbso(1).hready");//                           -- transfer done
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hresp,2,"in_ahbso(1).hresp");//[1:0] : (1 downto 0);   -- response type
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hrdata,CFG_AHBDW,"in_ahbso(1).hrdata");//(AHBDW-1 downto 0);   -- read data bus
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hsplit,16,"in_ahbso(1).hsplit");//  : (15 downto 0);  -- split completion
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hcache,1,"in_ahbso(1).hcache");//                           -- cacheable
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hirq,AHB_IRQ_MAX,"in_ahbso(1).hirq");//    : (AHB_IRQ_MAX-1 downto 0); -- interrupt bus
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[0],32,"in_ahbso(1).hconfig(0)");//   : ahb_config_type;      -- memory access reg.
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[1],32,"in_ahbso(1).hconfig(1)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[2],32,"in_ahbso(1).hconfig(2)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[3],32,"in_ahbso(1).hconfig(3)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[4],32,"in_ahbso(1).hconfig(4)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[5],32,"in_ahbso(1).hconfig(5)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[6],32,"in_ahbso(1).hconfig(6)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[7],32,"in_ahbso(1).hconfig(7)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hindex,4,"conv_integer:in_ahbso(1).hindex",true);//    : integer range 0 to AHB_SLAVES_MAX-1;   -- diagnostic use only
-    i=2;
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hready,1,"in_ahbso(2).hready");//                           -- transfer done
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hresp,2,"in_ahbso(2).hresp");//[1:0] : (1 downto 0);   -- response type
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hrdata,CFG_AHBDW,"in_ahbso(2).hrdata");//(AHBDW-1 downto 0);   -- read data bus
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hsplit,16,"in_ahbso(2).hsplit");//  : (15 downto 0);  -- split completion
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hcache,1,"in_ahbso(2).hcache");//                           -- cacheable
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hirq,AHB_IRQ_MAX,"in_ahbso(2).hirq");//    : (AHB_IRQ_MAX-1 downto 0); -- interrupt bus
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[0],32,"in_ahbso(2).hconfig(0)");//   : ahb_config_type;      -- memory access reg.
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[1],32,"in_ahbso(2).hconfig(1)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[2],32,"in_ahbso(2).hconfig(2)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[3],32,"in_ahbso(2).hconfig(3)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[4],32,"in_ahbso(2).hconfig(4)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[5],32,"in_ahbso(2).hconfig(5)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[6],32,"in_ahbso(2).hconfig(6)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[7],32,"in_ahbso(2).hconfig(7)");
-    pStr = PutToStr(pStr, pin_ahbso->arr[i].hindex,4,"conv_integer:in_ahbso(2).hindex",true);//    : integer range 0 to AHB_SLAVES_MAX-1;   -- diagnostic use only
+    for (int32 i=0; i<AHB_SLAVE_TOTAL; i++)
+    {
+      sprintf_s(chTmp,"in_ahbso(%i).hready",i);
+      pStr = PutToStr(pStr, pin_ahbso->arr[i].hready,1,chTmp);//                           -- transfer done
+      sprintf_s(chTmp,"in_ahbso(%i).hresp",i);
+      pStr = PutToStr(pStr, pin_ahbso->arr[i].hresp,2,chTmp);//[1:0] : (1 downto 0);   -- response type
+      sprintf_s(chTmp,"in_ahbso(%i).hrdata",i);
+      pStr = PutToStr(pStr, pin_ahbso->arr[i].hrdata,CFG_AHBDW,chTmp);//(AHBDW-1 downto 0);   -- read data bus
+      sprintf_s(chTmp,"in_ahbso(%i).hsplit",i);
+      pStr = PutToStr(pStr, pin_ahbso->arr[i].hsplit,16,chTmp);//  : (15 downto 0);  -- split completion
+      sprintf_s(chTmp,"in_ahbso(%i).hcache",i);
+      pStr = PutToStr(pStr, pin_ahbso->arr[i].hcache,1,chTmp);//                           -- cacheable
+      sprintf_s(chTmp,"in_ahbso(%i).hirq",i);
+      pStr = PutToStr(pStr, pin_ahbso->arr[i].hirq,AHB_IRQ_MAX,chTmp);//    : (AHB_IRQ_MAX-1 downto 0); -- interrupt bus
+      for(int32 k=0; k<8; k++)
+      {
+        sprintf_s(chTmp,"in_ahbso(%i).hconfig(%i)",i,k);
+        pStr = PutToStr(pStr, pin_ahbso->arr[i].hconfig.arr[k],32,chTmp);//   : ahb_config_type;      -- memory access reg.
+      }
+      sprintf_s(chTmp,"conv_integer:in_ahbso(%i).hindex",i);
+      pStr = PutToStr(pStr, pin_ahbso->arr[i].hindex,4,chTmp);//    : integer range 0 to AHB_SLAVES_MAX-1;   -- diagnostic use only
+    }
     //
     pStr = PutToStr(pStr, pin_irqi->irl,4,"in_irqi.irl");//     : std_logic_vector(3 downto 0);
     pStr = PutToStr(pStr, pin_irqi->rst,1,"in_irqi.rst");//     : std_ulogic;
@@ -252,15 +229,12 @@ void dbg::leon3s_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pch_ahbo->hprot,4,"ch_ahbo.hprot");//[3:0] : (3 downto 0);   -- protection control
     pStr = PutToStr(pStr, pch_ahbo->hwdata,CFG_AHBDW,"ch_ahbo.hwdata");//[31:0]  : (AHBDW-1 downto 0);   -- write data bus
     pStr = PutToStr(pStr, pch_ahbo->hirq,AHB_IRQ_MAX,"ch_ahbo.hirq");//[31:0]    : (AHB_IRQ_MAX-1 downto 0); -- interrupt bus
-    pStr = PutToStr(pStr, pch_ahbo->hconfig.arr[0],32,"ch_ahbo.hconfig(0)");//   : ahb_config_type;      -- memory access reg.
-    pStr = PutToStr(pStr, pch_ahbo->hconfig.arr[1],32,"ch_ahbo.hconfig(1)");
-    pStr = PutToStr(pStr, pch_ahbo->hconfig.arr[2],32,"ch_ahbo.hconfig(2)");
-    pStr = PutToStr(pStr, pch_ahbo->hconfig.arr[3],32,"ch_ahbo.hconfig(3)");
-    pStr = PutToStr(pStr, pch_ahbo->hconfig.arr[4],32,"ch_ahbo.hconfig(4)");
-    pStr = PutToStr(pStr, pch_ahbo->hconfig.arr[5],32,"ch_ahbo.hconfig(5)");
-    pStr = PutToStr(pStr, pch_ahbo->hconfig.arr[6],32,"ch_ahbo.hconfig(6)");
-    pStr = PutToStr(pStr, pch_ahbo->hconfig.arr[7],32,"ch_ahbo.hconfig(7)");
-    pStr = PutToStr(pStr, pch_ahbo->hindex,4,"conv_integer:ch_ahbo.hindex",true);// integer range 0 to AHB_MASTERS_MAX-1;   -- diagnostic use only
+    for(int32 k=0; k<8; k++)
+    {
+      sprintf_s(chTmp,"ch_ahbo.hconfig(%i)",k);
+      pStr = PutToStr(pStr, pch_ahbo->hconfig.arr[k],32,chTmp);//   : ahb_config_type;      -- memory access reg.
+    }
+    pStr = PutToStr(pStr, pch_ahbo->hindex,4,"conv_integer:ch_ahbo.hindex");// integer range 0 to AHB_MASTERS_MAX-1;   -- diagnostic use only
     //
     pStr = PutToStr(pStr, pch_irqo->intack,1,"ch_irqo.intack");//  : std_ulogic;
     pStr = PutToStr(pStr, pch_irqo->irl,4,"ch_irqo.irl");//   : std_logic_vector(3 downto 0);
@@ -294,6 +268,7 @@ void dbg::leon3s_tb(SystemOnChipIO &io)
     // internal:
                         
     PrintIndexStr();
+    //SetSkipOutput(false);
 
     *posBench[TB_leon3s] << chStr << "\n";
   }

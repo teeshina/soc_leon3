@@ -22,12 +22,25 @@ void dbg::ahbctrl_tb(SystemOnChipIO &io)
   ahb_slv_in_type    *pstCtrl2Slv = &topLeon3mp.stCtrl2Slv;
   ahb_slv_out_vector *pstSlv2Ctrl = &topLeon3mp.stSlv2Ctrl;
 
+#ifdef DBG_ahbctrl
+  in_VectSize=32;
+  if(io.inClk.eClock_z==SClock::CLK_POSEDGE)
+  {
+    in_vect = rand()&0x3;//BITS32((rand()<<15) | rand(), in_VectSize-1, 0);
+  }
+  ch_out = tst_ahbctrl.tz(in_vect, in_VectSize);
+#endif
+
   if(io.inClk.eClock==SClock::CLK_POSEDGE)
   {
     pStr = chStr;
     chStr[0] = '\0';
     ResetPutStr();
 
+#if 1
+    pStr = PutToStr(pStr, in_vect, in_VectSize, "in_vect");
+    pStr = PutToStr(pStr, ch_out, 7, "ch_out");
+#else
     // Input:
     pStr = PutToStr(pStr, io.inNRst, 1,"inNRst");
     //
@@ -116,6 +129,7 @@ void dbg::ahbctrl_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pstCtrl2Slv->scanen,1,"ch_slvi.scanen");//                        -- scan enable
     pStr = PutToStr(pStr, pstCtrl2Slv->testoen,1,"ch_slvi.testoen");//                       -- test output enable 
 
+#endif
     
     PrintIndexStr();
     

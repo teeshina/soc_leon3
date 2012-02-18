@@ -27,7 +27,7 @@
 //#define nwp     CFG_NWP//      : integer range 0 to 4 := 0;
 //#define gen_pclow   CFG_PCLOW//   : integer range 0 to 2 := 2;
 //#define notag   CFG_NOTAG//0//   : integer range 0 to 1 := 0;
-#define INDEX   0//   : integer range 0 to 15:= 0;
+//#define INDEX   0//   : integer range 0 to 15:= 0;
 //#define lddel   CFG_LDDEL//   : integer range 1 to 2 := 2;
 //#define irfwt   CFG_IRFWT//    : integer range 0 to 1 := 0;
 //#define disas   CFG_DISAS//   : integer range 0 to 2 := 0;
@@ -104,8 +104,9 @@ const uint32 SZDBL     = 3;//: std_logic_vector(1 downto 0) := "11";
 
 
 //****************************************************************************
-iu3::iu3()
+iu3::iu3(uint32 hindex_)
 {
+  hindex = hindex_;
 }
 
 //****************************************************************************
@@ -305,7 +306,7 @@ word iu3::asr17_gen (registers &r)
   word asr17 = 0;
   int32 fpu2;
 
-  asr17 = INDEX<<28;
+  asr17 = hindex<<28;
   if (CFG_BP == 2) asr17 |= (r.w.s.dbp<<27);
   if (CFG_NOTAG == 0)  asr17 |= (1<<26);  //  -- CASA/TADD present
   if (clk2x > 8)
@@ -3157,7 +3158,7 @@ void iu3::Update
   else if(CFG_BP==1) BPRED = 1;
   else               BPRED = !rbR.Q.w.s.dbp;
 
-  v = r = rbR.Q;;
+  v = r = rbR.Q;
   vwpr = wpr.Q;
   vdsu = dsur.Q;
   vp = rp.Q;
@@ -3628,7 +3629,7 @@ void iu3::Update
   v.a.imm = imm_data(r, de_inst);
   
 #if 1
-  if (iClkCnt>=1241)
+  if (iClkCnt>=21)
   bool st = true;
 #endif
   lock_gen(r, BPRED, de_rs2, de_rd, v.a.rfa1, v.a.rfa2, v.a.ctrl.rd, de_inst, 

@@ -50,7 +50,8 @@ void AhbControl::Update( uint32 inNRst,
   wbMstReqAll = 0;
   for (int32 i=0; i<AHB_MASTER_TOTAL; i++)
   {
-    if(inMst2Ctrl.arr[i].hbusreq)   wbMstReqAll |= (0x1<<i);
+    if(inMst2Ctrl.arr[i].hbusreq)   
+      wbMstReqAll |= (0x1<<i);
   }
   wbMstReqMask = (MSK32(AHB_MASTER_TOTAL-1,0)<<(rbMstSel[0].Q+1)) & MSK32(AHB_MASTER_TOTAL-1,0);
 
@@ -87,10 +88,14 @@ void AhbControl::Update( uint32 inNRst,
   // Important:
   //      check condition of burst operation,
   //      don't change master index in case of (htrans==SEQ) (see page 66 of "AMBA specification")
-  wNewBurst = (inMst2Ctrl.arr[rbMstSel[0].Q].hburst!=HBURST_SINGLE)&&(inMst2Ctrl.arr[rbMstSel[0].Q].htrans==HTRANS_NONSEQ);
+  wBusFree = (rbMstSel[0].Q==-1) ? 1: 0;
+  wNewBurst = wBusFree ? 0
+            :(inMst2Ctrl.arr[rbMstSel[0].Q].hburst!=HBURST_SINGLE)&&(inMst2Ctrl.arr[rbMstSel[0].Q].htrans==HTRANS_NONSEQ);
   wGuardNewBurst = (rbMstSel[0].Q==rbLastBurstMst.Q)&&wNewBurst;
 
-  if( (inMst2Ctrl.arr[rbMstSel[0].Q].hburst != HBURST_SINGLE)
+  if(wBusFree)
+    wbMstSel = wbMstSelNext;
+  else if( (inMst2Ctrl.arr[rbMstSel[0].Q].hburst != HBURST_SINGLE)
    && (inMst2Ctrl.arr[rbMstSel[0].Q].hbusreq) && !wGuardNewBurst )
     wbMstSel = rbMstSel[0].Q;
   else
@@ -124,7 +129,8 @@ void AhbControl::Update( uint32 inNRst,
 
   // Check what is slave address selected:
   // Control (plug'n'play) memory area
-  if( (inMst2Ctrl.arr[rbMstSel[0].Q].haddr>=ADDR_CONFIG_MIN)
+  if( (rbMstSel[0].Q!=-1)
+    &&(inMst2Ctrl.arr[rbMstSel[0].Q].haddr>=ADDR_CONFIG_MIN)
     &&(inMst2Ctrl.arr[rbMstSel[0].Q].haddr<=ADDR_CONFIG_MAX))  wCfgSel = 1;
   else                                                         wCfgSel = 0;
 
@@ -201,7 +207,10 @@ void AhbControl::Update( uint32 inNRst,
                      : 0;
   outCtrl2Mst.hirq = 0;
 
-
+  #if 1
+    if(iClkCnt>=19)
+    bool st = true;
+  #endif
 
   outCtrl2Slv.hsel = (wbSlvSel==-1) ? 0: (0x1<<wbSlvSel);
   outCtrl2Slv.hready = wHReady;

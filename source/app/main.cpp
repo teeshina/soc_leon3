@@ -7,6 +7,12 @@
 
 #include "headers.h"
 
+static const double SYS_CLOCK_F  = 66000000; //Hz
+static const double JTAG_CLOCK_F = 20000000; //Hz
+
+static const double timescale = 1.0/SYS_CLOCK_F/4.0;
+
+
 int32 iClkCnt = 0;
 
 #define ELF_FILE "..\\source\\firmware\\HelloWorld\\target_VIRTEX_ML605\\elf\\HelloWorld.elf"
@@ -17,40 +23,13 @@ jtag_port       portJTAG;
 uart_port       portUART1;
 dbg             clDbg;
 
+void GetInitSettings(LibInitData *p);
 
-
+//*******************************************************************
 int _tmain(int argc, _TCHAR* argv[])
 {
   LibInitData sLibInitData;
-  // Select testbench to print:
-  for (int i=0; i<TB_TOTAL; i++)
-    sLibInitData.uiBenchEna[i] = PRINT_TESTBENCH_DISABLE;
-  
-  //sLibInitData.uiBenchEna[TB_jtagcom] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_ahbmaster] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_AHBJTAG] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_ahbctrl] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_mmutlbcam] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_mmutlb] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_mul32] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_div32] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_mmu_icache] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_mmu_dcache] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_mmu_acache] = PRINT_TESTBENCH_ENABLE;
-  sLibInitData.uiBenchEna[TB_iu3] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_mmutw] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_mmulrue] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_mmulru] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_mmu] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_mmu_cache] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_cachemem] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_regfile_3p] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_tbufmem] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_leon3s] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_dsu3x] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_ahbram] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_apbctrl] = PRINT_TESTBENCH_ENABLE;
-  //sLibInitData.uiBenchEna[TB_apbuart] = PRINT_TESTBENCH_ENABLE;
+  GetInitSettings(&sLibInitData);
   
   // Library init procedure:
   LibInit(&sLibInitData);
@@ -85,6 +64,41 @@ int _tmain(int argc, _TCHAR* argv[])
   }
   LibClose();
 	return 0;
+}
+
+//*******************************************************************
+void GetInitSettings(LibInitData *p)
+{
+  // Select testbench to print:
+  for (int i=0; i<TB_TOTAL; i++)
+    p->uiBenchEna[i] = PRINT_TESTBENCH_DISABLE;
+  
+  //p->uiBenchEna[TB_jtagcom] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_ahbmaster] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_AHBJTAG] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_ahbctrl] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_mmutlbcam] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_mmutlb] = PRINT_TESTBENCH_ENABLE;//!
+  //p->uiBenchEna[TB_mul32] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_div32] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_mmu_icache] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_iu3] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_mmu_dcache] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_mmu_acache] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_mmutw] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_mmulrue] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_mmulru] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_mmu] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_mmu_cache] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_cachemem] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_regfile_3p] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_tbufmem] = PRINT_TESTBENCH_ENABLE;
+  p->uiBenchEna[TB_leon3s] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_dsu3x] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_ahbram] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_apbctrl] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_apbuart] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_finderr] = PRINT_TESTBENCH_ENABLE;
 }
 
 

@@ -5,11 +5,14 @@ extern leon3mp  topLeon3mp;
 extern void ResetPutStr();
 extern void PrintIndexStr();
 
-#ifdef DBG_tbufmem
-
 //****************************************************************************
 void dbg::tbufmem_tb(SystemOnChipIO &io)
 {
+  tbufmem *ptst_tbufmem = topLeon3mp.pclLeon3s[0]->pclTBufMem;
+  tracebuf_in_type *pin_tbi  = &topLeon3mp.pclLeon3s[0]->tbi;
+  tracebuf_out_type *pch_tbo = &topLeon3mp.pclLeon3s[0]->tbo;;
+  
+#ifdef DBG_tbufmem
   if(io.inClk.eClock_z==SClock::CLK_POSEDGE)
   {
     //
@@ -26,6 +29,11 @@ void dbg::tbufmem_tb(SystemOnChipIO &io)
                       in_tbi,
                       ch_tbo );
 
+  ptst_tbufmem = &tst_tbufmem;
+  pin_tbi = &in_tbi;
+  pch_tbo = &ch_tbo;
+#endif
+
   // output file writting:
   if(io.inClk.eClock==SClock::CLK_POSEDGE)
   {
@@ -36,16 +44,16 @@ void dbg::tbufmem_tb(SystemOnChipIO &io)
   
     // inputs:
     pStr = PutToStr(pStr, io.inNRst, 1, "inNRst");
-    pStr = PutToStr(pStr, in_tbi.addr, 12, "in_tbi.addr");
-    pStr = PutToStr(pStr, in_tbi.data[0], 64, "in_tbi.data(63 downto 0)");
-    pStr = PutToStr(pStr, in_tbi.data[1], 64, "in_tbi.data(127 downto 64)");
-    pStr = PutToStr(pStr, in_tbi.enable, 1, "in_tbi.enable");
-    pStr = PutToStr(pStr, in_tbi.write, 4, "in_tbi.write");
-    pStr = PutToStr(pStr, in_tbi.diag, 4, "in_tbi.diag");
+    pStr = PutToStr(pStr, pin_tbi->addr, 12, "in_tbi.addr");
+    pStr = PutToStr(pStr, pin_tbi->data[0], 64, "in_tbi.data(63 downto 0)");
+    pStr = PutToStr(pStr, pin_tbi->data[1], 64, "in_tbi.data(127 downto 64)");
+    pStr = PutToStr(pStr, pin_tbi->enable, 1, "in_tbi.enable");
+    pStr = PutToStr(pStr, pin_tbi->write, 4, "in_tbi.write");
+    pStr = PutToStr(pStr, pin_tbi->diag, 4, "in_tbi.diag");
     
     // outputs:
-    pStr = PutToStr(pStr, ch_tbo.data[0], 64, "ch_tbo.data(63 downto 0)");
-    pStr = PutToStr(pStr, ch_tbo.data[1], 64, "ch_tbo.data(127 downto 64)");
+    pStr = PutToStr(pStr, pch_tbo->data[0], 64, "ch_tbo.data(63 downto 0)");
+    pStr = PutToStr(pStr, pch_tbo->data[1], 64, "ch_tbo.data(127 downto 64)");
 
     // internal:
                         
@@ -54,8 +62,10 @@ void dbg::tbufmem_tb(SystemOnChipIO &io)
     *posBench[TB_tbufmem] << chStr << "\n";
   }
 
+#ifdef DBG_tbufmem
   // Clock update:
   tst_tbufmem.ClkUpdate();
-}
 #endif
+}
+
 

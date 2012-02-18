@@ -119,7 +119,10 @@ void mmu_acache::Update( uint32 rst,//    : in  std_logic;
   vreqmsk = orv(r2.Q.reqmsk);
 
   //-- generate AHB signals
-
+#if 1
+  if(iClkCnt>35)
+  bool st = true;
+#endif
   dreq = mcdi.req;
   hwdata = mcdi.data;
   hbusreq = 0;

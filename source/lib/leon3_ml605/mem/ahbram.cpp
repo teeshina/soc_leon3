@@ -4,6 +4,9 @@
 // Contact:     sergey.khabarov@gnss-sensor.com
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
+//              sequence: form adr -> pass to RAM -> read value -> out to 
+//              interface isn't optimal. So, Ram->Update() temprorary moved up
+//****************************************************************************
 
 #include "lheaders.h"
 
@@ -42,6 +45,16 @@ void ahbram::Update( uint32 rst,//     : in  std_ulogic;
   ((ahb_membar_type*)(&ahbso.hconfig.arr[4]))->area_id  = CFGAREA_TYPE_AHB_MEM;
   ((ahb_membar_type*)(&ahbso.hconfig.arr[4]))->prefetch = 1;
   ((ahb_membar_type*)(&ahbso.hconfig.arr[4]))->cache    = 1;
+
+  uint32 tmp_ramdata[AHBDW/8];
+  ramdata = 0;
+  for (uint32 i=0; i<=(AHBDW/8-1); i++)
+  {
+    ppSyncram[i]->Update(	clk, ramaddr, BITS32(hwdata,i*8+7,i*8),
+	                      tmp_ramdata[i], ramsel, BIT32(write,i)); 
+    ramdata |= (tmp_ramdata[i]<<(i*8));
+  }
+
 
   v = r.Q;
   v.hready = 1;
@@ -215,15 +228,6 @@ void ahbram::Update( uint32 rst,//     : in  std_ulogic;
 //  hwdata <= ahbreaddata(ahbsi.hwdata, r.addr(4 downto 2),
 //                        conv_std_logic_vector(log2(AHBDW/8), 3));
   
-  uint32 tmp_ramdata[AHBDW/8];
-  ramdata = 0;
-  for (uint32 i=0; i<=(AHBDW/8-1); i++)
-  {
-    ppSyncram[i]->Update(	clk, ramaddr, BITS32(hwdata,i*8+7,i*8),
-	                      tmp_ramdata[i], ramsel, BIT32(write,i)); 
-    ramdata |= (tmp_ramdata[i]<<(i*8));
-  }
-
   r.CLK = clk;
   r.D = c;
   

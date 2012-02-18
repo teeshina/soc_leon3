@@ -14,6 +14,8 @@
 #define PRINT_TESTBENCH_ENABLE  1
 #define PRINT_TESTBENCH_DISABLE 0
 
+#define DIG ""
+
 //****************************************************************************
 enum ETestBenchName
 {
@@ -42,6 +44,7 @@ enum ETestBenchName
   TB_ahbram,
   TB_apbctrl,
   TB_apbuart,
+  TB_finderr,
   
   TB_TOTAL
 };
@@ -74,6 +77,7 @@ const char chBenchFile[TB_TOTAL][64]=
   "ahbram_tb.txt",
   "apbctrl_tb.txt",
   "apbuart_tb.txt",
+  "finderr1_tb.txt"
 };
 
 

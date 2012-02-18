@@ -22,7 +22,7 @@ use work.util_tb.all;
 
 entity iu3_tb is
   constant CLK_HPERIOD : time := 10 ps;
-  constant STRING_SIZE : integer := 3003; -- string size = index of the last element
+  constant STRING_SIZE : integer := 3068; -- string size = index of the last element
 
  
   constant ISETMSB : integer := log2x(CFG_ISETS)-1;
@@ -366,7 +366,9 @@ architecture behavior of iu3_tb is
   signal in_trap : std_ulogic;
   signal in_rp : pwd_register_type;
   signal ch_pd : std_ulogic;
-                     					
+  signal t_cramo_data0  : std_logic_vector(31 downto 0);
+  signal t_mcio_data  : std_logic_vector(31 downto 0);
+  
   signal U: std_ulogic_vector(STRING_SIZE-1 downto 0);
   signal S: std_logic_vector(STRING_SIZE-1 downto 0);
   shared variable iClkCnt : integer := 0;
@@ -392,10 +394,12 @@ begin
       read(rdLine, strLine);
       U <= StringToUVector(strLine);
       S <= StringToSVector(strLine);
-  
+      --wait for CLK_HPERIOD/2;
       wait until rising_edge(inClk);
-      --wait until falling_edge(inClk);
       iClkCnt := iClkCnt + 1;
+      if(iClkCnt=21) then
+        print("Break: " & tost(iClkCnt));
+      end if;
     end loop;
   end process procReadingFile;
 
@@ -412,6 +416,7 @@ begin
 
   cpo <= fpc_out_none;
 
+  --inClk <= U(3003);
   inNRst <= S(0);
   holdnx <= S(1);
   ico.data(0) <= S(33 downto 2);
@@ -782,6 +787,9 @@ begin
   in_dsur.tt <= S(3000 downto 2993);
   in_dsur.crdy <= S(3002 downto 3001);
 
+  t_cramo_data0 <= S(3035 downto 3004);
+  t_mcio_data <= S(3067 downto 3036);
+
   
 --  in_r.x.rstate <= dsu2;
 
@@ -821,6 +829,9 @@ begin
 
   states : process(inClk, S(2471 downto 2470))
   begin
+    if(rising_edge(inClk))then
+      --iClkCnt := iClkCnt + 1;
+    end if;
     if(S(2471 downto 2470)="00")     then in_r.x.rstate <= run;
     elsif (S(2471 downto 2470)="01") then in_r.x.rstate <= trap;
     elsif (S(2471 downto 2470)="10") then in_r.x.rstate <= dsu1;
@@ -828,15 +839,10 @@ begin
     end if;
   end process states;
   
-  comb : process(inNRst,inClk, in_r, dbgi, in_wpr, mulo, divo, dco, fpo,cpo)
+  procCheck : process(inNRst,inClk, in_r, dbgi, in_wpr, mulo, divo, dco, fpo,cpo)
    	variable pd : std_ulogic; 
   begin
-	  if(iClkCnt=152) then
-  	  --print("break");
-	  end if;
-
-    
-    if(rising_edge(inClk) and (iClkCnt>14)) then
+    if(rising_edge(inClk) and (iClkCnt>4)) then
      if(ch_ici/=ici) then print("Err: ici");  iErrCnt:=iErrCnt+1; end if;
      if(ch_dci/=dci) then print("Err: dci");  iErrCnt:=iErrCnt+1; end if;
      if(ch_rfi/=rfi) then print("Err: rfi");  iErrCnt:=iErrCnt+1; end if;
@@ -846,17 +852,11 @@ begin
      if(ch_muli/=muli) then print("Err: muli");  iErrCnt:=iErrCnt+1; end if;
      if(ch_divi/=divi) then print("Err: divi");  iErrCnt:=iErrCnt+1; end if;
      if(ch_rfi/=rfi) then print("Err: rfi");  iErrCnt:=iErrCnt+1; end if;
+
 --     if(ch_cpi/=cpi) then print("Err: cpi");  iErrCnt:=iErrCnt+1; end if;
     end if;
-  end process comb;
+  end process procCheck;
   
 
-procCheck : process (inClk)
-begin
-  if(rising_edge(inClk) and (iClkCnt>6)) then
---    if(ch_dbgm/=ch_ico.idle)then print("Err: ico.idle");  iErrCnt:=iErrCnt+1; end if;
-  end if;
-end process procCheck;
-
-  
+ 
 end;

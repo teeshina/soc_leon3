@@ -173,12 +173,22 @@ procCheck : process (inClk)
   variable iErrCnt : integer := 0;
 begin
   if(rising_edge(inClk) and (iClkCnt>2)) then
-    if(ch_tlbcamo.pteout /= tlbcamo.pteout) then print("Err: pteout");  iErrCnt:=iErrCnt+1; end if;
-    if(ch_tlbcamo.LVL /= tlbcamo.LVL) then print("Err: LVL");  iErrCnt:=iErrCnt+1; end if;
-    if(ch_tlbcamo.hit /= tlbcamo.hit) then print("Err: hit");  iErrCnt:=iErrCnt+1; end if;
-    if(ch_tlbcamo.ctx /= tlbcamo.ctx) then print("Err: ctx");  iErrCnt:=iErrCnt+1; end if;
+    if(tlbcamo.pteout(31)/='U') then
+      if(ch_tlbcamo.pteout /= tlbcamo.pteout) then print("Err: pteout");  iErrCnt:=iErrCnt+1; end if;
+    end if;
+    if((tlbcamo.LVL(1) /= 'U')and(tlbcamo.LVL(0) /= 'U')) then
+      if(ch_tlbcamo.LVL /= tlbcamo.LVL) then print("Err: LVL");  iErrCnt:=iErrCnt+1; end if;
+    end if;
+    if(tlbcamo.hit /= 'X') then
+      if(ch_tlbcamo.hit /= tlbcamo.hit) then print("Err: hit");  iErrCnt:=iErrCnt+1; end if;
+    end if;
+    if(tlbcamo.ctx /= "UUUUUUUU") then
+      if(ch_tlbcamo.ctx /= tlbcamo.ctx) then print("Err: ctx");  iErrCnt:=iErrCnt+1; end if;
+    end if;
     if(ch_tlbcamo.valid /= tlbcamo.valid) then print("Err: valid");  iErrCnt:=iErrCnt+1; end if;
-    if(ch_tlbcamo.vaddr /= tlbcamo.vaddr) then print("Err: vaddr");  iErrCnt:=iErrCnt+1; end if;
+    if(tlbcamo.vaddr(31) /= 'U') then
+      if(ch_tlbcamo.vaddr /= tlbcamo.vaddr) then print("Err: vaddr");  iErrCnt:=iErrCnt+1; end if;
+    end if;
     if(ch_tlbcamo.NEEDSYNC /= tlbcamo.NEEDSYNC) then print("Err: NEEDSYNC");  iErrCnt:=iErrCnt+1; end if;
     if(ch_tlbcamo.WBNEEDSYNC /= tlbcamo.WBNEEDSYNC) then print("Err: WBNEEDSYNC");  iErrCnt:=iErrCnt+1; end if;
   end if;

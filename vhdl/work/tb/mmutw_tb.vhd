@@ -135,8 +135,31 @@ begin
 procCheck : process (inClk,ch_two,ch_mcmmi)
 begin
   if(rising_edge(inClk) and (iClkCnt>10)) then
-    if(ch_two/=two) then print("Err: two");  iErrCnt:=iErrCnt+1; end if;
-    if(ch_mcmmi/=mcmmi) then print("Err: mcmmi");  iErrCnt:=iErrCnt+1; end if;
+    --if(ch_two/=two) then print("Err: two");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_two.finish/=two.finish) then print("Err: two.finish");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_two.data/=two.data) then print("Err: two.data");  iErrCnt:=iErrCnt+1; end if;
+    if(two.addr(31)/='U') then 
+      if(ch_two.addr/=two.addr) then print("Err: two.addr");  iErrCnt:=iErrCnt+1; end if;
+    end if;
+    if(ch_two.lvl/=two.lvl) then print("Err: two.lvl");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_two.fault_mexc/=two.fault_mexc) then print("Err: two.fault_mexc");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_two.fault_trans/=two.fault_trans) then print("Err: two.fault_trans");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_two.fault_inv/=two.fault_inv) then print("Err: two.fault_inv");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_two.fault_lvl/=two.fault_lvl) then print("Err: two.fault_lvl");  iErrCnt:=iErrCnt+1; end if;
+    
+    
+    --if(ch_mcmmi/=mcmmi) then print("Err: mcmmi");  iErrCnt:=iErrCnt+1; end if;
+    if(mcmmi.address(31)/='U') then 
+      if(ch_mcmmi.address/=mcmmi.address) then print("Err: mcmmi.address");  iErrCnt:=iErrCnt+1; end if;
+    end if;
+    if(mcmmi.data(31)/='U') then 
+      if(ch_mcmmi.data/=mcmmi.data) then print("Err: mcmmi.data");  iErrCnt:=iErrCnt+1; end if;
+    end if;
+    if(ch_mcmmi.size/=mcmmi.size) then print("Err: mcmmi.size");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_mcmmi.burst/=mcmmi.burst) then print("Err: mcmmi.burst");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_mcmmi.read/=mcmmi.read) then print("Err: mcmmi.read");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_mcmmi.req/=mcmmi.req) then print("Err: mcmmi.req");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_mcmmi.lock/=mcmmi.lock) then print("Err: mcmmi");  iErrCnt:=iErrCnt+1; end if;
   end if;
 end process procCheck;
 

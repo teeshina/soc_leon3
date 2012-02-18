@@ -371,7 +371,7 @@ void mmu_dcache::Update(uint32 rst,// : in  std_logic;
   snoophit = 0;
   uint32 tmp;
 #if 1
-  if(iClkCnt>=34)
+  if(iClkCnt>=771)
   bool st = true;
 #endif
 
@@ -390,7 +390,7 @@ void mmu_dcache::Update(uint32 rst,// : in  std_logic;
     }
     validrawv &= ~(1<<i);
     tmp = genmux(BITS32(dci.maddress,LINE_HIGH,LINE_LOW), BITS32(dcramov.tag.arr[i],CFG_DLINE-1,0));
-    validrawv |= hcache & BIT32(hitv,i) & !r.Q.flush & !r.Q.flush2 & !BIT32(snoophit,i) & tmp;
+    validrawv |= ((hcache & BIT32(hitv,i) & !r.Q.flush & !r.Q.flush2 & !BIT32(snoophit,i) & tmp) << i);
     
     validv &= ~(1<<i);
     validv |= (BIT32(validrawv,i) << i);
@@ -457,7 +457,7 @@ void mmu_dcache::Update(uint32 rst,// : in  std_logic;
 
   //-- Store buffer
 #if 1
-  if(iClkCnt>=116)
+  if(iClkCnt>=771)
   bool st = true;
 #endif
   if (mcdo.ready == 1)
@@ -522,7 +522,7 @@ void mmu_dcache::Update(uint32 rst,// : in  std_logic;
 
   //-- main Dcache state machine
 #if 1
-  if(iClkCnt>=1288)
+  if(iClkCnt>=35)
   bool st = true;
 #endif
   switch(r.Q.dstate)
@@ -1340,7 +1340,6 @@ void mmu_dcache::Update(uint32 rst,// : in  std_logic;
     }
     default:;
   }
-
   //-- select which data to update the data cache with
   for (int32 i=0; i<CFG_DSETS; i++)
   {
@@ -1529,12 +1528,16 @@ void mmu_dcache::Update(uint32 rst,// : in  std_logic;
   //-- AHB snoop handling (2), bypass write data on read/write contention
 
 #if (DSNOOP2 == 2)
+#if 1
+if(iClkCnt>=768)
+bool st=true;
+#endif
   vh.hitaddr = BITS32(rs.Q.addr,OFFSET_HIGH,OFFSET_LOW);
   vh.taddr = taddr&MSK32(OFFSET_HIGH,OFFSET_LOW);
   if( (twrite==1) && (r.Q.dstate==wread) && (r.Q.flush==0) )
   {
     vh.clear &= ~(1<<setrepl);
-    vh.clear |= (rh.Q.snmiss&(1<<setrepl));
+    vh.clear |= (BIT32(rh.Q.snmiss,setrepl)<<setrepl);
   }
   if (r.Q.flush)
   {
@@ -1714,7 +1717,7 @@ void mmu_dcache::Update(uint32 rst,// : in  std_logic;
   dcrami.address |= BITS32(taddr,OFFSET_HIGH,LINE_LOW);
   dcrami.data    = ddatainv;
   dcrami.dwrite  = cdwrite;
-  dcrami.ldramin.address &= MSK32(23,2);
+  dcrami.ldramin.address &= ~MSK32(23,2);
   dcrami.ldramin.address |= (laddr&MSK32(23,2));
   dcrami.ldramin.enable = (lramcs | lramwr) & !mcdo.scanen;
   dcrami.ldramin.read   = rlramrd;

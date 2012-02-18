@@ -14,6 +14,7 @@ using namespace std;
 
 //****************************************************************************
 bool bDoStrOutput=true;
+bool bSkipOutput=false;
 int32 iIndS=0;
 char chIndS[3*64386];
 char *pchIndS = chIndS;
@@ -29,9 +30,15 @@ void ResetPutStr()
 }
 
 //****************************************************************************
+void SetSkipOutput(bool v)
+{
+  bSkipOutput = v;
+}
+
+//****************************************************************************
 void PutWidth(int32 size, char *comment)
 {
-  if(!bDoStrOutput)
+  if(!bDoStrOutput|bSkipOutput)
     return;
 
   bool bConvInteger=true;
@@ -51,12 +58,12 @@ void PutWidth(int32 size, char *comment)
   int32 tmp;
   if(bConvInteger)
   {
-    if(size==1) tmp = sprintf_s(pchIndS,64,"  %s <= conv_integer(S(%i));\n", &comment[13], iIndS);
-    else        tmp = sprintf_s(pchIndS,64,"  %s <= conv_integer(S(%i downto %i));\n", &comment[13], iIndS+size-1, iIndS);
+    if(size==1) tmp = sprintf_s(pchIndS,64,"  %s <= conv_integer(S"DIG"(%i));\n", &comment[13], iIndS);
+    else        tmp = sprintf_s(pchIndS,64,"  %s <= conv_integer(S"DIG"(%i downto %i));\n", &comment[13], iIndS+size-1, iIndS);
   }else
   {
-    if(size==1) tmp = sprintf_s(pchIndS,64,"  %s <= S(%i);\n", comment, iIndS);
-    else        tmp = sprintf_s(pchIndS,64,"  %s <= S(%i downto %i);\n", comment, iIndS+size-1, iIndS);
+    if(size==1) tmp = sprintf_s(pchIndS,64,"  %s <= S"DIG"(%i);\n", comment, iIndS);
+    else        tmp = sprintf_s(pchIndS,64,"  %s <= S"DIG"(%i downto %i);\n", comment, iIndS+size-1, iIndS);
   }
   pchIndS += tmp;
   iIndS += size;
@@ -68,6 +75,8 @@ void PutWidth(int32 size, char *comment)
 
 void PrintIndexStr()
 {
+  if(bSkipOutput) return;
+  
   bDoStrOutput = false;
   std::ofstream osStr(FILE_STRINGS_DBG, ios::out);
   osStr << chIndS2;

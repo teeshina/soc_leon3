@@ -44,7 +44,7 @@ architecture behavior of mmu_tb is
   signal U: std_ulogic_vector(STRING_SIZE-1 downto 0);
   signal S: std_logic_vector(STRING_SIZE-1 downto 0);
   shared variable iClkCnt : integer := 0;
-
+  shared variable iErrCnt : integer := 0;
 begin
 
   -- Process of clock generation
@@ -175,21 +175,39 @@ begin
   );  
 
 procCheck : process (inClk, ch_mmudco, ch_mmuico, ch_mcmmi)
-  variable iErrCnt : integer := 0;
 begin
-  if(rising_edge(inClk) and (iClkCnt>35)) then
+  if(rising_edge(inClk)and (iClkCnt>3)) then
     if(ch_mmudco.grant /= mmudco.grant) then print("Err: mmudco.grant");  iErrCnt:=iErrCnt+1; end if;
     if(ch_mmudco.transdata.finish /= mmudco.transdata.finish) then print("Err: mmudco.transdata.finish");  iErrCnt:=iErrCnt+1; end if;
-    if(mmudco.transdata.data/="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX") then
+    if((mmudco.transdata.data(31)/='X')and(mmudco.transdata.data(31)/='U')) then
       if(ch_mmudco.transdata.data /= mmudco.transdata.data) then print("Err: mmudco.transdata.data");  iErrCnt:=iErrCnt+1; end if;
     end if;
-    if((mmudco.transdata.cache/='U') and (iClkCnt>58)) then
+    if((mmudco.transdata.cache/='U')) then
       if(ch_mmudco.transdata.cache /= mmudco.transdata.cache) then print("Err: mmudco.transdata.cache");  iErrCnt:=iErrCnt+1; end if;
     end if;
     if(ch_mmudco.transdata.accexc /= mmudco.transdata.accexc) then print("Err: mmudco.transdata.accexc");  iErrCnt:=iErrCnt+1; end if;
-    if(ch_mmudco.mmctrl2 /= mmudco.mmctrl2) then print("Err: mmudco.mmctrl2");  iErrCnt:=iErrCnt+1; end if;
-    if(ch_mmudco.wbtransdata /= mmudco.wbtransdata) then print("Err: mmudco.wbtransdata");  iErrCnt:=iErrCnt+1; end if;
-    if(ch_mmudco.tlbmiss /= mmudco.tlbmiss) then print("Err: mmudco.tlbmiss");  iErrCnt:=iErrCnt+1; end if;
+    --if(ch_mmudco.mmctrl2 /= mmudco.mmctrl2) then print("Err: mmudco.mmctrl2");  iErrCnt:=iErrCnt+1; end if;
+    if(mmudco.mmctrl2.valid /= 'U') then 
+      if(ch_mmudco.mmctrl2.valid /= mmudco.mmctrl2.valid) then print("Err: mmudco.mmctrl2.valid");  iErrCnt:=iErrCnt+1; end if;
+    end if;
+    if(mmudco.mmctrl2.fa(19) /= 'U') then
+      if(ch_mmudco.mmctrl2.fa /= mmudco.mmctrl2.fa) then print("Err: mmudco.mmctrl2.fa");  iErrCnt:=iErrCnt+1; end if;
+    end if;
+    if(mmudco.mmctrl2.fs /= ('U','U',(others=>'U'),'U','U','U',(others=>'U'),(others=>'U'))) then
+      if(ch_mmudco.mmctrl2.fs /= mmudco.mmctrl2.fs) then print("Err: mmudco.mmctrl2.fs");  iErrCnt:=iErrCnt+1; end if;
+    end if;
+    
+    if(ch_mmudco.wbtransdata.finish /= mmudco.wbtransdata.finish) then print("Err: mmudco.wbtransdata.finish");  iErrCnt:=iErrCnt+1; end if;
+    if((mmudco.wbtransdata.data(31)/='U')and (mmudco.wbtransdata.data(31)/='X'))then
+      if(ch_mmudco.wbtransdata.data /= mmudco.wbtransdata.data) then print("Err: mmudco.wbtransdata.data");  iErrCnt:=iErrCnt+1; end if;
+    end if;
+    if((mmudco.wbtransdata.cache/='U')and(mmudco.wbtransdata.cache/='X')) then
+      if(ch_mmudco.wbtransdata.cache /= mmudco.wbtransdata.cache) then print("Err: mmudco.wbtransdata.cache");  iErrCnt:=iErrCnt+1; end if;
+    end if;
+    if(ch_mmudco.wbtransdata.accexc /= mmudco.wbtransdata.accexc) then print("Err: mmudco.wbtransdata.accexc");  iErrCnt:=iErrCnt+1; end if;
+    if(mmudco.tlbmiss /= 'U') then
+      if(ch_mmudco.tlbmiss /= mmudco.tlbmiss) then print("Err: mmudco.tlbmiss");  iErrCnt:=iErrCnt+1; end if;
+    end if;
 
     if(ch_mmuico.grant /= mmuico.grant) then print("Err: mmuico.grant");  iErrCnt:=iErrCnt+1; end if;
     if(ch_mmuico.transdata.finish /= mmuico.transdata.finish) then print("Err: mmuico.transdata.finish");  iErrCnt:=iErrCnt+1; end if;
@@ -200,9 +218,24 @@ begin
       if(ch_mmuico.transdata.cache /= mmuico.transdata.cache) then print("Err: mmuico.transdata.cache");  iErrCnt:=iErrCnt+1; end if;
     end if;
     if(ch_mmuico.transdata.accexc /= mmuico.transdata.accexc) then print("Err: mmuico.transdata.accexc");  iErrCnt:=iErrCnt+1; end if;
-    if(ch_mmuico.tlbmiss /= mmuico.tlbmiss) then print("Err: mmuico.tlbmiss");  iErrCnt:=iErrCnt+1; end if;
+    if(mmuico.tlbmiss /= 'U') then
+      if(ch_mmuico.tlbmiss /= mmuico.tlbmiss) then print("Err: mmuico.tlbmiss");  iErrCnt:=iErrCnt+1; end if;
+    end if;
 
-  if(ch_mcmmi /= mcmmi) then print("Err: mcmmi");  iErrCnt:=iErrCnt+1; end if;
+    --if(ch_mcmmi /= mcmmi) then print("Err: mcmmi");  iErrCnt:=iErrCnt+1; end if;
+    if(mcmmi.address(31) /= 'U') then
+      if(ch_mcmmi.address /= mcmmi.address) then print("Err: mcmmi.address");  iErrCnt:=iErrCnt+1; end if;
+    end if;
+    if(mcmmi.data(31) /= 'U') then
+      if(ch_mcmmi.data /= mcmmi.data) then print("Err: mcmmi.data");  iErrCnt:=iErrCnt+1; end if;
+    end if;
+    if(mcmmi.size /= "UU") then
+      if(ch_mcmmi.size /= mcmmi.size) then print("Err: mcmmi.size");  iErrCnt:=iErrCnt+1; end if;
+    end if;
+    if(ch_mcmmi.burst /= mcmmi.burst) then print("Err: mcmmi.burst");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_mcmmi.read /= mcmmi.read) then print("Err: mcmmi.read");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_mcmmi.req /= mcmmi.req) then print("Err: mcmmi.req");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_mcmmi.lock /= mcmmi.lock) then print("Err: mcmmi.lock");  iErrCnt:=iErrCnt+1; end if;
   end if;
 end process procCheck;
 

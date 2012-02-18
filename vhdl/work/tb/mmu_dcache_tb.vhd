@@ -340,10 +340,44 @@ begin
 procCheck : process (inClk,ch_dco)
 begin
   if(rising_edge(inClk) and (iClkCnt>13)) then
-    if(ch_dco/=dco) then print("Err: dco");  iErrCnt:=iErrCnt+1; end if;
+    --if(ch_dco/=dco) then print("Err: dco");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_dco.data/=dco.data) then print("Err: dco.data");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_dco.set/=dco.set) then print("Err: dco.set");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_dco.mexc/=dco.mexc) then print("Err: dco.mexc");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_dco.hold/=dco.hold) then print("Err: dco.hold");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_dco.mds/=dco.mds) then print("Err: dco.mds");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_dco.cache/=dco.cache) then print("Err: dco.cache");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_dco.idle/=dco.idle) then print("Err: dco.idle");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_dco.scanen/=dco.scanen) then print("Err: dco.scanen");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_dco.testen/=dco.testen) then print("Err: dco.testen");  iErrCnt:=iErrCnt+1; end if;
+    if(dco.icdiag.addr(31)/='U') then 
+      if(ch_dco.icdiag.addr/=dco.icdiag.addr) then print("Err: dco.icdiag.addr");  iErrCnt:=iErrCnt+1; end if;
+    end if;
+    if(ch_dco.icdiag.pflushaddr/=dco.icdiag.pflushaddr) then print("Err: dco.icdiag.pflushaddr");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_dco.icdiag.enable/=dco.icdiag.enable) then print("Err: dco.icdiag.enable");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_dco.icdiag.read/=dco.icdiag.read) then print("Err: dco.icdiag.read");  iErrCnt:=iErrCnt+1; end if;
+    
     if(ch_mcdi/=mcdi) then print("Err: mcdi");  iErrCnt:=iErrCnt+1; end if;
+
     if(ch_dcrami/=dcrami) then print("Err: dcrami");  iErrCnt:=iErrCnt+1; end if;
-    if(ch_mmudci/=mmudci) then print("Err: mmudci");  iErrCnt:=iErrCnt+1; end if;
+    
+    --if(ch_mmudci/=mmudci) then print("Err: mmudci");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_mmudci.trans_op/=mmudci.trans_op) then print("Err: mmudci.trans_op");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_mmudci.transdata/=mmudci.transdata) then print("Err: mmudci.transdata");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_mmudci.flush_op/=mmudci.flush_op) then print("Err: mmudci.flush_op");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_mmudci.diag_op/=mmudci.diag_op) then print("Err: mmudci.diag_op");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_mmudci.wb_op/=mmudci.wb_op) then print("Err: mmudci.wb_op");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_mmudci.fsread/=mmudci.fsread) then print("Err: mmudci.fsread");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_mmudci.mmctrl1.e/=mmudci.mmctrl1.e) then print("Err: mmudci.mmctrl1.e");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_mmudci.mmctrl1.nf/=mmudci.mmctrl1.nf) then print("Err: mmudci.mmctrl1.nf");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_mmudci.mmctrl1.pso/=mmudci.mmctrl1.pso) then print("Err: mmudci.mmctrl1.pso");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_mmudci.mmctrl1.pagesize/=mmudci.mmctrl1.pagesize) then print("Err: mmudci.mmctrl1.pagesize");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_mmudci.mmctrl1.ctx/=mmudci.mmctrl1.ctx) then print("Err: mmudci.mmctrl1.ctx");  iErrCnt:=iErrCnt+1; end if;
+    if(mmudci.mmctrl1.ctxp(29)/='U') then 
+      if(ch_mmudci.mmctrl1.ctxp/=mmudci.mmctrl1.ctxp) then print("Err: mmudci.mmctrl1.ctxp");  iErrCnt:=iErrCnt+1; end if;
+    end if;
+    if(ch_mmudci.mmctrl1.tlbdis/=mmudci.mmctrl1.tlbdis) then print("Err: mmudci.mmctrl1.tlbdis");  iErrCnt:=iErrCnt+1; end if;
+    if(ch_mmudci.mmctrl1.bar/=mmudci.mmctrl1.bar) then print("Err: mmudci.mmctrl1.bar");  iErrCnt:=iErrCnt+1; end if;
   end if;
 end process procCheck;
 

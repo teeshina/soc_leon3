@@ -35,10 +35,9 @@
 #include "elfloader\elfloader.h"
 #include "dbg.h"
 
-static const double SYS_CLOCK_F = 66000000; //Hz
-static const double JTAG_CLOCK_F = 20000000; //Hz
-
-static const double timescale = 1.0/SYS_CLOCK_F/4.0;
+extern const double SYS_CLOCK_F;
+extern const double JTAG_CLOCK_F;
+extern const double timescale;
 
 
 

@@ -108,6 +108,7 @@ class mmu_dcache
         hitaddr = other.hitaddr;
         clear   = other.clear;
         snhit   = other.snhit;
+        snmiss  = other.snmiss;
         return *this;
       }
     };

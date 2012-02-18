@@ -1,3 +1,10 @@
+//****************************************************************************
+// Property:    GNSS Sensor Limited
+// License:     GNU2
+// Contact:     chief@gnss-sensor.com
+// Repository:  git@github.com:teeshina/soc_leon3.git
+//****************************************************************************
+
 #pragma once
 
 #define LEON3_CORES_NUM 1

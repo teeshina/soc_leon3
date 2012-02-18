@@ -54,6 +54,9 @@ void mmu_cache::Update( uint32 rst,//   : in  std_ulogic;
                         uint32 hclken// : in std_ulogic
                       )
 {
+//-- AMBA AHB interface     
+  pclACache->Update(rst, sclk, mcii, mcio, mcdi, mcdo, mcmmi, mcmmo, ahbi2, ahbo2, ahbso, hclken);
+
 //-- instruction cache controller
   clICache.Update(rst, clk, ici, icol, dci, dcol, mcii, mcio, 
        crami.icramin, cramo.icramo, fpuholdn, mmudci, mmuici, mmuico);
@@ -64,8 +67,6 @@ void mmu_cache::Update( uint32 rst,//   : in  std_ulogic;
      crami.dcramin, cramo.dcramo, fpuholdn, mmudci, mmudco, sclk);
 
 
-//-- AMBA AHB interface     
-  pclACache->Update(rst, sclk, mcii, mcio, mcdi, mcdo, mcmmi, mcmmo, ahbi2, ahbo2, ahbso, hclken);
   
 //-- MMU
 #if (CFG_MMUEN==1)

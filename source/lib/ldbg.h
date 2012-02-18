@@ -15,19 +15,19 @@
 //#define DBG_mmu_icache
 //#define DBG_mmu_dcache
 //#define DBG_mmu_acache
+//#define DBG_mmu_cache
 //#define DBG_iu3
 //#define DBG_mmutw
 //#define DBG_mmulrue
 //#define DBG_mmulru
 //#define DBG_mmu
-//#define DBG_mmu_cache
 //#define DBG_cachemem
 //#define DBG_regfile_3p
 //#define DBG_tbufmem
 //#define DBG_leon3s
 //#define DBG_dsu3x
 //#define DBG_ahbram
-//#define DBG_ahbctrl
+#define DBG_ahbctrl
 //#define DBG_apbctrl
 //#define DBG_apbuart
 
@@ -290,6 +290,8 @@ class dbg
     void div32_tb(SystemOnChipIO &io);
     void mmu_icache_tb(SystemOnChipIO &io);
     void mmu_dcache_tb(SystemOnChipIO &io);
+    void mmu_acache_tb(SystemOnChipIO &io);
+    void mmu_cache_tb(SystemOnChipIO &io);
     void jtagcom_tb(SystemOnChipIO &io);
     void ahbmst_tb(SystemOnChipIO &io);
     void ahbjtag_tb(SystemOnChipIO &io);
@@ -300,7 +302,23 @@ class dbg
     void apbctrl_tb(SystemOnChipIO &io);
     void apbuart_tb(SystemOnChipIO &io);
     void iu3_tb(SystemOnChipIO &io);
-    
+    void mmutlbcam_tb(SystemOnChipIO &io);
+    void mmutlb_tb(SystemOnChipIO &io);
+    void mmutw_tb(SystemOnChipIO &io);
+    void mmulrue_tb(SystemOnChipIO &io);
+    void mmulru_tb(SystemOnChipIO &io);
+    void mmu_tb(SystemOnChipIO &io);
+    void cachemem_tb(SystemOnChipIO &io);
+    void regfile_3p_tb(SystemOnChipIO &io);
+    void tbufmem_tb(SystemOnChipIO &io);
+    void finderr_tb(SystemOnChipIO &io);
+
+#ifdef DBG_ahbctrl
+    uint32 in_vect;
+    uint32 in_VectSize;
+    uint32 ch_out; //(6 downto 0)
+    ahbctrl tst_ahbctrl;
+#endif
 #ifdef DBG_jtagcom
     uint32 inTCK;
     uint32 inTDI;
@@ -334,7 +352,6 @@ class dbg
     mmutlbcam_out_type tlbcamo;
     
     mmutlbcam tst_mmutlbcam;
-    void mmutlbcam_tb(SystemOnChipIO &io);
 #endif
 #ifdef DBG_mmutlb
     mmutlb_in_type in_tlbi;//  : in  mmutlb_in_type;
@@ -343,7 +360,6 @@ class dbg
     mmutw_in_type ch_twi;//   : out mmutw_in_type
 
     mmutlb tst_mmutlb;
-    void mmutlb_tb(SystemOnChipIO &io);
 #endif
 #ifdef DBG_mmu_icache
     icache_in_type      ici;
@@ -389,7 +405,6 @@ class dbg
     uint32 in_hclken;
 
     mmu_acache tst_mmu_acache;
-    void mmu_acache_tb(SystemOnChipIO &io);
 #endif
 #ifdef DBG_mmutw
     mmctrl_type1        in_mmctrl1;// : in  mmctrl_type1;
@@ -399,21 +414,18 @@ class dbg
     memory_mm_in_type   ch_mcmmi;//   : out memory_mm_in_type
 
     mmutw tst_mmutw;
-    void mmutw_tb(SystemOnChipIO &io);
 #endif
 #ifdef DBG_mmulrue
     mmulrue_in_type in_lruei;//  : in mmulrue_in_type;
     mmulrue_out_type ch_lrueo;//  : out mmulrue_out_type );
 
-    mmulrue *ptst_mmulrue;
-    void mmulrue_tb(SystemOnChipIO &io);
+    mmulrue *tst_mmulrue;
 #endif
 #ifdef DBG_mmulru
     mmulru_in_type in_lrui;//  : in mmulrue_in_type;
     mmulru_out_type ch_lruo;//  : out mmulrue_out_type );
 
-    mmulru *ptst_mmulru;
-    void mmulru_tb(SystemOnChipIO &io);
+    mmulru *tst_mmulru;
 #endif
 #ifdef DBG_mmu
     mmudc_in_type in_mmudci;// : in  mmudc_in_type;
@@ -424,7 +436,6 @@ class dbg
     memory_mm_in_type ch_mcmmi;
 
     mmu tst_mmu;
-    void mmu_tb(SystemOnChipIO &io);
 #endif
 #ifdef DBG_mmu_cache
   icache_in_type in_ici;//   : in  icache_in_type;
@@ -441,7 +452,6 @@ class dbg
   uint32 in_hclken;// : in std_ulogic
   
   mmu_cache tst_mmu_cache;
-  void mmu_cache_tb(SystemOnChipIO &io);
 #endif
 #ifdef DBG_iu3
     uint32 holdnx;
@@ -474,7 +484,6 @@ class dbg
   cram_out_type ch_cramo;// : out cram_out_type;
 
   cachemem tst_cachemem;
-  void cachemem_tb(SystemOnChipIO &io);
 #endif
 #ifdef DBG_regfile_3p
   uint32 in_waddr;//  : in  std_logic_vector((abits -1) downto 0);
@@ -489,14 +498,12 @@ class dbg
   uint32 in_testin;//   : in std_logic_vector(3 downto 0) := "0000");
 
   regfile_3p tst_regfile_3p;
-  void regfile_3p_tb(SystemOnChipIO &io);
 #endif
 #ifdef DBG_tbufmem
   tracebuf_in_type in_tbi;
   tracebuf_out_type ch_tbo;
   
   tbufmem tst_tbufmem;
-  void tbufmem_tb(SystemOnChipIO &io);
 #endif
   // leon3s debug:
 #ifdef DBG_leon3s

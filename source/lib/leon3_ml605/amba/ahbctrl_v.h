@@ -43,6 +43,7 @@ class AhbControl
     uint32 wbMstSelLowPriority;
     uint32 wbMstSel;
     TDFF<uint32>rbMstSel[2];
+    uint32 wBusFree;
     uint32 wNewBurst;
     uint32 wGuardNewBurst;
     TDFF<uint32>rbLastBurstMst; // last master index which use BURST transaction
