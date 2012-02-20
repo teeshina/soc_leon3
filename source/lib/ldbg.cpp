@@ -84,7 +84,7 @@ void dbg::Update(SystemOnChipIO &io)
 
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_ahbmaster]) ahbmst_tb(io);  
 
-  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_AHBJTAG]) ahbjtag_tb(io);   // (jtagcom + ahbmst)
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_ahbjtag]) ahbjtag_tb(io);   // (jtagcom + ahbmst)
   
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_ahbctrl]) ahbctrl_tb(io);
   

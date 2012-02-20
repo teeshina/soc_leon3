@@ -1,6 +1,10 @@
 #pragma once
 
-#define USE_PURE_GAISLER
+//#define USE_GNSSLTD_MODULES
+#ifdef USE_GNSSLTD_MODULES
+  #define USE_GNSSLTD_AHBRAM
+  #define USE_GNSSLTD_AHBCTRL
+#endif
 
 class leon3mp
 {
@@ -14,13 +18,18 @@ class leon3mp
     ahb_slv_out_vector  stSlv2Ctrl;
 
     AhbMasterJtag clAhbMasterJtag;
-#ifdef USE_PURE_GAISLER
-    ahbram *pclAhbRAM;
-#else
+#ifdef USE_GNSSLTD_AHBRAM
     AhbSlaveMem   *pclAhbRAM;
+#else
+    ahbram *pclAhbRAM;    
 #endif
-    AhbControl    clAhbControl;
-    
+
+#ifdef USE_GNSSLTD_AHBCTRL
+    AhbControl clAhbControl;
+#else
+    ahbctrl    clAhbControl;
+#endif
+        
     //
     l3_irq_in_type irqi;//   : in  l3_irq_in_type;
     l3_irq_out_type irqo;//   : out l3_irq_out_type;

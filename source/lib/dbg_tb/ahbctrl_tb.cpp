@@ -23,12 +23,35 @@ void dbg::ahbctrl_tb(SystemOnChipIO &io)
   ahb_slv_out_vector *pstSlv2Ctrl = &topLeon3mp.stSlv2Ctrl;
 
 #ifdef DBG_ahbctrl
-  in_VectSize=32;
   if(io.inClk.eClock_z==SClock::CLK_POSEDGE)
   {
-    in_vect = rand()&0x3;//BITS32((rand()<<15) | rand(), in_VectSize-1, 0);
+    for(int32 i=0; i<AHB_MASTER_TOTAL; i++)
+    {
+      in_msto.arr[i].hbusreq = rand()&0x1;
+      in_msto.arr[i].hlock = rand()&0x1;
+      in_msto.arr[i].htrans = rand()&0x3;
+      in_msto.arr[i].haddr  = 0x80000000 | rand();
+      in_msto.arr[i].hwrite = rand()&0x1;
+      in_msto.arr[i].hsize  = 2;
+      in_msto.arr[i].hburst = rand()&0x7;
+      in_msto.arr[i].hprot = rand()&0xf;
+      in_msto.arr[i].hwdata = (rand()<<17) | rand();
+      in_msto.arr[i].hirq = (rand()<<17) | rand();
+      for(int32 k=0; k<8; k++)
+      {
+        in_msto.arr[i].hconfig.arr[k] = (rand()<<17) | rand();
+      }
+      in_msto.arr[i].hindex = i;
+    }
+    //
+    r.hmaster = rand()&MSK32(log2x[AHB_MASTER_TOTAL]-1,0);
+    //
+    in_split = rand()& MSK32((0x1<<log2[AHB_MASTER_TOTAL])-1, 0);
+
   }
-  ch_out = tst_ahbctrl.tz(in_vect, in_VectSize);
+  tst_ahbctrl.selmast(r, in_msto, in_split, ch_mast, ch_defmst);
+
+  pstMst2Ctrl = &in_msto;
 #endif
 
   if(io.inClk.eClock==SClock::CLK_POSEDGE)
@@ -37,17 +60,13 @@ void dbg::ahbctrl_tb(SystemOnChipIO &io)
     chStr[0] = '\0';
     ResetPutStr();
 
-#if 1
-    pStr = PutToStr(pStr, in_vect, in_VectSize, "in_vect");
-    pStr = PutToStr(pStr, ch_out, 7, "ch_out");
-#else
     // Input:
     pStr = PutToStr(pStr, io.inNRst, 1,"inNRst");
     //
     for(int32 i=0; i<AHB_MASTER_TOTAL; i++)
     {
       sprintf_s(chTmp,"in_msto(%i).hbusreq",i);
-      pStr = PutToStr(pStr, pstMst2Ctrl->arr[i].hbusreq,1,chTmp,true);
+      pStr = PutToStr(pStr, pstMst2Ctrl->arr[i].hbusreq,1,chTmp);
       sprintf_s(chTmp,"in_msto(%i).hlock",i);
       pStr = PutToStr(pStr, pstMst2Ctrl->arr[i].hlock,1,chTmp);
       sprintf_s(chTmp,"in_msto(%i).htrans",i);
@@ -74,6 +93,11 @@ void dbg::ahbctrl_tb(SystemOnChipIO &io)
       sprintf_s(chTmp,"conv_integer:in_msto(%i).hindex",i);
       pStr = PutToStr(pStr, pstMst2Ctrl->arr[i].hindex,4,chTmp);
     }
+
+//    pStr = PutToStr(pStr, r.hmaster, log2x[AHB_MASTER_TOTAL], "conv_integer:in_r.hmaster");
+//    pStr = PutToStr(pStr, in_split, (0x1<<log2[AHB_MASTER_TOTAL]), "in_split", true);
+//    pStr = PutToStr(pStr, ch_mast, log2x[AHB_MASTER_TOTAL], "conv_integer:ch_mast");
+//    pStr = PutToStr(pStr, ch_defmst, 1, "ch_defmst");
     //
     for(int32 i=0; i<AHB_SLAVE_TOTAL; i++)
     {
@@ -128,8 +152,6 @@ void dbg::ahbctrl_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pstCtrl2Slv->testrst,1,"ch_slvi.testrst");//                       -- scan test reset
     pStr = PutToStr(pStr, pstCtrl2Slv->scanen,1,"ch_slvi.scanen");//                        -- scan enable
     pStr = PutToStr(pStr, pstCtrl2Slv->testoen,1,"ch_slvi.testoen");//                       -- test output enable 
-
-#endif
     
     PrintIndexStr();
     

@@ -17,10 +17,10 @@ leon3mp::leon3mp()
     
   pclDsu3x = new dsu3x(AHB_SLAVE_DSU, 0x900, 0xf00);    
   
-#ifdef USE_PURE_GAISLER
-  pclAhbRAM = new ahbram(AHB_SLAVE_RAM, 0x400, 0xfff);
-#else
+#ifdef USE_GNSSLTD_AHBRAM
   pclAhbRAM = new AhbSlaveMem( AHB_SLAVE_RAM, VENDOR_GAISLER, GAISLER_AHBRAM, 0x400, 0xFFF);
+#else
+  pclAhbRAM = new ahbram(AHB_SLAVE_RAM, 0x400, 0xfff);
 #endif
 
   pclAhbRom = new ahbrom(AHB_SLAVE_ROM, 0x000, 0xfff);
@@ -61,10 +61,10 @@ void leon3mp::Update( uint32 inNRst,
   // AHB controller:
   clAhbControl.Update(inNRst,
                       inClk,
-                      stMst2Ctrl,
                       stCtrl2Mst,
-                      stSlv2Ctrl,
-                      stCtrl2Slv );
+                      stMst2Ctrl,
+                      stCtrl2Slv,
+                      stSlv2Ctrl );
 
   // JTAG unit:
   clAhbMasterJtag.Update( inNRst,

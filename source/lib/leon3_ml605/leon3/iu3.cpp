@@ -3628,10 +3628,6 @@ void iu3::Update
   fpbranch(de_inst, cpo.cc, de_cbranch);
   v.a.imm = imm_data(r, de_inst);
   
-#if 1
-  if (iClkCnt>=21)
-  bool st = true;
-#endif
   lock_gen(r, BPRED, de_rs2, de_rd, v.a.rfa1, v.a.rfa2, v.a.ctrl.rd, de_inst, 
            fpo.ldlock, v.e.mul, ra_div, de_wcwp, v.a.ldcheck1, v.a.ldcheck2, de_ldlock, 
            v.a.ldchkra, v.a.ldchkex, v.a.bp, v.a.nobp, de_fins_hold);

@@ -88,30 +88,21 @@ const int NBUS              = 4;
 
 
 //------------------------
-// ctrl_tmp variables
-#define CONFIG_AHB_DEFMST     0
-#define CONFIG_AHB_RROBIN     1
-#define CONFIG_AHB_SPLIT      1
-#define CONFIG_AHB_IOADDR     0xFFF
-#define CONFIG_APB_HADDR      0x800
-
-
-// Description: this define determine area for plug-n-play in "ahbctrl"
-//              0xFFFFF000 .. 0xFFFFFFFF
-#define AHBCTRL_IO_AREA_ENABLE          //SH: ioen
-
-// Description: if FULLPNP enabled, then there may be read all hconfig[0..7] data
-//              otherwise only hconfig[0] is accessible:
-//#define AHBCTRL_FULLPNP_ENABLE          //SH: fpnpen
-
-#define AHBCTRL_FIXLENGTH_BURST         //SH: fixbrst
-//#define AHBCTRL_IRQROUTING_DISABLE      //SH: disirq
-//#define AHBCTRL_COMPL_DATAMUX_ENABLE    //SH: acdm
-#define AHBCTRL_ADR_IO_MASK     0xFFF   //SH: iomask
-#define AHBCTRL_ADR_CFG_AREA    0xFF0   //SH: cfgaddr
-#define AHBCTRL_ADR_CFG_MASK    0xFF0   //SH: cfgmask
-#define AHBCTRL_DEVICE_ID       XILINX_ML605
-
+// AHB controller configuration:
+#define CFG_AHBCTRL_MPRIO       0 // master with the highest priority
+#define CFG_AHBCTRL_DEFMST      0
+#define CFG_AHBCTRL_RROBIN      1
+#define CFG_AHBCTRL_SPLIT       1
+#define CFG_AHBCTRL_IOADDR      0xFFF
+#define CFG_AHBCTRL_IOMASK      0xFFF
+#define CFG_AHBCTRL_CFGADDR     0xFF0
+#define CFG_AHBCTRL_CFGMASK     0xFF0
+#define CFG_AHBCTRL_IOEN        1  //
+#define CFG_AHBCTRL_FPNPENA     0 // Full plug'n'play enabling
+#define CFG_AHBCTRL_FIXBURST    0 // fixed-length burst support
+#define CFG_AHBCTRL_ACDM        0 // AMBA compliant data muxing (for hsize > word)
+#define CFG_AHBCTRL_DISIRQ      0 // disable interrupt routing
+#define CFG_AHBCTRL_DEVID       XILINX_ML401//XILINX_ML605
 
 const uint32 grlib_version    = 1100;//version.vhd
 const uint32 grlib_build      = 4108;//version.vhd
@@ -120,6 +111,7 @@ const uint32 LIBVHDL_VERSION  = grlib_version;// stdlib.vhd
 const uint32 LIBVHDL_BUILD    = grlib_build;// stdlib.vhd
 const uint32 LEON3_VERSION    = 0;
 
+// AHB controller (GNSS version) configuration:
 const uint32 ADDR_CONFIG_MIN     = 0xFFFFF000;
 const uint32 ADDR_CONFIG_MAX     = 0xFFFFFFFF;
 const uint32 ADDR_MSTCFG_MIN     = 0xFFFFF000;

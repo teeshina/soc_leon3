@@ -20,10 +20,10 @@ AhbControl::AhbControl()
 //****************************************************************************
 void AhbControl::Update( uint32 inNRst,
                          SClock inClk,
-                         ahb_mst_out_vector &inMst2Ctrl,
                          ahb_mst_in_type  &outCtrl2Mst,
-                         ahb_slv_out_vector &inSlv2Ctrl,
-                         ahb_slv_in_type  &outCtrl2Slv )
+                         ahb_mst_out_vector &inMst2Ctrl,
+                         ahb_slv_in_type  &outCtrl2Slv,
+                         ahb_slv_out_vector &inSlv2Ctrl )
 {
   // select master
   ahb_mst_out_type *pRqst = &inMst2Ctrl.arr[AHB_MASTER_JTAG];
@@ -169,7 +169,7 @@ void AhbControl::Update( uint32 inNRst,
 
 
 
-#ifdef AHBCTRL_FULLPNP_ENABLE
+#if (CFG_AHBCTRL_FPNPENA==1)
   uint32 wFullPnp = 1;
 #else
   uint32 wFullPnp = (BITS32(inMst2Ctrl.arr[rbMstSel[0].Q].haddr,4,2)==0)? 1: 0;
@@ -187,7 +187,7 @@ void AhbControl::Update( uint32 inNRst,
   // Config data latched:
   rbCfgData.CLK = inClk;
   if(!inNRst)                       rbCfgData.D = 0;
-  else if(wHReady&wCfgSel&wLibArea) rbCfgData.D = (XILINX_ML401<<16)|LIBVHDL_BUILD;
+  else if(wHReady&wCfgSel&wLibArea) rbCfgData.D = (CFG_AHBCTRL_DEVID<<16)|LIBVHDL_BUILD;
   else if(wHReady&wCfgSel&wMstArea) rbCfgData.D = inMst2Ctrl.arr[wbBusInd].hconfig.arr[wbCfgInd];
   else if(wHReady&wCfgSel&wSlvArea) rbCfgData.D = inSlv2Ctrl.arr[wbBusInd].hconfig.arr[wbCfgInd];
   else if(wHReady)                  rbCfgData.D = 0;

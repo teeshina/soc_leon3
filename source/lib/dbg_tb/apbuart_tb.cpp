@@ -221,7 +221,7 @@ void dbg::apbuart_tb(SystemOnChipIO &io)
 
     PrintIndexStr();
 
-    //*posBench[TB_apbuart] << chStr << "\n";
+    *posBench[TB_apbuart] << chStr << "\n";
   }
 
 #ifdef DBG_apbuart

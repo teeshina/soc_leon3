@@ -75,7 +75,7 @@ void GetInitSettings(LibInitData *p)
   
   //p->uiBenchEna[TB_jtagcom] = PRINT_TESTBENCH_ENABLE;
   //p->uiBenchEna[TB_ahbmaster] = PRINT_TESTBENCH_ENABLE;
-  //p->uiBenchEna[TB_AHBJTAG] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_ahbjtag] = PRINT_TESTBENCH_ENABLE;
   //p->uiBenchEna[TB_ahbctrl] = PRINT_TESTBENCH_ENABLE;
   //p->uiBenchEna[TB_mmutlbcam] = PRINT_TESTBENCH_ENABLE;
   //p->uiBenchEna[TB_mmutlb] = PRINT_TESTBENCH_ENABLE;//!
@@ -93,7 +93,7 @@ void GetInitSettings(LibInitData *p)
   //p->uiBenchEna[TB_cachemem] = PRINT_TESTBENCH_ENABLE;
   //p->uiBenchEna[TB_regfile_3p] = PRINT_TESTBENCH_ENABLE;
   //p->uiBenchEna[TB_tbufmem] = PRINT_TESTBENCH_ENABLE;
-  p->uiBenchEna[TB_leon3s] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_leon3s] = PRINT_TESTBENCH_ENABLE;
   //p->uiBenchEna[TB_dsu3x] = PRINT_TESTBENCH_ENABLE;
   //p->uiBenchEna[TB_ahbram] = PRINT_TESTBENCH_ENABLE;
   //p->uiBenchEna[TB_apbctrl] = PRINT_TESTBENCH_ENABLE;

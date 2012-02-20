@@ -21,7 +21,7 @@ enum ETestBenchName
 {
   TB_jtagcom,
   TB_ahbmaster,
-  TB_AHBJTAG,
+  TB_ahbjtag,
   TB_ahbctrl,
   TB_mmutlbcam,
   TB_mmutlb,

@@ -256,6 +256,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="sparcv8"
+				>
+				<File
+					RelativePath="..\source\app\sparcv8\sparcv8.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\source\app\sparcv8\sparcv8.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

@@ -631,6 +631,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\source\lib\dbg_tb\finderr_tb.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\source\lib\dbg_tb\iu3_tb.cpp"
 					>
 				</File>
@@ -644,6 +648,10 @@
 				</File>
 				<File
 					RelativePath="..\..\source\lib\dbg_tb\mmu_acache_tb.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\source\lib\dbg_tb\mmu_cache_tb.cpp"
 					>
 				</File>
 				<File

@@ -27,7 +27,7 @@
 //#define DBG_leon3s
 //#define DBG_dsu3x
 //#define DBG_ahbram
-#define DBG_ahbctrl
+//#define DBG_ahbctrl
 //#define DBG_apbctrl
 //#define DBG_apbuart
 
@@ -314,9 +314,11 @@ class dbg
     void finderr_tb(SystemOnChipIO &io);
 
 #ifdef DBG_ahbctrl
-    uint32 in_vect;
-    uint32 in_VectSize;
-    uint32 ch_out; //(6 downto 0)
+    ahbctrl::reg_type  r;//      : in reg_type;
+    ahb_mst_out_vector in_msto;//   : in ahb_mst_out_vector;
+    uint32 in_split;// : in std_logic_vector(0 to nahbmx-1);
+    uint32 ch_mast;//   : out integer range 0 to nahbmx-1;
+    uint32 ch_defmst;// : out std_ulogic;
     ahbctrl tst_ahbctrl;
 #endif
 #ifdef DBG_jtagcom

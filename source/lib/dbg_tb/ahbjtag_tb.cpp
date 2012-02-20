@@ -40,6 +40,6 @@ void dbg::ahbjtag_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, topLeon3mp.clAhbMasterJtag.jtagcom0.rbAdr.Q, 35);
     pStr = PutToStr(pStr, topLeon3mp.clAhbMasterJtag.jtagcom0.rbData.Q, 33);
     
-    *posBench[TB_AHBJTAG] << chStr << "\n";
+    *posBench[TB_ahbjtag] << chStr << "\n";
   }
 }

@@ -75,7 +75,7 @@ begin
       --wait until falling_edge(inClk);
       iClkCnt := iClkCnt + 1;
       if(iClkCnt>=770) then
-        print("break");
+--        print("break");
       end if;
 
     end loop;
@@ -310,11 +310,36 @@ begin
   procCheck : process(inNRst,inClk, ch_ahbo, ch_irqo, ch_dbgo)
   begin
     
-    if(rising_edge(inClk) and (iClkCnt>14)) then
-     if(ch_ahbo/=ahbo) then print("Err: ahbo");  iErrCnt:=iErrCnt+1; end if;
-     if((dbgo.data(31)/='U')and(dbgo.data(0)/='U')) then
-       if(ch_dbgo/=dbgo) then print("Err: dbgo");  iErrCnt:=iErrCnt+1; end if;
+    if(rising_edge(inClk) and (iClkCnt>5)) then
+     --if(ch_ahbo/=ahbo) then print("Err: ahbo");  iErrCnt:=iErrCnt+1; end if;
+     if(ch_ahbo.hbusreq/=ahbo.hbusreq) then print("Err: ahbo.hbusreq");  iErrCnt:=iErrCnt+1; end if;
+     if(ch_ahbo.hlock/=ahbo.hlock) then print("Err: ahbo.hlock");  iErrCnt:=iErrCnt+1; end if;
+     if(ch_ahbo.htrans/=ahbo.htrans) then print("Err: ahbo.htrans");  iErrCnt:=iErrCnt+1; end if;
+     if(ch_ahbo.haddr/=ahbo.haddr) then print("Err: ahbo.haddr");  iErrCnt:=iErrCnt+1; end if;
+     if(ch_ahbo.hwrite/=ahbo.hwrite) then print("Err: ahbo.hwrite");  iErrCnt:=iErrCnt+1; end if;
+     if(ch_ahbo.hsize/=ahbo.hsize) then print("Err: ahbo.hsize");  iErrCnt:=iErrCnt+1; end if;
+     if(ch_ahbo.hburst/=ahbo.hburst) then print("Err: ahbo.hburst");  iErrCnt:=iErrCnt+1; end if;
+     if(ch_ahbo.hprot/=ahbo.hprot) then print("Err: ahbo.hprot");  iErrCnt:=iErrCnt+1; end if;
+     if(ahbo.hwdata(31)/='U') then
+       if(ch_ahbo.hwdata/=ahbo.hwdata) then print("Err: ahbo.hwdata");  iErrCnt:=iErrCnt+1; end if;
      end if;
+     if(ch_ahbo.hirq/=ahbo.hirq) then print("Err: ahbo.hirq");  iErrCnt:=iErrCnt+1; end if;
+     if(ch_ahbo.hconfig/=ahbo.hconfig) then print("Err: ahbo.hconfig");  iErrCnt:=iErrCnt+1; end if;
+     if(ch_ahbo.hindex/=ahbo.hindex) then print("Err: ahbo.hindex");  iErrCnt:=iErrCnt+1; end if;
+     
+     if((dbgo.data(31)/='U')and(dbgo.data(0)/='U')) then
+       if(ch_dbgo.data/=dbgo.data) then print("Err: dbgo.data");  iErrCnt:=iErrCnt+1; end if;
+     end if;
+     if(ch_dbgo.crdy/=dbgo.crdy) then print("Err: dbgo.crdy");  iErrCnt:=iErrCnt+1; end if;
+     if(ch_dbgo.dsu/=dbgo.dsu) then print("Err: dbgo.dsu");  iErrCnt:=iErrCnt+1; end if;
+     if(ch_dbgo.dsumode/=dbgo.dsumode) then print("Err: dbgo.dsumode");  iErrCnt:=iErrCnt+1; end if;
+     if(ch_dbgo.error/=dbgo.error) then print("Err: dbgo.error");  iErrCnt:=iErrCnt+1; end if;
+     if(ch_dbgo.halt/=dbgo.halt) then print("Err: dbgo.halt");  iErrCnt:=iErrCnt+1; end if;
+     if(ch_dbgo.pwd/=dbgo.pwd) then print("Err: dbgo.pwd");  iErrCnt:=iErrCnt+1; end if;
+     if(ch_dbgo.idle/=dbgo.idle) then print("Err: dbgo.idle");  iErrCnt:=iErrCnt+1; end if;
+     if(ch_dbgo.ipend/=dbgo.ipend) then print("Err: dbgo.ipend");  iErrCnt:=iErrCnt+1; end if;
+     if(ch_dbgo.icnt/=dbgo.icnt) then print("Err: dbgo.icnt");  iErrCnt:=iErrCnt+1; end if;
+     
      if(ch_irqo/=irqo) then print("Err: irqo");  iErrCnt:=iErrCnt+1; end if;
     end if;
   end process procCheck;

@@ -9,6 +9,8 @@ class dbg
     char chJTag[1024];
 
     bool bEnd;
+    
+    SparcV8 clSparcV8;
 
   public:
     dbg();
