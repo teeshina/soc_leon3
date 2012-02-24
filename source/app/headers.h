@@ -33,7 +33,6 @@
 #include "uartport.h"
 
 #include "elfloader\elfloader.h"
-#include "sparcv8\sparcv8.h"
 #include "dbg.h"
 
 extern const double SYS_CLOCK_F;

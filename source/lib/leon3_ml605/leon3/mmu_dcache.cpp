@@ -1723,6 +1723,17 @@ bool st=true;
   dcrami.ldramin.read   = rlramrd;
   dcrami.ldramin.write  = lramwr;
 
+  dcrami.spar = 0;
+  dcrami.faddress = 0;
+  for (int32 i=0; i<4; i++)
+  {
+    dcrami.dpar.arr[i] = 0;
+    dcrami.tpar.arr[i] = 0;
+  }
+  dcrami.tdiag = (mcdo.testen<<3) | (mcdo.scanen<<2);
+  dcrami.sdiag = (mcdo.testen<<3) | (mcdo.scanen<<2);
+  dcrami.ddiag = (mcdo.testen<<3) | (mcdo.scanen<<2);
+
   //-- memory controller inputs
   mcdi.address  = r.Q.wb.addr;
   mcdi.data     = r.Q.wb.data1;
@@ -1755,6 +1766,7 @@ bool st=true;
   dco.hold = r.Q.holdn;
   dco.mds  = mds;
   dco.werr = mcdo.werr;
+  dco.cache = 0;
   dco.idle  = sidle & !r.Q.stpend;
   dco.scanen  = mcdo.scanen;
   dco.testen  = mcdo.testen;
@@ -1790,11 +1802,6 @@ bool st=true;
 #if (DSNOOP2 == 2)
   rh.CLK = sclk;
   rh.D = ch;
-  if(!rst)
-  {
-    rh.D.taddr = 0;
-    memset(rh.D.hit,0,(0x1<<DOFFSET_BITS)*sizeof(snoop_hit_bits_type));
-  }
 #else
   rhhit <=  (others => (others => '0')); rh.taddr <=  (others => '0');
   rh.clear <=  (others => '0'); rh.snhit <=  (others => '0');

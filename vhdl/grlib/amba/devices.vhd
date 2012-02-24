@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --  This file is a part of the GRLIB VHDL IP LIBRARY
 --  Copyright (C) 2003 - 2008, Gaisler Research
---  Copyright (C) 2008 - 2010, Aeroflex Gaisler
+--  Copyright (C) 2008 - 2012, Aeroflex Gaisler
 --
 --  This program is free software; you can redistribute it and/or modify
 --  it under the terms of the GNU General Public License as published by
@@ -69,6 +69,7 @@ package devices is
   constant GAISLER_SRCTRL    : amba_device_type := 16#008#;
   constant GAISLER_SDCTRL    : amba_device_type := 16#009#;
   constant GAISLER_SSRCTRL   : amba_device_type := 16#00A#;
+  constant GAISLER_I2C2AHB   : amba_device_type := 16#00B#;
   constant GAISLER_APBUART   : amba_device_type := 16#00C#;
   constant GAISLER_IRQMP     : amba_device_type := 16#00D#;
   constant GAISLER_AHBRAM    : amba_device_type := 16#00E#;
@@ -145,7 +146,11 @@ package devices is
   constant GAISLER_FTSRCTRL8 : amba_device_type := 16#056#;
   constant GAISLER_MEMSCRUB  : amba_device_type := 16#057#;
   constant GAISLER_FTSDCTRL64: amba_device_type := 16#058#;
-
+  constant GAISLER_NANDFCTRL : amba_device_type := 16#059#;
+  constant GAISLER_N2DLLCTRL : amba_device_type := 16#05A#;
+  constant GAISLER_N2PLLCTRL : amba_device_type := 16#05B#;
+  constant GAISLER_SPI2AHB   : amba_device_type := 16#05C#;
+  
   constant GAISLER_APBPS2    : amba_device_type := 16#060#;
   constant GAISLER_VGACTRL   : amba_device_type := 16#061#;
   constant GAISLER_LOGAN     : amba_device_type := 16#062#;
@@ -191,6 +196,7 @@ package devices is
   constant GAISLER_EDCLMST   : amba_device_type := 16#08C#;
   constant GAISLER_GRPWTX    : amba_device_type := 16#08D#;
   constant GAISLER_GRPWRX    : amba_device_type := 16#08E#;
+  constant GAISLER_GPREGBANK : amba_device_type := 16#08F#;
 
 
 -- Sun Microsystems
@@ -301,7 +307,13 @@ package devices is
   constant LEON3_NEXTREME1      : system_device_type := 16#0101#;
   constant LEON4_NEXTREME1      : system_device_type := 16#0102#;
   constant LEON3_ACT_FUSION     : system_device_type := 16#0105#;
+  constant LEON3_RTAX_IAA       : system_device_type := 16#0198#;
+  constant LEON3_RTAX_TECNOBIT  : system_device_type := 16#0199#;
+  constant LEON3_RTAX_TDP8      : system_device_type := 16#0200#;
+  constant LEON3_RTAX_CID1      : system_device_type := 16#0201#;
   constant LEON3_RTAX_CID2      : system_device_type := 16#0202#;
+  constant LEON3_RTAX_CID3      : system_device_type := 16#0203#;
+  constant LEON3_RTAX_CID4      : system_device_type := 16#0204#;
   constant LEON3_RTAX_CID5      : system_device_type := 16#0205#;
   constant LEON3_RTAX_CID6      : system_device_type := 16#0206#;
   constant LEON3_RTAX_CID7      : system_device_type := 16#0207#;
@@ -322,18 +334,21 @@ package devices is
   constant ORBITA_1             : system_device_type := 16#0631#;
   constant AEROFLEX_UT699       : system_device_type := 16#0699#;
   constant AEROFLEX_UT700       : system_device_type := 16#0700#;
+  constant GAISLER_GR701        : system_device_type := 16#0701#;
   constant GAISLER_GR702        : system_device_type := 16#0702#;
+  constant GAISLER_GR703        : system_device_type := 16#0703#;
   constant GAISLER_DARE1        : system_device_type := 16#0704#;
   constant GAISLER_GR712RC      : system_device_type := 16#0712#;
+  constant AEROFLEX_UT840       : system_device_type := 16#0840#;
 
 -- pragma translate_off
 
   constant GAISLER_DESC : vendor_description :=  "Gaisler Research        ";
 
   constant gaisler_device_table : device_table_type := (
-   GAISLER_LEON2DSU  => "Leon2 Debug Support Unit       ",
-   GAISLER_LEON3     => "Leon3 SPARC V8 Processor       ",
-   GAISLER_LEON3DSU  => "Leon3 Debug Support Unit       ",
+   GAISLER_LEON2DSU  => "LEON2 Debug Support Unit       ",
+   GAISLER_LEON3     => "LEON3 SPARC V8 Processor       ",
+   GAISLER_LEON3DSU  => "LEON3 Debug Support Unit       ",
    GAISLER_ETHAHB    => "OC ethernet AHB interface      ",
    GAISLER_AHBRAM    => "Single-port AHB SRAM module    ",
    GAISLER_AHBDPRAM  => "Dual-port AHB SRAM module      ",
@@ -376,7 +391,7 @@ package devices is
    GAISLER_CLKGATE   => "Clock gating unit              ",
    GAISLER_FTAHBRAM  => "Generic FT AHB SRAM module     ",
    GAISLER_FTSRCTRL  => "Simple FT SRAM Controller      ",
-   GAISLER_LEON3FT   => "Leon3-FT SPARC V8 Processor    ",
+   GAISLER_LEON3FT   => "LEON3-FT SPARC V8 Processor    ",
    GAISLER_FTMCTRL   => "Memory controller with EDAC    ",
    GAISLER_FTSDCTRL  => "FT PC133 SDRAM Controller      ",
    GAISLER_FTSRCTRL8 => "FT 8-bit SRAM/16-bit IO Ctrl   ",
@@ -434,9 +449,9 @@ package devices is
    GAISLER_SPW2      => "GRSPW2 SpaceWire Serial Link   ",
    GAISLER_IPMVBCTRL => "IPM-bus/MVBC memory controller ",
    GAISLER_SPIMCTRL  => "SPI Memory Controller          ",
-   GAISLER_L4STAT    => "Leon4 Statistics Unit          ",
-   GAISLER_LEON4     => "Leon4 SPARC V8 Processor       ",
-   GAISLER_LEON4DSU  => "Leon4 Debug Support Unit       ",
+   GAISLER_L4STAT    => "LEON4 Statistics Unit          ",
+   GAISLER_LEON4     => "LEON4 SPARC V8 Processor       ",
+   GAISLER_LEON4DSU  => "LEON4 Debug Support Unit       ",
    GAISLER_PWM       => "PWM generator                  ",
    GAISLER_L2CACHE   => "L2-Cache Controller            ",
    GAISLER_SDCTRL64  => "64-bit PC133 SDRAM Controller  ",
@@ -458,7 +473,13 @@ package devices is
    GAISLER_GRPWTX    => "PacketWire Transmitter with DMA",
    GAISLER_GRPWRX    => "PacketWire Receiver with DMA   ",
    GAISLER_GRIOMMU2  => "IOMMU secondary master i/f     ",
-
+   GAISLER_I2C2AHB   => "I2C to AHB Bridge              ",
+   GAISLER_NANDFCTRL => "NAND Flash Controller          ",
+   GAISLER_N2PLLCTRL => "N2X PLL Dynamic Config. i/f    ",
+   GAISLER_N2DLLCTRL => "N2X DLL Dynamic Config. i/f    ",
+   GAISLER_GPREGBANK => "General Purpose Register Bank  ",
+   GAISLER_SPI2AHB   => "SPI to AHB Bridge              ",
+   
    others            => "Unknown Device                 ");
 
    constant gaisler_lib : vendor_library_type := (
@@ -470,24 +491,24 @@ package devices is
   constant ESA_DESC : vendor_description := "European Space Agency   ";
 
   constant esa_device_table : device_table_type := (
-   ESA_LEON2        => "Leon2 SPARC V8 Processor       ",
-   ESA_LEON2APB     => "Leon2 Peripheral Bus           ",
-   ESA_IRQ          => "Leon2 Interrupt Controller     ",
-   ESA_TIMER        => "Leon2 Timer                    ",
-   ESA_UART         => "Leon2 UART                     ",
-   ESA_CFG          => "Leon2 Configuration Register   ",
-   ESA_IO           => "Leon2 Input/Output             ",
-   ESA_MCTRL        => "Leon2 Memory Controller        ",
+   ESA_LEON2        => "LEON2 SPARC V8 Processor       ",
+   ESA_LEON2APB     => "LEON2 Peripheral Bus           ",
+   ESA_IRQ          => "LEON2 Interrupt Controller     ",
+   ESA_TIMER        => "LEON2 Timer                    ",
+   ESA_UART         => "LEON2 UART                     ",
+   ESA_CFG          => "LEON2 Configuration Register   ",
+   ESA_IO           => "LEON2 Input/Output             ",
+   ESA_MCTRL        => "LEON2 Memory Controller        ",
    ESA_PCIARB       => "PCI Arbiter                    ",
    ESA_HURRICANE    => "HurriCANe/HurryAMBA CAN Ctrl   ",
    ESA_SPW_RMAP     => "UoD/Saab SpaceWire/RMAP link   ",
-   ESA_AHBUART      => "Leon2 AHB Debug UART           ",
+   ESA_AHBUART      => "LEON2 AHB Debug UART           ",
    ESA_SPWA         => "ESA/ASTRIUM SpaceWire link     ",
    ESA_BOSCHCAN     => "SSC/BOSCH CAN Ctrl             ",
-   ESA_IRQ2         => "Leon2 Secondary Irq Controller ",
-   ESA_AHBSTAT      => "Leon2 AHB Status Register      ",
-   ESA_WPROT        => "Leon2 Write Protection         ",
-   ESA_WPROT2       => "Leon2 Extended Write Protection",
+   ESA_IRQ2         => "LEON2 Secondary Irq Controller ",
+   ESA_AHBSTAT      => "LEON2 AHB Status Register      ",
+   ESA_WPROT        => "LEON2 Write Protection         ",
+   ESA_WPROT2       => "LEON2 Extended Write Protection",
    ESA_PDEC3AMBA    => "ESA CCSDS PDEC3AMBA TC Decoder ",
    ESA_PTME3AMBA    => "ESA CCSDS PTME3AMBA TM Encoder ",
    others           => "Unknown Device                 ");

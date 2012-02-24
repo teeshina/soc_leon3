@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --  This file is a part of the GRLIB VHDL IP LIBRARY
 --  Copyright (C) 2003 - 2008, Gaisler Research
---  Copyright (C) 2008 - 2010, Aeroflex Gaisler
+--  Copyright (C) 2008 - 2012, Aeroflex Gaisler
 --
 --  This program is free software; you can redistribute it and/or modify
 --  it under the terms of the GNU General Public License as published by
@@ -2423,7 +2423,7 @@ begin
   variable dsign : std_ulogic;
   variable pwrd, sidle : std_ulogic;
   variable vir : irestart_register;
-  variable icnt : std_ulogic;
+  variable icnt, fcnt : std_ulogic;
   variable tbufcntx : std_logic_vector(TBUFBITS-1 downto 0);
   variable bpmiss : std_ulogic;
   
@@ -2449,7 +2449,7 @@ begin
 -- EXCEPTION STAGE
 -----------------------------------------------------------------------
 
-    xc_exception := '0'; xc_halt := '0'; icnt := '0';
+    xc_exception := '0'; xc_halt := '0'; icnt := '0'; fcnt := '0';
     xc_waddr := (others => '0');
     xc_waddr(RFBITS-1 downto 0) := r.x.ctrl.rd(RFBITS-1 downto 0);
     xc_trap := r.x.mexc or r.x.ctrl.trap;
@@ -2497,6 +2497,13 @@ begin
         xc_wreg := r.x.ctrl.wreg;
         sp_write (r, wpr, v.w.s, vwpr);        
         vir.pwd := '0';
+        if (r.x.ctrl.pv and not r.x.debug) = '1' then
+	  icnt := holdn;
+	  if (r.x.ctrl.inst(31 downto 30) = FMT3) and 
+		((r.x.ctrl.inst(24 downto 19) = FPOP1) or 
+		 (r.x.ctrl.inst(24 downto 19) = FPOP2))
+	  then fcnt := holdn; end if;
+        end if;
       elsif ((not r.x.ctrl.annul) and xc_trap) = '1' then
         xc_exception := '1'; xc_result := r.x.ctrl.pc(31 downto 2) & "00";
         xc_wreg := '1'; v.w.s.tt := xc_vectt; v.w.s.ps := r.w.s.s;
@@ -2571,10 +2578,14 @@ begin
     irqo.intack <= r.x.intack and holdn;
     irqo.irl <= r.w.s.tt(3 downto 0);
     irqo.pwd <= rp.pwd;
+    irqo.fpen <= r.w.s.ef;
+    irqo.idle <= '0';
     dbgo.halt <= xc_halt;
     dbgo.pwd <= rp.pwd;
     dbgo.idle <= sidle;
     dbgo.icnt <= icnt;
+    dbgo.fcnt <= fcnt;
+    dbgo.optype <= r.x.ctrl.inst(31 downto 30) & r.x.ctrl.inst(24 downto 21);
     dci.intack <= r.x.intack and holdn;
     
     if (xc_rstn = '0') then 
@@ -2657,6 +2668,7 @@ begin
     dci.read     <= r.m.dci.read;
     dci.write    <= r.m.dci.write;
     dci.flush    <= me_iflush;
+    dci.flushl   <= '0';
     dci.dsuen    <= r.m.dci.dsuen;
     dci.msu    <= r.m.su;
     dci.esu    <= r.e.su;
@@ -2805,7 +2817,6 @@ begin
 
     de_branch_address := branch_address(de_inst, r.d.pc);
 
-    v.a.ctrl.annul := v.a.ctrl.annul;    
     v.a.ctrl.wicc := v.a.ctrl.wicc and not v.a.ctrl.annul;
     v.a.ctrl.wreg := v.a.ctrl.wreg and not v.a.ctrl.annul;
     v.a.ctrl.rett := v.a.ctrl.rett and not v.a.ctrl.annul;
@@ -2840,6 +2851,10 @@ begin
     ici.inull <= de_inull;
     ici.flush <= me_iflush;
     v.d.divrdy := divo.nready;
+    ici.flushl <= '0';
+    ici.pnull <= '0';
+    ici.fline <= (others => '0');
+    dbgo.bpmiss <= bpmiss and holdn;
     if (xc_rstn = '0') then
       v.d.cnt := (others => '0');
       if need_extra_sync_reset(fabtech) /= 0 then 
@@ -2950,6 +2965,10 @@ begin
       tbi.enable <= '0'; tbi.write <= (others => '0'); tbi.diag <= "0000";
     end if;
     dbgo.error <= dummy and not r.x.nerror;
+    dbgo.wbhold <= '0'; --dco.wbhold;
+    dbgo.su <= r.w.s.s;
+    dbgo.istat <= ('0', '0', '0', '0');
+    dbgo.dstat <= ('0', '0', '0', '0');
 
 -- pragma translate_off
     if FPEN then
@@ -3011,16 +3030,6 @@ begin
         end if;
       end if;
       if rstn = '0' then
-        r.w.s.cwp <= (others => '0');
-        r.w.s.tba <= (others => '0');
-        r.w.s.y   <= (others => '0');
-        r.w.s.asr18 <= (others => '0');
-        r.w.s.icc <= (others => '0');
-        r.w.s.pil <= (others => '0');
-        r.w.s.wim <= (others => '0');
-        r.x.y     <= (others => '0');
-        r.x.icc   <= (others => '0');
-
         r.w.s.s <= '1'; r.w.s.ps <= '1'; 
         if need_extra_sync_reset(fabtech) /= 0 then 
           r.d.inst <= (others => (others => '0'));
@@ -3039,11 +3048,10 @@ begin
         else
           dsur.crdy <= dsuin.crdy;
         end if;
-        --if need_extra_sync_reset(fabtech) /= 0 and (rstn = '0') then 
-        if (rstn = '0') then 
+        if need_extra_sync_reset(fabtech) /= 0 and (rstn = '0') then 
           dsur.err <= '0'; dsur.tbufcnt <= (others => '0'); dsur.tt <= (others => '0');
           dsur.asi <= (others => '0'); dsur.crdy <= (others => '0');
-       	end if;
+	end if;
       end if;
     end process;
   end generate;
@@ -3071,8 +3079,7 @@ begin
         if rising_edge(clk) then
           if holdn = '1' then wpr(i) <= wprin(i); end if;
           if rstn = '0' then 
---	    wpr(i).exec <= '0'; wpr(i).load <= '0'; wpr(i).store <= '0';
-            wpr(i) <= wpr_none;
+	    wpr(i).exec <= '0'; wpr(i).load <= '0'; wpr(i).store <= '0';
 	  end if;
         end if;
       end process;

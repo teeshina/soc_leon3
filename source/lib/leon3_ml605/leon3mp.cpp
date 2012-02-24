@@ -7,6 +7,7 @@
 
 #include "lheaders.h"
 
+
 //****************************************************************************
 leon3mp::leon3mp()
 {
@@ -23,7 +24,11 @@ leon3mp::leon3mp()
   pclAhbRAM = new ahbram(AHB_SLAVE_RAM, 0x400, 0xfff);
 #endif
 
+#if (CFG_AHBROM_ENA==1)
   pclAhbRom = new ahbrom(AHB_SLAVE_ROM, 0x000, 0xfff);
+#else
+  stSlv2Ctrl.arr[AHB_SLAVE_ROM] = ahbs_none;
+#endif
 
   pApbControl = new apbctrl(AHB_SLAVE_APBBRIDGE, 0x800, 0xfff);
   
@@ -36,7 +41,9 @@ leon3mp::~leon3mp()
   free(pclAhbRAM);
   for(int32 i=0; i<CFG_NCPU; i++) free(pclLeon3s[i]);
   free(pclDsu3x);
+#if (CFG_AHBROM_ENA==1)
   free(pclAhbRom);
+#endif
   free(pApbControl);
   free(pclApbUartA);
 }
@@ -102,11 +109,14 @@ void leon3mp::Update( uint32 inNRst,
                    dbgi,
                    dsui,
                    dsuo,
-                   1);  
+                   1);
+  dsui.enable = 1;
+  dsui.Break  = 0;  // push button emulation
 
-
+#if (CFG_AHBROM_ENA==1)
   // Internal RAM:
   pclAhbRom->Update(inNRst, inClk, stCtrl2Slv, stSlv2Ctrl.arr[AHB_SLAVE_ROM]);
+#endif
 
   // Internal RAM:
   pclAhbRAM->Update( inNRst, inClk, stCtrl2Slv, stSlv2Ctrl.arr[AHB_SLAVE_RAM] );

@@ -3188,6 +3188,7 @@ void iu3::Update
   xc_exception = 0;
   xc_halt = 0;
   icnt = 0;
+  fcnt = 0;
   xc_waddr = 0;
   xc_waddr = r.x.ctrl.rd;
   xc_trap = r.x.mexc || r.x.ctrl.trap;
@@ -3252,6 +3253,14 @@ void iu3::Update
         xc_wreg = r.x.ctrl.wreg;
         sp_write(mulo, r, wpr.Q, v.w.s, vwpr);        
         vir.pwd = 0;
+        if (r.x.ctrl.pv & !r.x.debug)
+        {
+	        icnt = holdn;
+	        if( (BITS32(r.x.ctrl.inst,31,30) == FMT3) &&
+		          ((BITS32(r.x.ctrl.inst,24,19) == FPOP1) || 
+		          (BITS32(r.x.ctrl.inst,24,19) == FPOP2)) )
+	          fcnt = holdn;
+        }
       }else if (!r.x.ctrl.annul & xc_trap)
       {
         xc_exception  = 1;
@@ -3358,10 +3367,14 @@ void iu3::Update
   irqo.intack = r.x.intack & holdn;
   irqo.irl    = BITS32(r.w.s.tt,3,0);
   irqo.pwd    = rp.Q.pwd;
+  irqo.fpen   = r.w.s.ef;
+  irqo.idle   = 0;
   dbgo.halt   = xc_halt;
   dbgo.pwd    = rp.Q.pwd;
   dbgo.idle   = sidle;
   dbgo.icnt   = icnt;
+  dbgo.fcnt   = fcnt;
+  dbgo.optype = (BITS32(r.x.ctrl.inst,31,30)<<4) | BITS32(r.x.ctrl.inst,24,21);
   dci.intack  = r.x.intack & holdn;
     
   if (xc_rstn == 0)
@@ -3470,6 +3483,7 @@ void iu3::Update
   dci.read     = r.m.dci.read;
   dci.write    = r.m.dci.write;
   dci.flush    = me_iflush;
+  dci.flushl   = 0;
   dci.dsuen    = r.m.dci.dsuen;
   dci.msu      = r.m.su;
   dci.esu      = r.e.su;
@@ -3650,7 +3664,6 @@ void iu3::Update
 
   de_branch_address = branch_address(de_inst, r.d.pc);
 
-  v.a.ctrl.annul = v.a.ctrl.annul;    
   v.a.ctrl.wicc  = v.a.ctrl.wicc & !v.a.ctrl.annul;
   v.a.ctrl.wreg  = v.a.ctrl.wreg & !v.a.ctrl.annul;
   v.a.ctrl.rett  = v.a.ctrl.rett & !v.a.ctrl.annul;
@@ -3695,6 +3708,11 @@ void iu3::Update
   ici.inull   = de_inull;
   ici.flush   = me_iflush;
   v.d.divrdy  = divo.nready;
+  ici.flushl  = 0;
+  ici.pnull   = 0;
+  ici.fline   = 0;
+  dbgo.bpmiss = bpmiss & holdn;
+
   if (xc_rstn == 0)
   {
     v.d.cnt = 0;
@@ -3843,6 +3861,16 @@ void iu3::Update
     tbi.diag     = 0;
   }
   dbgo.error = dummy & !r.x.nerror;
+  dbgo.wbhold = 0; //--dco.wbhold;
+  dbgo.su = r.w.s.s;
+  dbgo.istat.chold = 0;
+  dbgo.istat.cmiss = 0;
+  dbgo.istat.mhold = 0;
+  dbgo.istat.tmiss = 0;
+  dbgo.dstat.chold = 0;
+  dbgo.dstat.cmiss = 0;
+  dbgo.dstat.mhold = 0;
+  dbgo.dstat.tmiss = 0;
 
 
 //-- pragma translate_off
@@ -3982,7 +4010,9 @@ void iu3::Update
       if (holdn == 1) wpr.D.arr[i] = wprin.arr[i];
       if (rstn == 0)
       {
-        wpr.D.arr[i] = wpr_none;
+        wpr.D.arr[i].exec = 0;
+        wpr.D.arr[i].load = 0;
+        wpr.D.arr[i].store = 0;
 	    }
     }else
       wpr.D.arr[i] = wpr.Q.arr[i] = wpr_none;

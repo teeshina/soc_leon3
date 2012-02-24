@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --  This file is a part of the GRLIB VHDL IP LIBRARY
 --  Copyright (C) 2003 - 2008, Gaisler Research
---  Copyright (C) 2008 - 2010, Aeroflex Gaisler
+--  Copyright (C) 2008 - 2012, Aeroflex Gaisler
 --
 --  This program is free software; you can redistribute it and/or modify
 --  it under the terms of the GNU General Public License as published by
@@ -1475,6 +1475,14 @@ begin
     dcrami.ldramin.read   <= rlramrd;
     dcrami.ldramin.write  <= lramwr;
 
+    dcrami.spar <= '0';
+    dcrami.faddress <= (others => '0');
+    dcrami.dpar <= (others => (others => '0'));
+    dcrami.tpar <= (others => (others => '0'));
+    dcrami.tdiag <= mcdo.testen & mcdo.scanen & "00";
+    dcrami.sdiag <= mcdo.testen & mcdo.scanen & "00";
+    dcrami.ddiag <= mcdo.testen & mcdo.scanen & "00";
+
     -- memory controller inputs
     mcdi.address  <= r.wb.addr;
     mcdi.data     <= r.wb.data1;
@@ -1507,6 +1515,7 @@ begin
     dco.hold <= r.holdn;
     dco.mds  <= mds;
     dco.werr <= mcdo.werr;
+    dco.cache <= '0';
     dco.idle  <= sidle and not r.stpend;
     dco.scanen  <= mcdo.scanen;
     dco.testen  <= mcdo.testen;
@@ -1531,16 +1540,7 @@ begin
 -- Local registers
 
     reg1 : process(clk)
-    begin if rising_edge(clk )
-    then 
-      r <= c;
-      if(rst='0') then
-        r.cctrl.dfrz <= '0';
-        r.cctrl.ifrz <= '0';
-        r.wb.data2 <= (others => '0');
-        r.vaddr <= (others => '0');
-      end if;
-    end if; end process;
+    begin if rising_edge(clk ) then r <= c; end if; end process;
 
     sn2 : if DSNOOP2 /= 0 generate
       reg2 : process(sclk)
@@ -1554,13 +1554,7 @@ begin
 
     sn3 : if DSNOOP2 = 2 generate
       reg3 : process(sclk)
-      begin if rising_edge(sclk ) then 
-        rh <= ch;
-        if(rst='0') then
-          rh.taddr <= (others => '0');
-          rh.hit <=  (others => (others => '0'));
-        end if;
-      end if; end process;
+      begin if rising_edge(sclk ) then rh <= ch; end if; end process;
     end generate;
 
     nosn3 : if DSNOOP2 /= 2 generate

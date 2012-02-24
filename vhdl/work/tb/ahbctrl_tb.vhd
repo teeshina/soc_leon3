@@ -203,10 +203,12 @@ begin
   ch_slvi.testoen <= S(2346);
 
   tt : ahbctrl
-    generic map (defmast => CFG_DEFMST, split => CFG_SPLIT,
-                 rrobin  => CFG_RROBIN, ioaddr => CFG_AHBIO, ioen => 1, 
-                 nahbm => 2, 
-                 nahbs => 4,
+    generic map (defmast => CFG_AHBCTRL_DEFMST,
+                 split => CFG_AHBCTRL_SPLIT,
+                 rrobin  => CFG_AHBCTRL_RROBIN,
+                 ioaddr => CFG_AHBCTRL_AHBIO, ioen => 1, 
+                 nahbm => AHB_MASTER_TOTAL, 
+                 nahbs => AHB_SLAVE_TOTAL,
                  devid => 16#0401#)--VIRTEX_ML401)
     port map (inNRst, inClk, msti, in_msto, slvi, in_slvo);
 

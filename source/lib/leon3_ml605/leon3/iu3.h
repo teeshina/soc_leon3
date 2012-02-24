@@ -348,6 +348,7 @@ class iu3
     uint32  pwrd, sidle;// : std_ulogic;
     irestart_register vir;// : irestart_register;
     uint32  icnt;// : std_ulogic;
+    uint32  fcnt;// : std_ulogic;
     uint32  tbufcntx;// : std_logic_vector(TBUFBITS-1 downto 0);
     uint32  bpmiss; // : std_ulogic;
 

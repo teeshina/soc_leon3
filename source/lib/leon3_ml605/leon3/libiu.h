@@ -89,7 +89,6 @@ struct icdiag_in_type
   uint32 pflush;//           : std_ulogic;
   uint32 pflushaddr;//       : std_logic_vector(VA_I_U downto VA_I_D); 
   uint32 pflushtyp;//        : std_ulogic;
-  uint32 ilock;//            : std_logic_vector(0 to 3); 
   uint32 scanen;//           : std_ulogic;
 };
 

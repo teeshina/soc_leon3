@@ -11,8 +11,8 @@ class apbuart
   friend class dbg;
   private:
     uint32 pindex;
-    uint32 cfg_paddr;
-    uint32 cfg_pmask;
+    uint32 paddr;
+    uint32 pmask;
   private:
     enum rxfsmtype {r_idle, r_startbit, r_data, r_cparity, r_stopbit};
     enum txfsmtype {t_idle, t_data, t_cparity, t_stopbit};
@@ -88,7 +88,7 @@ class apbuart
     uint32 rxd   : 1;
     uint32 ctsn  : 1;//std_ulogic;
     uint32 irq;//   : std_logic_vector(NAHBIRQ-1 downto 0);
-    uint32 paddr : 8;//std_logic_vector(7 downto 2);
+    uint32 paddress : 8;//std_logic_vector(7 downto 2);
     uartregs v;// : uartregs;
     uint32 thalffull : 1;//std_ulogic;
     uint32 rhalffull : 1;//std_ulogic;

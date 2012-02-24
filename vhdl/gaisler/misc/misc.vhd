@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --  This file is a part of the GRLIB VHDL IP LIBRARY
 --  Copyright (C) 2003 - 2008, Gaisler Research
---  Copyright (C) 2008 - 2010, Aeroflex Gaisler
+--  Copyright (C) 2008 - 2012, Aeroflex Gaisler
 --
 --  This program is free software; you can redistribute it and/or modify
 --  it under the terms of the GNU General Public License as published by
@@ -247,47 +247,6 @@ package misc is
   );
   end component;
 
-  
-  type ahb_dma_in_type is record
-    address         : std_logic_vector(31 downto 0);
-    wdata           : std_logic_vector(AHBDW-1 downto 0);
-    start           : std_ulogic;
-    burst           : std_ulogic;
-    write           : std_ulogic;
-    busy            : std_ulogic;
-    irq             : std_ulogic;
-    size            : std_logic_vector(2 downto 0);
-  end record;
-
-  type ahb_dma_out_type is record
-    start           : std_ulogic;
-    active          : std_ulogic;
-    ready           : std_ulogic;
-    retry           : std_ulogic;
-    mexc            : std_ulogic;
-    haddr           : std_logic_vector(9 downto 0);
-    rdata           : std_logic_vector(AHBDW-1 downto 0);
-  end record;
-
-  component ahbmst
-  generic (
-    hindex  : integer := 0;
-    hirq    : integer := 0;
-    venid   : integer := VENDOR_GAISLER;
-    devid   : integer := 0;
-    version : integer := 0;
-    chprot  : integer := 3;
-    incaddr : integer := 0);
-   port (
-      rst  : in  std_ulogic;
-      clk  : in  std_ulogic;
-      dmai : in ahb_dma_in_type;
-      dmao : out ahb_dma_out_type;
-      ahbi : in  ahb_mst_in_type;
-      ahbo : out ahb_mst_out_type
-      );
-  end component;
-
   type ahbmst2_request is record
     req: std_logic;        -- Request enable bit
     wr: std_logic;
@@ -422,7 +381,7 @@ package misc is
     rdcomb      : integer range 0 to 2 := 0;
     wrcomb      : integer range 0 to 2 := 0;
     combmask    : integer := 16#ffff#;
-    allbrst     : integer range 0 to 1 := 0;
+    allbrst     : integer range 0 to 2 := 0;
     ifctrlen    : integer range 0 to 1 := 0;
     fcfs        : integer range 0 to NAHBMST := 0;
     fcfsmtech   : integer range 0 to NTECH := inferred;
@@ -472,7 +431,7 @@ package misc is
     rdcomb      : integer range 0 to 2 := 0;
     wrcomb      : integer range 0 to 2 := 0;
     combmask    : integer := 16#ffff#;
-    allbrst     : integer range 0 to 1 := 0;
+    allbrst     : integer range 0 to 2 := 0;
     fcfs        : integer range 0 to NAHBMST := 0;
     scantest    : integer range 0 to 1 := 0);
   port (
@@ -833,145 +792,6 @@ package misc is
   end component;
 
   -----------------------------------------------------------------------------
-  -- I2C types and components
-  -----------------------------------------------------------------------------
-
-  type i2c_in_type is record
-      scl : std_ulogic;
-      sda : std_ulogic;
-  end record;
-
-  type i2c_out_type is record
-      scl    : std_ulogic;
-      scloen : std_ulogic;
-      sda    : std_ulogic;
-      sdaoen : std_ulogic;
-      enable : std_ulogic;
-  end record;
-
-  -- AMBA wrapper for OC I2C-master
-  component i2cmst
-    generic (
-      pindex : integer;
-      paddr  : integer;
-      pmask  : integer;
-      pirq   : integer;
-      oepol  : integer range 0 to 1 := 0;
-      filter : integer range 2 to 512 := 2
-      );
-    port (
-      rstn   : in  std_ulogic;
-      clk    : in  std_ulogic;
-      apbi   : in  apb_slv_in_type;
-      apbo   : out apb_slv_out_type;
-      i2ci   : in  i2c_in_type;
-      i2co   : out i2c_out_type
-    );
-  end component;
-
-  component i2cmst_gen
-    generic (
-      oepol  : integer range 0 to 1 := 0;
-      filter : integer range 2 to 512 := 2);
-    port (
-      rstn        : in  std_ulogic;
-      clk         : in  std_ulogic;
-      psel        : in  std_ulogic;
-      penable     : in  std_ulogic;
-      paddr       : in  std_logic_vector(31 downto 0);
-      pwrite      : in  std_ulogic;
-      pwdata      : in  std_logic_vector(31 downto 0);
-      prdata      : out std_logic_vector(31 downto 0);
-      irq         : out std_logic;
-      i2ci_scl    : in  std_ulogic;
-      i2ci_sda    : in  std_ulogic;
-      i2co_scl    : out std_ulogic;
-      i2co_scloen : out std_ulogic;
-      i2co_sda    : out std_ulogic;
-      i2co_sdaoen : out std_ulogic;
-      i2co_enable : out std_ulogic
-      );
-  end component;
-
-  component i2cslv
-    generic (
-      pindex  : integer := 0;
-      paddr   : integer := 0;
-      pmask   : integer := 16#fff#;
-      pirq    : integer := 0;
-      hardaddr : integer range 0 to 1 := 0;
-      tenbit   : integer range 0 to 1 := 0;
-      i2caddr  : integer range 0 to 1023 := 0;
-      oepol    : integer range 0 to 1 := 0;
-      filter   : integer range 2 to 512 := 2
-      );
-    port (
-      rstn    : in  std_ulogic;
-      clk     : in  std_ulogic;
-      apbi    : in  apb_slv_in_type;
-      apbo    : out apb_slv_out_type;
-      i2ci    : in  i2c_in_type;
-      i2co    : out i2c_out_type
-      );
-  end component;
-
-  -----------------------------------------------------------------------------
-  -- SPI controller
-  -----------------------------------------------------------------------------
-  type spi_in_type is record
-    miso    : std_ulogic;
-    mosi    : std_ulogic;
-    sck     : std_ulogic;
-    spisel  : std_ulogic;
-    astart  : std_ulogic;
-  end record;
-
-  type spi_out_type is record
-    miso     : std_ulogic;
-    misooen  : std_ulogic;
-    mosi     : std_ulogic;
-    mosioen  : std_ulogic;
-    sck      : std_ulogic;
-    sckoen   : std_ulogic;
-    ssn      : std_logic_vector(7 downto 0);  -- used by GE/OC SPI core
-    enable   : std_ulogic;
-    astart   : std_ulogic;
-  end record;
-
-  component spictrl
-    generic (
-      pindex   : integer := 0;
-      paddr    : integer := 0;
-      pmask    : integer := 16#fff#;
-      pirq     : integer := 0;
-      fdepth   : integer range 1 to 7       := 1;
-      slvselen : integer range 0 to 1       := 0;
-      slvselsz : integer range 1 to 32      := 1;
-      oepol    : integer range 0 to 1       := 0;
-      odmode   : integer range 0 to 1       := 0;
-      automode : integer range 0 to 1       := 0;
-      acntbits : integer range 1 to 32      := 32;
-      aslvsel  : integer range 0 to 1       := 0;
-      twen     : integer range 0 to 1       := 1;
-      maxwlen  : integer range 0 to 15      := 0;
-      netlist  : integer range 0 to NTECH   := 0;
-      syncram  : integer range 0 to 1       := 1;
-      memtech  : integer range 0 to NTECH   := 0;
-      ft       : integer range 0 to 2       := 0;
-      scantest : integer range 0 to 1       := 0
-      );
-    port (
-      rstn   : in std_ulogic;
-      clk    : in std_ulogic;
-      apbi   : in apb_slv_in_type;
-      apbo   : out apb_slv_out_type;
-      spii   : in  spi_in_type;
-      spio   : out spi_out_type;
-      slvsel : out std_logic_vector((slvselsz-1) downto 0)
-    );
-  end component;
-
-  -----------------------------------------------------------------------------
   -- AMBA wrapper for System Monitor
   -----------------------------------------------------------------------------
   type grsysmon_in_type is record
@@ -1106,6 +926,24 @@ package misc is
         gprego : out std_logic_vector(nbits-1 downto 0);
         resval : in std_logic_vector(nbits-1 downto 0) := (others => '0')
         );
+  end component;
+
+  component grgprbank is
+    generic (
+      pindex: integer := 0;
+      paddr : integer := 0;
+      pmask : integer := 16#fff#;
+      regbits: integer range 1 to 32 := 32;
+      nregs : integer  range 1 to 32 := 1;
+      rstval: integer := 0
+      );
+    port (
+      rst     : in  std_ulogic;
+      clk     : in  std_ulogic;
+      apbi    : in  apb_slv_in_type;
+      apbo    : out apb_slv_out_type;
+      rego    : out std_logic_vector(nregs*regbits-1 downto 0)
+      );
   end component;
 
   -----------------------------------------------------------------------------

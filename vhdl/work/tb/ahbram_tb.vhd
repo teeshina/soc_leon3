@@ -114,10 +114,10 @@ begin
 
   tt : ahbram generic map 
   (
-    2,--hindex    : integer               := 0;
-    16#300#,
+    AHB_SLAVE_RAM,--hindex    : integer               := 0;
+    16#400#,
     16#fff#,
-    inferred
+    CFG_MEMTECH
   )port map 
   (
     inNRst,

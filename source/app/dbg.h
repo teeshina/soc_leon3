@@ -10,8 +10,6 @@ class dbg
 
     bool bEnd;
     
-    SparcV8 clSparcV8;
-
   public:
     dbg();
     void GenerateReset(int32 cnt, uint32 outNRst);
@@ -21,5 +19,4 @@ class dbg
 
   public:
     //SystemOnChipIO ioLeonData;
-
 };

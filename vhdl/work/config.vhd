@@ -72,10 +72,10 @@ package config is
   constant CFG_DISAS : integer := 0 + 0;
   constant CFG_PCLOW : integer := 2;
 -- AMBA settings
-  constant CFG_DEFMST : integer := (0);
-  constant CFG_RROBIN : integer := 1;
-  constant CFG_SPLIT : integer := 1;
-  constant CFG_AHBIO : integer := 16#FFF#;
+  constant CFG_AHBCTRL_DEFMST : integer := (0);
+  constant CFG_AHBCTRL_RROBIN : integer := 1;
+  constant CFG_AHBCTRL_SPLIT : integer := 1;
+  constant CFG_AHBCTRL_AHBIO : integer := 16#FFF#;
   constant CFG_APBADDR : integer := 16#800#;
   constant CFG_AHB_MON : integer := 0;
   constant CFG_AHB_MONERR : integer := 0;
@@ -110,7 +110,7 @@ package config is
   constant CFG_ROMMASK : integer := 16#E00# + 16#000#;
 -- AHB RAM
   constant CFG_AHBRAMEN : integer := 0;
-  constant CFG_AHBRSZ : integer := 1;
+  constant CFG_AHBRSZ : integer := 256;
   constant CFG_AHBRADDR : integer := 16#A00#;
 -- Gaisler Ethernet core
   constant CFG_GRETH : integer := 1;
@@ -151,4 +151,28 @@ package config is
 -- Xilinx MIG DDR2 controller
   constant CFG_MIG_DDR2 : integer := 1;
   constant CFG_MIG_CLK4 : integer := 16;
+  
+  constant CFG_AHBCTRL_IOEN : integer := 1;
+
+  constant LEON3_CORES_NUM  : integer := CFG_NCPU;
+  constant AHB_MASTER_LEON3 : integer := 0;
+  constant AHB_MASTER_JTAG  : integer := AHB_MASTER_LEON3+LEON3_CORES_NUM;
+  constant AHB_MASTER_TOTAL : integer := AHB_MASTER_JTAG+1;
+
+  
+  constant AHB_SLAVE_ROM        : integer := 0;
+  constant AHB_SLAVE_DSU        : integer := AHB_SLAVE_ROM+1;
+  constant AHB_SLAVE_RAM        : integer := AHB_SLAVE_DSU+1;
+  constant AHB_SLAVE_APBBRIDGE  : integer := AHB_SLAVE_RAM+1;
+  constant AHB_SLAVE_TOTAL      : integer := AHB_SLAVE_APBBRIDGE+1;
+
+  constant IRQ_DSU              : integer := 0;
+  constant IRQ_GNSS_ENGINE      : integer := IRQ_DSU+1;
+  constant IRQ_UART_1           : integer := IRQ_GNSS_ENGINE+1;
+  constant IRQ_TOTAL            : integer := IRQ_UART_1+1;
+
+  constant APB_UART_1           : integer := 0;
+  constant APB_IRQ_CONTROL      : integer := APB_UART_1+1;
+  constant APB_TOTAL            : integer := APB_IRQ_CONTROL+1;
+
 end;

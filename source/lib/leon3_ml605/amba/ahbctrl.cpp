@@ -18,6 +18,9 @@
 #define acdm    CFG_AHBCTRL_ACDM
 #define devid   CFG_AHBCTRL_DEVID
 #define disirq  CFG_AHBCTRL_DISIRQ
+#define hwdebug   0//    : integer := 0;  --Hardware debug
+#define fourgslv  0//  : integer := 0   --1=Single slave with single 4 GB bar
+
 
 #define MIMAX   (log2x[nahbmx]-1)//: integer := log2x(nahbmx) - 1;
 #define SIMAX   (log2x[nahbs]-1)//: integer := log2x(nahbs) - 1;
@@ -340,6 +343,7 @@ void ahbctrl::Update(
   hsel = 0;
   hmbsel = 0;
 
+#if (fourgslv==0)
   for (int32 i=0; i<=nahbs-1; i++)
   {
     for (int32 j=AHB_REG_ID_WIDTH; j<=AHB_CFG_WORDS-1; j++)
@@ -371,6 +375,12 @@ void ahbctrl::Update(
       }
     }
   }
+#else
+  //-- There is only one slave on the bus. The slave has only one bar, which
+  //-- maps 4 GB address space.
+  hsel   |= 1;
+  hmbsel |= 1;
+#endif
 
   if (r.Q.defmst == 1) hsel = 0;
 
@@ -428,16 +438,9 @@ void ahbctrl::Update(
     hrdata = ahbselectdata(slvo.arr[r.Q.hslave].hrdata, BITS32(r.Q.haddr,4,2), r.Q.hsize);
 #endif
 
-#if 1
-if(iClkCnt>=3731)
-bool st = true;
-#endif
   if (cfgmask != 0)
   {
-//--      v.hrdatam := msto(conv_integer(r.haddr(MIMAX+5 downto 5))).hconfig(conv_integer(r.haddr(4 downto 2)));
-//--      if r.haddr(11 downto MIMAX+6) /= zero32(11 downto MIMAX+6) then v.hrdatam := (others => '0'); end if;
-
-//--       if (r.haddr(10 downto MIMAX+6) = zero32(10 downto MIMAX+6)) and (r.haddr(4 downto 2) = "000")
+    //-- plug&play information for masters
     if (FULLPNP) hconfndx = BITS32(r.Q.haddr,4,2);
     else         hconfndx = 0;
     if((BITS32(r.Q.haddr,10,MIMAX+6)==0) && (FULLPNP || (BITS32(r.Q.haddr,4,2)==0)))
@@ -445,21 +448,37 @@ bool st = true;
     else
       v.hrdatam = 0;
 
-//--      v.hrdatas := slvo(conv_integer(r.haddr(SIMAX+5 downto 5))).hconfig(conv_integer(r.haddr(4 downto 2)));
-//--      if r.haddr(11 downto SIMAX+6) /= ('1' & zero32(10 downto SIMAX+6)) then v.hrdatas := (others => '0'); end if;
-
-//    --if (r.haddr(10 downto SIMAX+6) = zero32(10 downto SIMAX+6)) and
+    //-- plug&play information for slaves
     if( (BITS32(r.Q.haddr,10,SIMAX+6)==0) &&
       (FULLPNP || (BITS32(r.Q.haddr,4,2)==0) || (BIT32(r.Q.haddr,4)==1)) )
       v.hrdatas = slvo.arr[BITS32(r.Q.haddr,SIMAX+5,5)].hconfig.arr[BITS32(r.Q.haddr,4,2)];
     else 
       v.hrdatas = 0;
 
+    //-- device ID, library build and potentially debug information
     if (BITS32(r.Q.haddr,10,4) == 0x7f)
     {
-      v.hrdatas = (LIBVHDL_BUILD);
-      v.hrdatas |= (devid << 16);
+      if ((hwdebug == 0) || BITS32(r.Q.haddr,3,2)==0x0)
+      {
+        v.hrdatas = (LIBVHDL_BUILD);
+        v.hrdatas |= (devid << 16);
+      }else if(BITS32(r.Q.haddr,3,2)==0x1)
+      {
+        for (int32 i=0; i<=nahbmx-1; i++)
+        {
+          v.hrdatas &= ~(1<<i);
+          v.hrdatas |= (msto.arr[i].hbusreq<<i);
+        }
+      }else
+      {
+        for (int32 i=0; i<=nahbmx-1; i++)
+        {
+          v.hrdatas &= ~(1<<i);
+          v.hrdatas |= (BIT32(rsplit.Q,i)<<i);
+        }
+      }
     }
+
     if (r.Q.cfgsel == 1)
     {
       hrdata = 0; 

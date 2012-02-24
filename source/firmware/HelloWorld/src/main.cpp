@@ -4,27 +4,26 @@
 
 int main()
 {
-	unsigned int *adr;
-	adr = (unsigned int *)0x8000010c;
-  *adr = 4;
+  unsigned int *adr, *status;
+  adr = (unsigned int *)0x8000010c;
+  *adr = 71;//scaler = 66MHz/(8*(1+rate)) = 115200 = 71
   adr = (unsigned int *)0x80000108;
   *adr = 2;
 	
-	adr = (unsigned int *)0x80000100;
-	unsigned char chTmp[] = "T\n";
-	unsigned char *pchTmp = chTmp;
-	while(*pchTmp!='\0')
-	{
-		*adr = (unsigned int)(*pchTmp);
-		pchTmp++;
-	}
+  adr = (unsigned int *)0x80000100;
+  status = (unsigned int *)0x80000104;
+  unsigned char chTmp[] = "Hello world\n";
+  unsigned char *pchTmp = chTmp;
+  while(true)
+  {
+    if(*pchTmp=='\0') pchTmp = chTmp;
+
+    *adr = (unsigned int)(*pchTmp);
+    pchTmp++;
+
+   while((*status&0x600)!=0) {}
+
+  }
 	
-
-	int a = 0;
-	for(int i=0; i<10; i++)
-	{
-		a += 3;
-	}
-
-	return a;
+  return 0;
 }

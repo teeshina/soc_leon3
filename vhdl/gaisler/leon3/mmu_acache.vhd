@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --  This file is a part of the GRLIB VHDL IP LIBRARY
 --  Copyright (C) 2003 - 2008, Gaisler Research
---  Copyright (C) 2008 - 2010, Aeroflex Gaisler
+--  Copyright (C) 2008 - 2012, Aeroflex Gaisler
 --
 --  This program is free software; you can redistribute it and/or modify
 --  it under the terms of the GNU General Public License as published by
@@ -35,7 +35,6 @@ use gaisler.libcache.all;
 use gaisler.leon3.all;
 use gaisler.mmuconfig.all;
 use gaisler.mmuiface.all;
-use gaisler.libmmu.all;
 
  
 entity mmu_acache is
@@ -321,6 +320,7 @@ begin
     mcio.mexc    <= imexc;
     mcio.retry   <= iretry;
     mcio.cache   <= ihcache;
+    mcio.par     <= (others => '0');
     mcdo.grant   <= dgrant;
     mcdo.ready   <= dready;
     mcdo.mexc    <= dmexc;
@@ -329,6 +329,7 @@ begin
     mcdo.cache   <= dhcache;
     mcdo.ba      <= r.ba;
     mcdo.bg      <= r.bg and not v.bo(1);
+    mcdo.par     <= (others => '0');
 
     mcmmo.grant   <= mmgrant;
     mcmmo.ready   <= mmready;

@@ -1,6 +1,6 @@
 #include "lheaders.h"
 
-#define tech      : integer range 0 to NTECH := 0;
+//#define tech      : integer range 0 to NTECH := 0;
 //#define icen      CFG_ICEN//: integer range 0 to 1 := 0;
 //#define irepl     CFG_IREPL//: integer range 0 to 3 := 0;
 //#define isets     CFG_ISETS//: integer range 1 to 4 := 1;
@@ -373,6 +373,8 @@ void cachemem::Update(  SClock clk,//   : in  std_ulogic;
     cramo.icramo.tag.arr[i] |= (BIT64(itdataout.arr[i],(ITWIDTH-1))<<CTAG_LOCKPOS);
 #if(CFG_MMUEN==1)
     cramo.icramo.ctx.arr[i] = (uint32)BITS64( itdataout.arr[i],(ITWIDTH - (ILRR_BIT+ICLOCK_BIT+1)),(ITWIDTH - (ILRR_BIT+ICLOCK_BIT+M_CTX_SZ)) );
+#else
+    cramo.icramo.ctx.arr[i] = 0;
 #endif
     if((CFG_ILRAMEN==1) && ((CFG_ISETS==1) || (i==1)) && (crami.icramin.ldramin.read==1))
       cramo.icramo.data.arr[i] = ildataout;
@@ -389,6 +391,7 @@ void cachemem::Update(  SClock clk,//   : in  std_ulogic;
   {
     cramo.icramo.tag.arr[i]  = 0;
     cramo.icramo.data.arr[i] = 0;
+    cramo.icramo.ctx.arr[i]  = 0;
   }
 
 #if 1
@@ -398,8 +401,6 @@ void cachemem::Update(  SClock clk,//   : in  std_ulogic;
     tmpa = BITS32(dtdataout.arr[i],DTAG_BITS-1, (DTAG_BITS-1) - (TAG_HIGH - DTAG_LOW));
     cramo.dcramo.tag.arr[i] &= ~MSK32(TAG_HIGH, DTAG_LOW);
     cramo.dcramo.tag.arr[i] |= (tmpa<<DTAG_LOW);
-    //--(DTWIDTH-1-(DLRR_BIT+DCLOCK_BIT) downto DTWIDTH-(TAG_HIGH-DTAG_LOW)-(DLRR_BIT+DCLOCK_BIT)-1);
-    //--cramo.dcramo.tag(i)(TAG_HIGH downto DTAG_LOW) <= dtdataout(i)(DTWIDTH-1-(DLRR_BIT+DCLOCK_BIT) downto DTWIDTH-(TAG_HIGH-DTAG_LOW)-(DLRR_BIT+DCLOCK_BIT)-1);
     cramo.dcramo.tag.arr[i] &= ~MSK32(CFG_DLINE-1, 0);
     cramo.dcramo.tag.arr[i] |= BITS32(dtdataout.arr[i], CFG_DLINE-1, 0);
     
@@ -411,6 +412,8 @@ void cachemem::Update(  SClock clk,//   : in  std_ulogic;
 #if (CFG_MMUEN!=0)
     tmpa = BITS32(dtdataout.arr[i], (DTWIDTH-(DLRR_BIT+DCLOCK_BIT+1)), (DTWIDTH - (DLRR_BIT+DCLOCK_BIT+M_CTX_SZ)) );
     cramo.dcramo.ctx.arr[i] = tmpa;
+#else
+    cramo.dcramo.ctx.arr[i] = 0;
 #endif
     
     tmpa = BITS32( dtdataout3.arr[i], DTAG_BITS-1, (DTAG_BITS-1) - (TAG_HIGH - DTAG_LOW) );
@@ -435,6 +438,7 @@ void cachemem::Update(  SClock clk,//   : in  std_ulogic;
     cramo.dcramo.tag.arr[i]  = 0;
     cramo.dcramo.stag.arr[i] = 0;
     cramo.dcramo.data.arr[i] = 0;
+    cramo.dcramo.ctx.arr[i]  = 0;
   }
 
   for (int32 i=0; i<MAXSETS; i++)
@@ -444,10 +448,6 @@ void cachemem::Update(  SClock clk,//   : in  std_ulogic;
     cramo.dcramo.spar = 0;
     cramo.icramo.tpar.arr[i] = 0;
     cramo.icramo.dpar.arr[i] = 0;
-#if (CFG_MMUEN==0)
-    cramo.icramo.ctx.arr[i] = 0;
-    cramo.dcramo.ctx.arr[i] = 0;
-#endif
   }
 #endif
 }

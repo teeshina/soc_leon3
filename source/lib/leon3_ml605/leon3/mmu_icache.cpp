@@ -419,22 +419,12 @@ void mmu_icache::Update(uint32 rst,// : in  std_logic;
       }
       v.underrun = (v.underrun | branch) & !v.overrun;
       v.holdn = !(v.overrun | v.underrun);
-      if ((mcio.ready==1) && (r.Q.req==0)) //--(v.burst = '0') then
+      if ((mcio.ready==1) && (r.Q.req==0))
       {
         v.underrun = 0;
         v.overrun  = 0;
-        if (BIT32(dco.icdiag.cctrl.ics,0) & !r.Q.flush2)
-        {
-          v.istate = stop; 
-          v.holdn  = 0;
-        }else
-        {
-          v.istate = idle;
-          v.flush  = r.Q.flush2;
-          v.holdn  = 1;
-          if (r.Q.overrun==1) taddr = ici.fpc &MSK32(TAG_HIGH,LINE_LOW);
-          else                taddr = ici.rpc &MSK32(TAG_HIGH,LINE_LOW);
-        }
+        v.istate = stop; 
+        v.holdn  = 0;
       }
     break;
     case stop:    //-- return to main
@@ -657,6 +647,9 @@ void mmu_icache::Update(uint32 rst,// : in  std_logic;
   icrami.twrite  = ctwrite;
   icrami.flush   = r.Q.flush2;
   icrami.ctx     = mmudci.mmctrl1.ctx;
+  icrami.dpar    = 0;
+  for (int32 i=0; i<4; i++) icrami.tpar.arr[i] = 0;
+
 
   //-- data ram inputs
   icrami.denable  = enable;
@@ -696,7 +689,10 @@ void mmu_icache::Update(uint32 rst,// : in  std_logic;
   ico.set       = set&0x3;
   ico.cfg       = icfg;
   ico.idle      = sidle;
-
+  ico.cstat.chold = !r.Q.holdn;
+  ico.cstat.mhold = 0;
+  ico.cstat.tmiss = mmuico.tlbmiss;
+  ico.cstat.cmiss = 0;
 
 //-- Local registers
   r.CLK = clk;

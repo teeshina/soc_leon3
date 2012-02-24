@@ -356,7 +356,6 @@ void dbg::mmu_dcache_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pch_dco->icdiag.pflush,1,"ch_dco.icdiag.pflush");//           : std_ulogic;
     pStr = PutToStr(pStr, pch_dco->icdiag.pflushaddr,VA_I_U-VA_I_D+1,"ch_dco.icdiag.pflushaddr");//       : std_logic_vector(VA_I_U downto VA_I_D); 
     pStr = PutToStr(pStr, pch_dco->icdiag.pflushtyp,1,"ch_dco.icdiag.pflushtyp");//        : std_ulogic;
-    pStr = PutToStr(pStr, pch_dco->icdiag.ilock,4,"--ch_dco.icdiag.ilock");//            : std_logic_vector(0 to 3); 
     pStr = PutToStr(pStr, pch_dco->icdiag.scanen,1,"ch_dco.icdiag.scanen");//           : std_ulogic;
     pStr = PutToStr(pStr, pch_dco->cache,1,"--ch_dco.cache");//            : std_ulogic;
     pStr = PutToStr(pStr, pch_dco->idle,1,"ch_dco.idle");//             : std_ulogic;			-- idle mode

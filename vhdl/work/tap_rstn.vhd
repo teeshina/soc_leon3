@@ -7,7 +7,7 @@ use grlib.stdlib.all;
 
 entity tap_rstn is
   port (
-    inNSysReset : in std_ulogic;
+    inSysReset  : in std_ulogic;
     inSysClk    : in std_ulogic;
     inPllLock   : in std_ulogic;
     outNRst     : out std_ulogic
@@ -24,10 +24,10 @@ begin
 
   proc_rst : process (inSysClk) begin
     if rising_edge(inSysClk) then 
-      rbPllLock <= (rbPllLock(3 downto 0) & '1') and (not inNSysReset & not inNSysReset & not inNSysReset & not inNSysReset & not inNSysReset); 
+      rbPllLock <= (rbPllLock(3 downto 0) & '1') and (not inSysReset & not inSysReset & not inSysReset & not inSysReset & not inSysReset); 
       rReset <= rbPllLock(4) and rbPllLock(3) and rbPllLock(2);
     end if;
   end process;
-  outNRst <= rReset and not inNSysReset;
+  outNRst <= rReset and not inSysReset;
   
 end;  

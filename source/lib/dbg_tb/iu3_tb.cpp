@@ -470,7 +470,6 @@ void dbg::iu3_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pin_dco->icdiag.pflush,1,"dco.icdiag.pflush");//           : std_ulogic;
     pStr = PutToStr(pStr, pin_dco->icdiag.pflushaddr,VA_I_U-VA_I_D+1,"dco.icdiag.pflushaddr");//       : std_logic_vector(VA_I_U downto VA_I_D); 
     pStr = PutToStr(pStr, pin_dco->icdiag.pflushtyp,1,"dco.icdiag.pflushtyp");//        : std_ulogic;
-    pStr = PutToStr(pStr, pin_dco->icdiag.ilock,4,"dco.icdiag.ilock");//            : std_logic_vector(0 to 3); 
     pStr = PutToStr(pStr, pin_dco->icdiag.scanen,1,"dco.icdiag.scanen");//           : std_ulogic;
     pStr = PutToStr(pStr, pin_dco->cache,1,"dco.cache");//            : std_ulogic;
     pStr = PutToStr(pStr, pin_dco->idle,1,"dco.idle");//             : std_ulogic;			-- idle mode

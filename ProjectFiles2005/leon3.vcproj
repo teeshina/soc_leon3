@@ -255,16 +255,16 @@
 					RelativePath="..\source\app\elfloader\elfloader.h"
 					>
 				</File>
-			</Filter>
-			<Filter
-				Name="sparcv8"
-				>
 				<File
-					RelativePath="..\source\app\sparcv8\sparcv8.cpp"
+					RelativePath="..\source\app\elfloader\instr.h"
 					>
 				</File>
 				<File
-					RelativePath="..\source\app\sparcv8\sparcv8.h"
+					RelativePath="..\source\app\elfloader\sparcv8.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\source\app\elfloader\sparcv8.h"
 					>
 				</File>
 			</Filter>

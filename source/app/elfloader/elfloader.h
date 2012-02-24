@@ -7,6 +7,10 @@
 
 #pragma once
 
+#include <fstream>
+#include "stdtypes.h"
+#include "sparcv8.h"
+
 class ElfFile
 {
   friend class dbg;
@@ -120,24 +124,31 @@ class ElfFile
     static const int32 FILE_NAME_STRING_MAX = 1024;
     char chElfFile[FILE_NAME_STRING_MAX];
     char chMapFile[FILE_NAME_STRING_MAX];
+    char chAsmFile[FILE_NAME_STRING_MAX];
     bool bFileOpened;
     int32 iElfSize;
     uint8 *arrElf;
     std::ofstream *posMapFile;
+    std::ofstream *posAsmFile;
     
     static const int32 STRINGS_IN_SECTION_MAX = 1<<16;
     uint32 iTotalStrings;
     uint8  *pStr[STRINGS_IN_SECTION_MAX];
     
+    static const int32 ELF_IMAGE_MAXSIZE = 1<<16; // words
+    uint32 image[ELF_IMAGE_MAXSIZE];
+    SparcV8 clSparcV8;
+
   public:
     ElfFile(char *pchElfFile);
     ~ElfFile();
 
     void Load();
 
-    void ReadElfHeader();
+    int32 ReadElfHeader();  // 0=elf file OK; otherwise error
     void ReadProgramHeader();
     void ReadSectionHeader();
+    void RunDisassembler();
     
     void WriteMemoryMap(SectionHeaderType *);
     

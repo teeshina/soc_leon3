@@ -21,6 +21,7 @@ struct l3_irq_in_type
   uint32 rstvec;//  : std_logic_vector(31 downto 12);
   uint32 iact;//        : std_ulogic;
   uint32 index;//   : std_logic_vector(3 downto 0);
+  uint32 hrdrst;//      : std_ulogic;
 };
 
 struct l3_irq_out_type
@@ -29,6 +30,7 @@ struct l3_irq_out_type
   uint32 irl;//   : std_logic_vector(3 downto 0);
   uint32 pwd;//         : std_ulogic;
   uint32 fpen;//        : std_ulogic;
+  uint32 idle;//        : std_ulogic;
 };
 
 struct l3_debug_in_type

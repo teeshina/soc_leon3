@@ -26,8 +26,8 @@ const uint32 REVISION = 1;
 apbuart::apbuart(uint32 pindex_, uint32 paddr_, uint32 pmask_)
 {
   pindex = pindex_;
-  cfg_paddr  = paddr_;
-  cfg_pmask  = pmask_;
+  paddr  = paddr_;
+  pmask  = pmask_;
 }
 
 apbuart::~apbuart()
@@ -48,9 +48,9 @@ void apbuart::Update(  uint32 rst,//    : in  std_ulogic;
   ((ahb_device_reg*)(&apbo.pconfig.arr[0]))->cfgver  = 0;
   ((ahb_device_reg*)(&apbo.pconfig.arr[0]))->interrupt = IRQ_UART_CFG;
   ((apb_iobar*)(&apbo.pconfig.arr[1]))->area_id  = 0x1;
-  ((apb_iobar*)(&apbo.pconfig.arr[1]))->addrmask = cfg_pmask;
+  ((apb_iobar*)(&apbo.pconfig.arr[1]))->addrmask = pmask;
   ((apb_iobar*)(&apbo.pconfig.arr[1]))->zero     = 0x0;
-  ((apb_iobar*)(&apbo.pconfig.arr[1]))->memaddr  = cfg_paddr;
+  ((apb_iobar*)(&apbo.pconfig.arr[1]))->memaddr  = paddr;
 
 
   v = r.Q;
@@ -68,6 +68,9 @@ void apbuart::Update(  uint32 rst,//    : in  std_ulogic;
   thalffull = 1;
   rhalffull = 0;
   v.ctsn = (BIT32(r.Q.ctsn,0)<<1) | uarti.ctsn;
+  paddress = 0;
+  paddress = apbi.paddr & MSK32(CFG_APBUART_ABITS-1,2);
+
 
   if (CFG_APBUART_FIFOSZ == 1) 
   {
@@ -104,12 +107,9 @@ void apbuart::Update(  uint32 rst,//    : in  std_ulogic;
   if (r.Q.extclken) v.tick = r.Q.extclk & !uarti.extclk;
 
   //-- read/write registers
-  paddr = 0;
-  paddr = apbi.paddr & MSK32(CFG_APBUART_ABITS-1,2);
-
   if (BIT32(apbi.psel,pindex) & apbi.penable & !apbi.pwrite)
   {
-    switch(BITS32(paddr,7,2))
+    switch(BITS32(paddress,7,2))
     {
       case 0x00://when "000000" =>
         rdata |= BITS32(r.Q.rhold.arr[r.Q.rraddr],7,0);
@@ -168,7 +168,7 @@ void apbuart::Update(  uint32 rst,//    : in  std_ulogic;
   
   if (BIT32(apbi.psel,pindex) & apbi.penable & apbi.pwrite)
   {
-    switch(BITS32(paddr,7,2))
+    switch(BITS32(paddress,7,2))
     {
       case 0:break;
       case 1:
@@ -346,7 +346,7 @@ void apbuart::Update(  uint32 rst,//    : in  std_ulogic;
 
   if (BIT32(apbi.psel,pindex) & apbi.penable & apbi.pwrite)
   {
-    switch(BITS32(paddr,4,2))
+    switch(BITS32(paddress,4,2))
     {
       case 0x0://"000" =>
 #if (CFG_APBUART_FIFOSZ == 1)

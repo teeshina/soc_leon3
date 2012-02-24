@@ -20,14 +20,19 @@ ElfFile::ElfFile(char *pchElfFile)
       pisElf->read((int8*)arrElf,iElfSize);
     }
     pisElf->close();
-#ifdef PRINT_MAP_FILE
     strcpy_s(chElfFile, FILE_NAME_STRING_MAX,pchElfFile);
+#ifdef PRINT_MAP_FILE
     strcpy_s(chMapFile, FILE_NAME_STRING_MAX,pchElfFile);
     strcat_s(chMapFile, FILE_NAME_STRING_MAX, ".map");
     posMapFile = new ofstream(chMapFile,ios::out);
 #endif
+    strcpy_s(chAsmFile, FILE_NAME_STRING_MAX,pchElfFile);
+    strcat_s(chAsmFile, FILE_NAME_STRING_MAX, ".asm");
+    posAsmFile = new ofstream(chAsmFile,ios::out);
   }
   free(pisElf);
+
+  memset(image,0,ELF_IMAGE_MAXSIZE*sizeof(uint32));
 }
 
 ElfFile::~ElfFile()
@@ -39,6 +44,8 @@ ElfFile::~ElfFile()
     posMapFile->close();
     free(posMapFile);
 #endif
+    posAsmFile->close();
+    free(posAsmFile);
   }
   if((Elf32_Ehdr.e_shoff)&&(Elf32_Ehdr.e_shnum)) free(pSectionHeader);
 }
@@ -46,14 +53,28 @@ ElfFile::~ElfFile()
 //****************************************************************************
 void ElfFile::Load()
 {
-  if(!bFileOpened) return;
+  if(!bFileOpened)
+  {
+    PUT_STRING("{elf} Error: File not found\n");
+    return;
+  }
 
-  ReadElfHeader();
+  if (ReadElfHeader())
+  {
+    PUT_STRING("{elf} Error: \"%s\" file isn't correct\n", chElfFile);
+    return;
+  }
+
+  if(Elf32_Ehdr.e_phoff) ReadProgramHeader();
+  if(Elf32_Ehdr.e_shoff) ReadSectionHeader();
+
+  clSparcV8.Disassemler(Elf32_Ehdr.e_entry, image, ELF_IMAGE_MAXSIZE, posAsmFile);
 }
 
 //****************************************************************************
-void ElfFile::ReadElfHeader()
+int32 ElfFile::ReadElfHeader()
 {
+  int32 iErr = 0;
   memcpy((char*)&Elf32_Ehdr,arrElf,sizeof(ElfHeaderType));
   char chMagic[5] = {0x7f,'E','L','F',0};
   bool bMagicPass = true;
@@ -61,8 +82,10 @@ void ElfFile::ReadElfHeader()
   {
     if(Elf32_Ehdr.e_ident[i]!=chMagic[i]) bMagicPass=false;
   }
-  if(bMagicPass) PUT_STRING("{elf} ELF file has been opened\n");
-  else           PUT_STRING("{elf} Err: \"%s\" isn't ELF file\n",chElfFile);
+  if(!bMagicPass) return (iErr=1);
+
+
+  PUT_STRING("{elf} ELF file has been opened\n");
 
   switch(Elf32_Ehdr.e_ident[ElfHeaderType::EI_CLASS])
   {
@@ -121,9 +144,7 @@ void ElfFile::ReadElfHeader()
   SwapBytes(Elf32_Ehdr.e_shnum);    // number of section headers
   SwapBytes(Elf32_Ehdr.e_shstrndx);
 
-  if(Elf32_Ehdr.e_phoff) ReadProgramHeader();
-  if(Elf32_Ehdr.e_shoff) ReadSectionHeader();
-
+  return iErr;
 }
 
 //****************************************************************************
@@ -189,6 +210,7 @@ void ElfFile::ReadSectionHeader()
 //****************************************************************************
 void ElfFile::WriteMemoryMap(SectionHeaderType *p)
 {
+  uint32 ImgAddr;
   // source code or data:
   uint32 word;
   int32 MsbOrder[4]={0,1,2,3};
@@ -207,6 +229,11 @@ void ElfFile::WriteMemoryMap(SectionHeaderType *p)
       word |= uint32(arrElf[p->sh_offset+n+byte[1]])<<16;
       word |= uint32(arrElf[p->sh_offset+n+byte[2]])<<8;
       word |= uint32(arrElf[p->sh_offset+n+byte[3]])<<0;
+
+      ImgAddr = (p->sh_addr+n - Elf32_Ehdr.e_entry)/sizeof(uint32);
+      if(ImgAddr<ELF_IMAGE_MAXSIZE) image[ImgAddr] = word;
+      else                          PUT_STRING("{elf} Error: Internal Image maximum address is overrun\n");
+
       LibBackDoorLoadRAM(p->sh_addr+n, word);
 #ifdef PRINT_MAP_FILE
       S_STRING(chTmp,"0x%08x: 0x%08x ", p->sh_addr+n, word );

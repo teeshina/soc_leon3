@@ -62,7 +62,7 @@ class ahbctrl
     //-- pragma translate_on
 
     reg_type v;// : reg_type;
-    uint32 nhmaster, hmaster;// : integer range 0 to nahbmx -1;
+    uint32 nhmaster;// : integer range 0 to nahbmx -1;
     uint32 hgrant  : AHB_MASTERS_MAX;//std_logic_vector(0 to NAHBMST-1);   -- bus grant
     uint32 hsel;//    : std_logic_vector(0 to 31);   -- slave select
     uint32 hmbsel  : AHB_MEM_ID_WIDTH;//std_logic_vector(0 to NAHBAMR-1);

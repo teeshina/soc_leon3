@@ -30,6 +30,7 @@ dsu3x::dsu3x(uint32 ind_, uint32 uiMemaddr_, uint32 uiAddrmask_)
   uiMemaddr  = uiMemaddr_;
   uiAddrmask = uiAddrmask_;
   
+  for(int32 i=0; i<8; i++) hconfig.arr[i] = 0;
   ((ahb_device_reg*)(&hconfig.arr[0]))->vendor  = VENDOR_GAISLER;
   ((ahb_device_reg*)(&hconfig.arr[0]))->device  = GAISLER_LEON3DSU;
   ((ahb_device_reg*)(&hconfig.arr[0]))->version = DSU3_VERSION;
@@ -592,6 +593,8 @@ void dsu3x::Update(uint32 rst,//    : in  std_ulogic;
     tv.tbreg2.read = 0;
     tv.tbreg2.write = 0;
     v.slv.hready = 1;
+    v.act   = 0;
+    v.tstop = 0;
   }
   vabufi.enable = vabufi.enable & !ahbsi.scanen;
   vabufi.diag = ahbsi.testen<<3;

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --  This file is a part of the GRLIB VHDL IP LIBRARY
 --  Copyright (C) 2003 - 2008, Gaisler Research
---  Copyright (C) 2008 - 2010, Aeroflex Gaisler
+--  Copyright (C) 2008 - 2012, Aeroflex Gaisler
 --
 --  This program is free software; you can redistribute it and/or modify
 --  it under the terms of the GNU General Public License as published by
@@ -97,14 +97,7 @@ begin
   end process p0;
 
   p1: process (clk)
-  begin if rising_edge(clk) then 
-    r <= c; 
-    if(rst='0') then 
-      r.pos <= (others => '0');
-      r.movetop <= '0';
-      r.dummy <= '0';
-    end if;
-  end if;
+  begin if rising_edge(clk) then r <= c; end if;
   end process p1;
 
 end rtl;

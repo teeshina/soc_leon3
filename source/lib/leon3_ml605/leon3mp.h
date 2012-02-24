@@ -83,7 +83,9 @@ class leon3mp
       pclDsu3x->ClkUpdate();
       pApbControl->ClkUpdate();
       pclApbUartA->ClkUpdate();
+#if (CFG_AHBROM_ENA==1)
       pclAhbRom->ClkUpdate();
+#endif
     }
 };
 

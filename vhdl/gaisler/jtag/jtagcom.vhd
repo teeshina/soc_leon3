@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --  This file is a part of the GRLIB VHDL IP LIBRARY
 --  Copyright (C) 2003 - 2008, Gaisler Research
---  Copyright (C) 2008 - 2010, Aeroflex Gaisler
+--  Copyright (C) 2008 - 2012, Aeroflex Gaisler
 --
 --  This program is free software; you can redistribute it and/or modify
 --  it under the terms of the GNU General Public License as published by
@@ -176,7 +176,7 @@ begin
     end case;
 
     if (rst = '0') or (r.trst(0) = '1') then
-      v.state := shft; v.addr(34) := '0'; v.seq := '0';
+      v.state := shft; v.addr := (others => '0'); v.seq := '0';
     end if;
 
     if reread = 0 then v.holdn := '0'; end if;

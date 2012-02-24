@@ -20,7 +20,7 @@ use work.util_tb.all;
 
 entity dsu3x_tb is
   constant CLK_HPERIOD : time := 10 ps;
-  constant STRING_SIZE : integer := 782; -- string size = index of the last element
+  constant STRING_SIZE : integer := 751; -- string size = index of the last element
 
   
 end dsu3x_tb;
@@ -40,8 +40,6 @@ architecture behavior of dsu3x_tb is
   signal ch_dsuo   : dsu_out_type;
   signal dsuo   : dsu_out_type;
   signal in_hclken : std_ulogic;
-  signal t_v_act  : std_logic;
-  signal t_trin_tbreg2_addr  : std_logic_vector(31 downto 2);
 
                      					
   signal U: std_ulogic_vector(STRING_SIZE-1 downto 0);
@@ -172,8 +170,6 @@ begin
   ch_dsuo.active <= S(733);
   ch_dsuo.tstop <= S(734);
   ch_dsuo.pwd <= S(750 downto 735);
-  t_v_act <= S(751);
-  t_trin_tbreg2_addr <= S(781 downto 752);
   
 
   tt : dsu3x generic map 

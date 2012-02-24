@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --  This file is a part of the GRLIB VHDL IP LIBRARY
 --  Copyright (C) 2003 - 2008, Gaisler Research
---  Copyright (C) 2008 - 2010, Aeroflex Gaisler
+--  Copyright (C) 2008 - 2012, Aeroflex Gaisler
 --
 --  This program is free software; you can redistribute it and/or modify
 --  it under the terms of the GNU General Public License as published by
@@ -48,8 +48,8 @@ end record;
 component apbuart
   generic (
     pindex   : integer := 0; 
-    cfg_paddr    : integer := 0;
-    cfg_pmask    : integer := 16#fff#;
+    paddr    : integer := 0;
+    pmask    : integer := 16#fff#;
     console  : integer := 0; 
     pirq     : integer := 0;
     parity   : integer := 1; 

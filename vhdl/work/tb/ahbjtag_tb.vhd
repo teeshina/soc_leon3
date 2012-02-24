@@ -162,26 +162,26 @@ begin
 
   
   -- run test module:
-  tt : ahbjtag generic map
-  (
-    tech => CFG_FABTECH,
-    hindex => CFG_NCPU+CFG_AHB_UART
-  )
-  port map
-  (
-    inNRst,
-    inClk,
-    inJtagTCK,
-    inJtagTDI,
-    inJtagSel,
-    inJtagShift,
-    inJtagUpdate,
-    outJtagTDO,
-    inAhbMst,
-    ahbmo,
-    inJtagRESET,
-    outTdoEna
-  );
+--  tt : ahbjtag generic map
+--  (
+--    tech => CFG_FABTECH,
+--    hindex => CFG_NCPU+CFG_AHB_UART
+--  )
+--  port map
+--  (
+--    inNRst,
+--    inClk,
+--    inJtagTCK,
+--    inJtagTDI,
+--    inJtagSel,
+--    inJtagShift,
+--    inJtagUpdate,
+--    outJtagTDO,
+--    inAhbMst,
+--    ahbmo,
+--    inJtagRESET,
+--    outTdoEna
+--  );
 
 procCheck : process (inClk)
 begin

@@ -378,6 +378,7 @@ void mmu_acache::Update( uint32 rst,//    : in  std_logic;
   mcio.mexc    = imexc;
   mcio.retry   = iretry;
   mcio.cache   = ihcache;
+  mcio.par     = 0;
   mcdo.grant   = dgrant;
   mcdo.ready   = dready;
   mcdo.mexc    = dmexc;
@@ -386,6 +387,8 @@ void mmu_acache::Update( uint32 rst,//    : in  std_logic;
   mcdo.cache   = dhcache;
   mcdo.ba      = r.Q.ba;
   mcdo.bg      = r.Q.bg & !BIT32(v.bo,1);
+  mcdo.par     = 0;
+
 
   mcmmo.grant   = mmgrant;
   mcmmo.ready   = mmready;

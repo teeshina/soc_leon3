@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --  This file is a part of the GRLIB VHDL IP LIBRARY
 --  Copyright (C) 2003 - 2008, Gaisler Research
---  Copyright (C) 2008 - 2010, Aeroflex Gaisler
+--  Copyright (C) 2008 - 2012, Aeroflex Gaisler
 --
 --  This program is free software; you can redistribute it and/or modify
 --  it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ constant JTAG_UT699RH    : integer range 0 to 65535 := 16#699#;
 constant JTAG_UT700RH    : integer range 0 to 65535 := 16#700#;
 constant JTAG_GR702      : integer range 0 to 65535 := 16#702#;
 constant JTAG_GR712      : integer range 0 to 65535 := 16#712#;
+constant JTAG_UT840      : integer range 0 to 65535 := 16#840#;
 
 component ahbjtag 
   generic (
@@ -55,18 +56,24 @@ component ahbjtag
     dinst   : integer range 0 to 255 := 3;
     scantest : integer := 0);
   port (
-    rst         : in  std_ulogic;
-    clk         : in  std_ulogic;
-    inJtagTCK   : in  std_ulogic_vector(1 downto 0);
-    inJtagTDI   : in  std_ulogic_vector(1 downto 0);
-    inJtagSel   : in  std_ulogic_vector(1 downto 0);
-    inJtagShift : in  std_ulogic_vector(1 downto 0);
-    inJtagUpdate: in  std_ulogic_vector(1 downto 0);
-    outJtagTDO  : out std_ulogic;
-    ahbi        : in  ahb_mst_in_type;
-    ahbo        : out ahb_mst_out_type;
-    inJtagRESET : in std_ulogic_vector(1 downto 0);
-    tdoen       : out std_ulogic
+    rst     : in  std_ulogic;
+    clk     : in  std_ulogic;
+    tck     : in  std_ulogic;
+    tms     : in  std_ulogic;
+    tdi     : in  std_ulogic;
+    tdo     : out std_ulogic;
+    ahbi    : in  ahb_mst_in_type;
+    ahbo    : out ahb_mst_out_type;
+    tapo_tck    : out std_ulogic;
+    tapo_tdi    : out std_ulogic;
+    tapo_inst   : out std_logic_vector(7 downto 0);
+    tapo_rst    : out std_ulogic;
+    tapo_capt   : out std_ulogic;
+    tapo_shft   : out std_ulogic;
+    tapo_upd    : out std_ulogic;
+    tapi_tdo    : in std_ulogic;
+    trst        : in std_ulogic := '1';
+    tdoen   : out std_ulogic
     );
 end component;      
 
@@ -98,7 +105,8 @@ component bscanctrl
     etinst: integer := 6;               -- extest
     itinst: integer := 7;                --intest
     hzinst: integer := 8;               -- highz
-    clinst: integer := 9                -- clamp
+    clinst: integer := 10;              -- clamp
+    mbist : integer := 11               -- clamp
     );
   port (
     trst        : in std_ulogic;
@@ -117,7 +125,8 @@ component bscanctrl
     bsupdi      : out std_ulogic;
     bsupdo      : out std_ulogic;
     bsdrive     : out std_ulogic;
-    bshighz     : out std_ulogic
+    bshighz     : out std_ulogic;
+    bsmbist     : out std_ulogic
     );
 end component;
 

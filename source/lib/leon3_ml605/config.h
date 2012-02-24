@@ -105,8 +105,8 @@ const int NBUS              = 4;
 #define CFG_AHBCTRL_DEVID       XILINX_ML401//XILINX_ML605
 
 const uint32 grlib_version    = 1100;//version.vhd
-const uint32 grlib_build      = 4108;//version.vhd
-//constant grlib_date : string := "20110628";
+const uint32 grlib_build      = 4113;//version.vhd
+//constant grlib_date : string := "20120118";
 const uint32 LIBVHDL_VERSION  = grlib_version;// stdlib.vhd
 const uint32 LIBVHDL_BUILD    = grlib_build;// stdlib.vhd
 const uint32 LEON3_VERSION    = 0;
@@ -199,6 +199,7 @@ const uint32 ADDR_BUILD_LIB_MAX  = 0xFFFFFFFF;
 #define CFG_AHBRAMMASK                0xFFF
 
 
+//#define CFG_AHBROM_ENA      0
 #define CFG_COPROC_ENA      0 // co-copressor 1=ena; 0=dis
 #define CFG_MMU_PAGESIZE    0//integer range 0 to 5  := 0;
 #define CFG_SCANTEST_ENA    0//
