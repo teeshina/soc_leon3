@@ -120,6 +120,40 @@ class ElfFile
     };
     SectionHeaderType *pSectionHeader;
 
+    struct SymbolTableType
+    {
+      Elf32_Word    st_name;
+      Elf32_Addr    st_value;
+      Elf32_Word    st_size;
+      unsigned char st_info;
+      unsigned char st_other;
+      Elf32_Half    st_shndx;
+    };
+
+    struct ProgramHeaderType
+    {
+      Elf32_Word    p_type;
+      Elf32_Off     p_offset;
+      Elf32_Addr    p_vaddr;
+      Elf32_Addr    p_paddr;
+      Elf32_Word    p_filesz;
+      Elf32_Word    p_memsz;
+      Elf32_Word    p_flags;
+      Elf32_Word    p_align;
+
+      //p_type:
+      static const Elf32_Word PT_NULL     = 0;
+      static const Elf32_Word PT_LOAD     = 1;
+      static const Elf32_Word PT_DYNAMIC  = 2;
+      static const Elf32_Word PT_INTERP   = 3;
+      static const Elf32_Word PT_NOTE     = 4;
+      static const Elf32_Word PT_SHLIB    = 5;
+      static const Elf32_Word PT_PHDR     = 6;
+      static const Elf32_Word PT_LOPROC   = 0x70000000;
+      static const Elf32_Word PT_HIPROC   = 0x7fffffff;
+    };
+    ProgramHeaderType *pProgramHeader;
+
   private:
     static const int32 FILE_NAME_STRING_MAX = 1024;
     char chElfFile[FILE_NAME_STRING_MAX];
@@ -138,6 +172,8 @@ class ElfFile
     static const int32 ELF_IMAGE_MAXSIZE = 1<<16; // words
     uint32 image[ELF_IMAGE_MAXSIZE];
     SparcV8 clSparcV8;
+
+    int32 iImageBytes;
 
   public:
     ElfFile(char *pchElfFile);

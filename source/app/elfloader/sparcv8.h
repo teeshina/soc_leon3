@@ -72,7 +72,7 @@ class CInstr
     Format3b f3b;
     Format3c f3c;
   }u;
-  int32 format;
+  int32  format;
   uint32 index;
 };
 
@@ -124,7 +124,7 @@ class SparcV8
     char chString[256];
 
   public:
-    void Disassemler(uint32 entry_adr, uint32 *data, uint32 size, std::ofstream *pFile);
+    void Disassemler(uint32 entry_adr, uint32 *data, int32 size, std::ofstream *pFile);
     void DisasInstr(CInstr *p);
     
     uint32 Common(CInstr *p);

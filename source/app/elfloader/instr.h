@@ -13,20 +13,20 @@ const char chReg[][16] =
 {
   "%g0",//r0
   "%g1",//r1
-  "%g2",
-  "%g3",
-  "%g4",
-  "%g5",
-  "%g6",
-  "%g7",
-  "%o0",
-  "%o1",
-  "%o2",
-  "%o3",
-  "%o4",
-  "%o5",
-  "%sp", // stack pointer
-  "%o7",
+  "%g2",//r2
+  "%g3",//r3
+  "%g4",//r4
+  "%g5",//r5
+  "%g6",//r6
+  "%g7",//r7
+  "%o0",//r8
+  "%o1",//r9
+  "%o2",//r10
+  "%o3",//r11
+  "%o4",//r12
+  "%o5",//r13
+  "%sp",//r14. stack pointer
+  "%o7",//r15
   "%l0",
   "%l1",
   "%l2",
@@ -111,7 +111,7 @@ static const uint32 WRTBR      = Common_SHIFT + 0x33;
 static const uint32 CPop1      = Common_SHIFT + 0x36;
 static const uint32 CPop2      = Common_SHIFT + 0x37;
 static const uint32 JMPL       = Common_SHIFT + 0x38;
-static const uint32 RETT       = Common_SHIFT + 0x39;
+static const uint32 RETT       = Common_SHIFT + 0x39; // return from a trap handler
 //static const uint32 Ticc      = Common_SHIFT + 0x3A;
 static const uint32 FLUSH      = Common_SHIFT + 0x3B;
 static const uint32 SAVE       = Common_SHIFT + 0x3C;
@@ -221,8 +221,16 @@ static const uint32 TVC        = Ticc_SHIFT + 0xF;
 
 static const uint32 Synth_SHIFT = Ticc_SHIFT + 0x10;
 static const uint32 CLR        = Synth_SHIFT + 0x0;
-static const uint32 JMP        = Synth_SHIFT + 0x1;
-static const uint32 NOP        = Synth_SHIFT + 0x2;
+static const uint32 CLRMEMB    = Synth_SHIFT + 0x1;
+static const uint32 CLRMEMH    = Synth_SHIFT + 0x2;
+static const uint32 CLRMEM     = Synth_SHIFT + 0x3;
+static const uint32 JMP        = Synth_SHIFT + 0x4;
+static const uint32 NOP        = Synth_SHIFT + 0x5;
+static const uint32 MOV        = Synth_SHIFT + 0x6;
+static const uint32 RET        = Synth_SHIFT + 0x7;
+static const uint32 RETL       = Synth_SHIFT + 0x8;
+static const uint32 CMP        = Synth_SHIFT + 0x9;
+static const uint32 CALLREG    = Synth_SHIFT + 0xA;
 
 struct SInstruction
 {
@@ -233,83 +241,83 @@ struct SInstruction
 SInstruction stInstr[] = 
 {
   {UNKNOWN,"Unknown"},
-  {CALL, "CALL 0x%08x"},
-  {UNIMP, "UNIMP"},
-  {SETHI, "SETHI"},
+  {CALL, "call"},
+  {UNIMP, "unimp"},
+  {SETHI, "sethi"},
   
-  {ADD, "ADD"},
-  {AND, "AND"},
-  {OR, "OR"},
-  {XOR, "XOR"},
-  {SUB, "SUB"},
-  {ANDN, "ANDN"},
-  {ORN, "ORN"},
-  {XNOR, "XNOR"},
-  {ADDX, "ADDX"},
+  {ADD, "add"},
+  {AND, "and"},
+  {OR, "or"},
+  {XOR, "xor"},
+  {SUB, "sub"},
+  {ANDN, "andn"},
+  {ORN, "orn"},
+  {XNOR, "xnor"},
+  {ADDX, "addx"},
   {Common_SHIFT + 0x9, "none"},
-  {UMUL, "UMUL"},
-  {SMUL, "SMUL"},
-  {SUBX, "SUBX"},
+  {UMUL, "umul"},
+  {SMUL, "smul"},
+  {SUBX, "subx"},
   {Common_SHIFT + 0xD, "none"},
-  {UDIV, "UDIV"},
-  {SDIV, "SDIV"},
-  {ADDcc, "ADDcc"},
-  {ANDcc, "ANDcc"},
-  {ORcc, "ORcc"},
-  {XORcc, "XORcc"},
-  {SUBcc, "SUBcc"},
-  {ANDNcc, "ANDNxx"},
-  {ORNcc, "ORNcc"},
-  {XNORcc, "XNORcc"},
-  {ADDXcc, "ADDXcc"},
+  {UDIV, "udiv"},
+  {SDIV, "sdiv"},
+  {ADDcc, "addcc"},
+  {ANDcc, "andcc"},
+  {ORcc, "orcc"},
+  {XORcc, "xorcc"},
+  {SUBcc, "subcc"},
+  {ANDNcc, "andnxx"},
+  {ORNcc, "orncc"},
+  {XNORcc, "xnorcc"},
+  {ADDXcc, "addxcc"},
   {Common_SHIFT + 0x19, "none"},
-  {UMULcc, "UMULcc"},
-  {SMULcc, "SMULcc"},
-  {SUBXcc, "SUBXcc"},
+  {UMULcc, "umulcc"},
+  {SMULcc, "smulcc"},
+  {SUBXcc, "subxcc"},
   {Common_SHIFT + 0x1D, "none"},
-  {UDIVcc, "UDIVcc"},
-  {SDIVcc, "SDIVcc"},
-  {TADDcc, "TADDcc"},
-  {TSUBcc, "TSUBcc"},
-  {TADDccTV, "TADDccTV"},
-  {TSUBccTV, "TSUBccTV"},
-  {MULScc, "MULScc"},
-  {SLL, "SLL"},
-  {SRL, "SRL"},
-  {SRA, "SRA"},
-  {RDASR, "RDASR"},
-  {RDPSR, "RDPSR"},
-  {RDWIM, "RDWIM"},
-  {RDTBR, "RDTBR"},
-  {RDY, "RDY"},
-  {STBAR, "STBAR"},
+  {UDIVcc, "udivcc"},
+  {SDIVcc, "sdivcc"},
+  {TADDcc, "taddcc"},
+  {TSUBcc, "tsubcc"},
+  {TADDccTV, "taddcctv"},
+  {TSUBccTV, "tsubcctv"},
+  {MULScc, "mulscc"},
+  {SLL, "sll"},
+  {SRL, "srl"},
+  {SRA, "sra"},
+  {RDASR, "rdasr"},
+  {RDPSR, "%psr"},
+  {RDWIM, "%wim"},
+  {RDTBR, "%tbr"},
+  {RDY, "%y"},
+  {STBAR, "stbar"},
   {Common_SHIFT + 0x2E, "none"},
   {Common_SHIFT + 0x2F, "none"},
   {WRASR, "WRASR"}, // rd!=0
-  {WRPSR, "WRPSR"},
-  {WRWIM, "WRWIM"},
-  {WRTBR, "WRTBR"},
+  {WRPSR, "%psr"},
+  {WRWIM, "%wim"},
+  {WRTBR, "%tbr"},
   {Common_SHIFT + 0x34, "FPop1"},
   {Common_SHIFT + 0x35, "FPop2"},
   {CPop1, "CPop1"},
   {CPop2, "CPop2"},
   {JMPL, "JMPL"},
-  {RETT, "RETT"},
+  {RETT, "rett"},
   {Common_SHIFT + 0x3A, "Ticc"},
-  {FLUSH, "FLUSH"},
-  {SAVE, "SAVE"},
-  {RESTORE, "RESTORE"},
-  {WRY, "WRY"}, // rd==0
+  {FLUSH, "flush"},
+  {SAVE, "save"},
+  {RESTORE, "restore"},
+  {WRY, "%y"}, // rd==0
   {Common_SHIFT + 0x3F, "none"},
 
-  {LD,"LD"},
-  {LDUB,"LDUB"},
-  {LDUH,"LDUH"},
-  {LDD,"LDD"},
-  {ST,"ST"},
-  {STB,"STB"},
-  {STH,"STH"},
-  {STD,"STD"},
+  {LD,"ld"},
+  {LDUB,"ldub"},
+  {LDUH,"lduh"},
+  {LDD,"ldd"},
+  {ST,"st"},
+  {STB,"stb"},
+  {STH,"sth"},
+  {STD,"std"},
   {LoadStore_SHIFT + 0x8,"none"},
   {LDSB,"LDSB"},
   {LDSH,"LDSH"},
@@ -322,10 +330,10 @@ SInstruction stInstr[] =
   {LDUBA,"LDUBA"},
   {LDUHA,"LDUHA"},
   {LDDA,"LDDA"},
-  {STA,"STA"},
-  {STBA,"STBA"},
-  {STHA,"STGA"},
-  {STDA,"STDA"},
+  {STA,"sta"},
+  {STBA,"stba"},
+  {STHA,"stha"},
+  {STDA,"stda"},
   {LoadStore_SHIFT + 0x18,"none"},
   {LDSBA,"LDSBA"},
   {LDSHA,"LDSHA"},
@@ -367,42 +375,50 @@ SInstruction stInstr[] =
   {LoadStore_SHIFT + 0x3E,"none"},
   {LoadStore_SHIFT + 0x3F,"none"},
     
-  {BN,"BN"},
-  {BE,"BE"},
-  {BLE,"BLE"},
-  {BL,"BL"},
-  {BLEU,"BLEU"},
-  {BCS,"BCS"},
-  {BNEG,"BNEG"},
-  {BVS,"BVS"},
-  {BA,"BA"},
-  {BNE,"BNE"},
-  {BG,"BG"},
-  {BGE,"BGE"},
-  {BGU,"BGU"},
-  {BCC,"BCC"},
-  {BPOS,"BPOS"},
-  {BVC,"BVC"},
+  {BN,"bn"},
+  {BE,"be"},
+  {BLE,"ble"},
+  {BL,"bl"},
+  {BLEU,"bleu"},
+  {BCS,"bcs"},
+  {BNEG,"bneg"},
+  {BVS,"bvs"},
+  {BA,"ba"},
+  {BNE,"bne"},
+  {BG,"bg"},
+  {BGE,"bge"},
+  {BGU,"bgu"},
+  {BCC,"bcc"},
+  {BPOS,"bpos"},
+  {BVC,"bvc"},
 
-  {TN,"TN"},
-  {TE,"TE"},
-  {TLE,"TLE"},
-  {TL,"TL"},
-  {TLEU,"TLEU"},
-  {TCS,"TCS"},
-  {TNEG,"TNEG"},
-  {TVS,"TVS"},
-  {TA,"TA"},
-  {TNE,"tNE"},
-  {TG,"TG"},
-  {TGE,"TGE"},
-  {TGU,"TGU"},
-  {TCC,"TCC"},
-  {TPOS,"TPOS"},
-  {TVC,"TVC"},
+  {TN,"tn"},
+  {TE,"te"},
+  {TLE,"tle"},
+  {TL,"tl"},
+  {TLEU,"tleu"},
+  {TCS,"tcs"},
+  {TNEG,"tneg"},
+  {TVS,"tvs"},
+  {TA,"ta"},
+  {TNE,"tne"},
+  {TG,"tg"},
+  {TGE,"tge"},
+  {TGU,"tgu"},
+  {TCC,"tcc"},
+  {TPOS,"tpos"},
+  {TVC,"tvc"},
   
   {CLR, "clr"},
+  {CLRMEMB, "clrb"},//clear byte
+  {CLRMEMH, "clrh"},//clear halfword
+  {CLRMEM, "clr"},//clear word
   {JMP, "jmp"},
   {NOP, "nop"},
+  {MOV, "mov"},
+  {RET, "ret"},
+  {RETL, "retl"},
+  {CMP, "cmp"},
+  {CALLREG, "call"},
 };
 

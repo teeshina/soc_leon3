@@ -1,4 +1,4 @@
--- file: SysPLL.v
+-- file: SysPLL_v6.vhd
 -- 
 -- (c) Copyright 2008 - 2010 Xilinx, Inc. All rights reserved.
 -- 
@@ -31,8 +31,11 @@ use ieee.numeric_std.all;
 library unisim;
 use unisim.vcomponents.all;
 
+library gnsslib;
+use gnsslib.gnsspll.all;
 
-entity SysPLL is port
+
+entity SysPLL_v6 is port
 (-- Clock in ports
   CLK_IN1_P	: in std_logic;
   CLK_IN1_N	: in std_logic;
@@ -42,11 +45,11 @@ entity SysPLL is port
   RESET		: in std_logic;
   LOCKED	: out std_logic
  );
-end SysPLL;
+end SysPLL_v6;
 
-architecture xilinx of SysPLL is
+architecture rtl of SysPLL_v6 is
   attribute CORE_GENERATION_INFO : string;
-  attribute CORE_GENERATION_INFO of xilinx : architecture is "SysPLL,clk_wiz_v1_8,{component_name=SysPLL,use_phase_alignment=true,use_min_o_jitter=false,use_max_i_jitter=false,use_dyn_phase_shift=false,use_inclk_switchover=false,use_dyn_reconfig=false,feedback_source=FDBK_AUTO,primtype_sel=MMCM_ADV,num_out_clk=1,clkin1_period=5.0,clkin2_period=10.0,use_power_down=false,use_reset=true,use_locked=true,use_inclk_stopped=false,use_status=false,use_freeze=false,use_clk_valid=false,feedback_type=SINGLE,clock_mgr_type=MANUAL,manual_override=false}";
+  attribute CORE_GENERATION_INFO of rtl : architecture is "SysPLL_v6,clk_wiz_v1_8,{component_name=SysPLL_v6,use_phase_alignment=true,use_min_o_jitter=false,use_max_i_jitter=false,use_dyn_phase_shift=false,use_inclk_switchover=false,use_dyn_reconfig=false,feedback_source=FDBK_AUTO,primtype_sel=MMCM_ADV,num_out_clk=1,clkin1_period=5.0,clkin2_period=10.0,use_power_down=false,use_reset=true,use_locked=true,use_inclk_stopped=false,use_status=false,use_freeze=false,use_clk_valid=false,feedback_type=SINGLE,clock_mgr_type=MANUAL,manual_override=false}";
 
   -- Input clock buffering / unused connectors
   signal clkin1      : std_logic;
@@ -166,4 +169,4 @@ begin
    (O   => CLK_OUT1,
     I   => clkout0);
 
-end xilinx;
+end rtl;

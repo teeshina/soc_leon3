@@ -33,6 +33,7 @@ ElfFile::ElfFile(char *pchElfFile)
   free(pisElf);
 
   memset(image,0,ELF_IMAGE_MAXSIZE*sizeof(uint32));
+  iImageBytes = 0;
 }
 
 ElfFile::~ElfFile()
@@ -48,6 +49,7 @@ ElfFile::~ElfFile()
     free(posAsmFile);
   }
   if((Elf32_Ehdr.e_shoff)&&(Elf32_Ehdr.e_shnum)) free(pSectionHeader);
+  if((Elf32_Ehdr.e_phoff)&&(Elf32_Ehdr.e_phnum)) free(pProgramHeader);
 }
 
 //****************************************************************************
@@ -65,10 +67,10 @@ void ElfFile::Load()
     return;
   }
 
-  if(Elf32_Ehdr.e_phoff) ReadProgramHeader();
   if(Elf32_Ehdr.e_shoff) ReadSectionHeader();
+  if(Elf32_Ehdr.e_phoff) ReadProgramHeader();
 
-  clSparcV8.Disassemler(Elf32_Ehdr.e_entry, image, ELF_IMAGE_MAXSIZE, posAsmFile);
+  clSparcV8.Disassemler(Elf32_Ehdr.e_entry, image, iImageBytes, posAsmFile);
 }
 
 //****************************************************************************
@@ -150,6 +152,23 @@ int32 ElfFile::ReadElfHeader()
 //****************************************************************************
 void ElfFile::ReadProgramHeader()
 {
+  if(Elf32_Ehdr.e_phnum)
+  {
+    pProgramHeader = (ProgramHeaderType*)malloc(Elf32_Ehdr.e_phnum*sizeof(ProgramHeaderType));
+    memcpy((char*)pProgramHeader, &arrElf[Elf32_Ehdr.e_phoff], Elf32_Ehdr.e_phnum*sizeof(ProgramHeaderType));
+  }
+  
+  for(int32 i=0; i<Elf32_Ehdr.e_phnum; i++)
+  {
+    SwapBytes(pProgramHeader[i].p_type);
+    SwapBytes(pProgramHeader[i].p_offset);
+    SwapBytes(pProgramHeader[i].p_vaddr);
+    SwapBytes(pProgramHeader[i].p_paddr);
+    SwapBytes(pProgramHeader[i].p_filesz);
+    SwapBytes(pProgramHeader[i].p_memsz);
+    SwapBytes(pProgramHeader[i].p_flags);
+    SwapBytes(pProgramHeader[i].p_align);
+  }
 }
 
 //****************************************************************************
@@ -185,6 +204,30 @@ void ElfFile::ReadSectionHeader()
         if(iStrInc==0) iStrLength++;
         else           iStrLength+=iStrInc;
         iTotalStrings++;
+      }
+    }
+
+  }
+
+  // Read symbols:
+  for(int32 i=0; i<Elf32_Ehdr.e_shnum; i++)
+  {
+    if(pSectionHeader[i].sh_type==SectionHeaderType::SHT_SYMTAB)
+    {
+      SymbolTableType clSymbol;
+      pStr[pSectionHeader[pSectionHeader[i].sh_link].sh_name];
+      uint32 uiSmbLength=0;
+      while(uiSmbLength<pSectionHeader[i].sh_size)
+      {
+        clSymbol = *((SymbolTableType*)&arrElf[pSectionHeader[i].sh_offset+uiSmbLength]);
+        SwapBytes(clSymbol.st_name);
+        SwapBytes(clSymbol.st_value);
+        SwapBytes(clSymbol.st_size);
+        SwapBytes(clSymbol.st_shndx);
+
+        // !!! Something wrong. I'm not correct read symbols!!!!!!!! ERROR!!!!!!
+        pStr[clSymbol.st_name];
+        uiSmbLength += sizeof(SymbolTableType);
       }
     }
   }
@@ -235,6 +278,11 @@ void ElfFile::WriteMemoryMap(SectionHeaderType *p)
       else                          PUT_STRING("{elf} Error: Internal Image maximum address is overrun\n");
 
       LibBackDoorLoadRAM(p->sh_addr+n, word);
+
+      // Store image size using maximal address value:
+      if(uint32(iImageBytes) < (p->sh_addr+n - Elf32_Ehdr.e_entry))
+        iImageBytes = int32(p->sh_addr+n - Elf32_Ehdr.e_entry);
+
 #ifdef PRINT_MAP_FILE
       S_STRING(chTmp,"0x%08x: 0x%08x ", p->sh_addr+n, word );
       *posMapFile << chTmp;

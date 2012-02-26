@@ -15,6 +15,8 @@ use gaisler.jtag.all;
 use gaisler.leon3.all;
 use gaisler.uart.all;
 
+library gnsslib;
+use gnsslib.gnsspll.all;
 
 library work;
 use work.all;
@@ -85,7 +87,12 @@ architecture Behavioral of soc_leon3 is
 
 begin
 
-  clPll : SysPLL port map 
+  ------------------------------------
+  -- PLL: 
+  clPll : SysPLL_all generic map
+  (
+    tech => CFG_FABTECH
+  )port map 
   (
     CLK_IN1_P	=> inSysClk_p,
     CLK_IN1_N	=> inSysClk_n,
@@ -94,7 +101,8 @@ begin
     LOCKED	=> wPllLocked
   );
 
-
+  ------------------------------------
+  -- System Reset: 
   wSysReset <= inRst or not wPllLocked;
   clTapRst : tap_rstn port map
   (
@@ -206,6 +214,8 @@ begin
 	);
   end generate;
 
+  ------------------------------------
+  -- Debug Support Unit: 
   clDsu3 : dsu3 generic map (
     hindex => AHB_SLAVE_DSU,
     haddr  => 16#900#,
@@ -273,7 +283,23 @@ begin
   );
   outTX  <= uart1o.txd;
   outRTS <= uart1o.rtsn;
-    
+
+  ------------------------------------
+  -- AHB ROM:
+  clAhbROM : entity work.ahbrom generic map 
+  (
+    hindex => AHB_SLAVE_ROM,
+    haddr => 16#000#,
+    hmask => 16#fff#,
+    pipe => CFG_AHBROPIP
+  )port map 
+  (
+    wNRst,
+    wClkBus,
+    slvi,
+    slvo(AHB_SLAVE_ROM)
+  );
+
 
   ------------------------------------
   -- AHB RAM:
