@@ -39,7 +39,7 @@ class jtag_port//TODO: rename it a bit later
     jtag_port();
     ~jtag_port();
   
-    void Update(uint32 inNRst,
+    void Update(uint32 inRst,
                 uint32 inTDO,
                 SClock &outTCK,
                 uint32 &outnTRST,

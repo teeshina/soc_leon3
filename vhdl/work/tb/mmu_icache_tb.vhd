@@ -183,7 +183,7 @@ begin
   dco.icdiag.pflush <= S(432);
   dco.icdiag.pflushaddr <= S(452 downto 433);
   dco.icdiag.pflushtyp <= S(453);
-  dco.icdiag.ilock <= S(457 downto 454);
+--  dco.icdiag.ilock <= S(457 downto 454);
   dco.icdiag.scanen <= S(458);
   dco.cache <= S(459);
   dco.idle <= S(460);

@@ -33,14 +33,14 @@ uart_port::~uart_port()
 
 
 //****************************************************************************
-void uart_port::Update(uint32 inNRst,
+void uart_port::Update(uint32 inRst,
                        SClock inSysClk,
                        uint32 inTD,
                        uint32 inRTS,
                        uint32 &outRD,
                        uint32 &outCTS )
 {
-  if(!inNRst)
+  if(inRst)
   {
     bEmpty     = true;
     bCharReady = false;

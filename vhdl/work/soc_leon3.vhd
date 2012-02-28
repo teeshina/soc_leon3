@@ -322,7 +322,7 @@ begin
 
 
   outLED(0) <= wPllLocked;
-  outLED(1) <= wNRst;
+  outLED(1) <= dbgo(0).error and wNRst;
   outLED(2) <= dsuo.active;
   outLED(3) <= inDsuBreak;
 

@@ -23,7 +23,7 @@ use work.util_tb.all;
 
 entity leon3s_tb is
   constant CLK_HPERIOD : time := 10 ps;
-  constant STRING_SIZE : integer := 2171; -- string size = index of the last element
+  constant STRING_SIZE : integer := 2172; -- string size = index of the last element
 
   
 end leon3s_tb;
@@ -217,30 +217,31 @@ begin
   ch_irqo.intack <= S(2105);
   ch_irqo.irl <= S(2109 downto 2106);
   ch_irqo.pwd <= S(2110);
-  --ch_irqo.fpen <= S(2111);
-  ch_dbgo.data <= S(2143 downto 2112);
-  ch_dbgo.crdy <= S(2144);
-  ch_dbgo.dsu <= S(2145);
-  ch_dbgo.dsumode <= S(2146);
-  ch_dbgo.error <= S(2147);
-  ch_dbgo.halt <= S(2148);
-  ch_dbgo.pwd <= S(2149);
-  ch_dbgo.idle <= S(2150);
-  ch_dbgo.ipend <= S(2151);
-  ch_dbgo.icnt <= S(2152);
-  --ch_dbgo.fcnt <= S(2153);
-  --ch_dbgo.optype <= S(2159 downto 2154);
-  --ch_dbgo.bpmiss <= S(2160);
-  --ch_dbgo.istat.cmiss <= S(2161);
-  --ch_dbgo.istat.tmiss <= S(2162);
-  --ch_dbgo.istat.chold <= S(2163);
-  --ch_dbgo.istat.mhold <= S(2164);
-  --ch_dbgo.dstat.cmiss <= S(2165);
-  --ch_dbgo.dstat.tmiss <= S(2166);
-  --ch_dbgo.dstat.chold <= S(2167);
-  --ch_dbgo.dstat.mhold <= S(2168);
-  --ch_dbgo.wbhold <= S(2169);
-  --ch_dbgo.su <= S(2170);
+  ch_irqo.fpen <= S(2111);
+  ch_irqo.idle <= S(2112);
+  ch_dbgo.data <= S(2144 downto 2113);
+  ch_dbgo.crdy <= S(2145);
+  ch_dbgo.dsu <= S(2146);
+  ch_dbgo.dsumode <= S(2147);
+  ch_dbgo.error <= S(2148);
+  ch_dbgo.halt <= S(2149);
+  ch_dbgo.pwd <= S(2150);
+  ch_dbgo.idle <= S(2151);
+  ch_dbgo.ipend <= S(2152);
+  ch_dbgo.icnt <= S(2153);
+  --ch_dbgo.fcnt <= S(2154);
+  --ch_dbgo.optype <= S(2160 downto 2155);
+  --ch_dbgo.bpmiss <= S(2161);
+  --ch_dbgo.istat.cmiss <= S(2162);
+  --ch_dbgo.istat.tmiss <= S(2163);
+  --ch_dbgo.istat.chold <= S(2164);
+  --ch_dbgo.istat.mhold <= S(2165);
+  --ch_dbgo.dstat.cmiss <= S(2166);
+  --ch_dbgo.dstat.tmiss <= S(2167);
+  --ch_dbgo.dstat.chold <= S(2168);
+  --ch_dbgo.dstat.mhold <= S(2169);
+  --ch_dbgo.wbhold <= S(2170);
+  --ch_dbgo.su <= S(2171);
 
 
   tt : leon3s generic map 
@@ -315,12 +316,14 @@ begin
      if(ch_ahbo.hbusreq/=ahbo.hbusreq) then print("Err: ahbo.hbusreq");  iErrCnt:=iErrCnt+1; end if;
      if(ch_ahbo.hlock/=ahbo.hlock) then print("Err: ahbo.hlock");  iErrCnt:=iErrCnt+1; end if;
      if(ch_ahbo.htrans/=ahbo.htrans) then print("Err: ahbo.htrans");  iErrCnt:=iErrCnt+1; end if;
-     if(ch_ahbo.haddr/=ahbo.haddr) then print("Err: ahbo.haddr");  iErrCnt:=iErrCnt+1; end if;
+     if(ahbo.haddr(31)/='U') then 
+       if(ch_ahbo.haddr/=ahbo.haddr) then print("Err: ahbo.haddr");  iErrCnt:=iErrCnt+1; end if;
+     end if;
      if(ch_ahbo.hwrite/=ahbo.hwrite) then print("Err: ahbo.hwrite");  iErrCnt:=iErrCnt+1; end if;
      if(ch_ahbo.hsize/=ahbo.hsize) then print("Err: ahbo.hsize");  iErrCnt:=iErrCnt+1; end if;
      if(ch_ahbo.hburst/=ahbo.hburst) then print("Err: ahbo.hburst");  iErrCnt:=iErrCnt+1; end if;
      if(ch_ahbo.hprot/=ahbo.hprot) then print("Err: ahbo.hprot");  iErrCnt:=iErrCnt+1; end if;
-     if(ahbo.hwdata(31)/='U') then
+     if((ahbo.hwdata(31)/='U')and(ahbo.hwdata(0)/='U')) then
        if(ch_ahbo.hwdata/=ahbo.hwdata) then print("Err: ahbo.hwdata");  iErrCnt:=iErrCnt+1; end if;
      end if;
      if(ch_ahbo.hirq/=ahbo.hirq) then print("Err: ahbo.hirq");  iErrCnt:=iErrCnt+1; end if;

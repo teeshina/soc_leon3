@@ -117,7 +117,8 @@ begin
     AHB_SLAVE_RAM,--hindex    : integer               := 0;
     16#400#,
     16#fff#,
-    CFG_MEMTECH
+    CFG_MEMTECH,
+    256
   )port map 
   (
     inNRst,

@@ -102,7 +102,7 @@ const int NBUS              = 4;
 #define CFG_AHBCTRL_FIXBURST    0 // fixed-length burst support
 #define CFG_AHBCTRL_ACDM        0 // AMBA compliant data muxing (for hsize > word)
 #define CFG_AHBCTRL_DISIRQ      0 // disable interrupt routing
-#define CFG_AHBCTRL_DEVID       XILINX_ML401//XILINX_ML605
+#define CFG_AHBCTRL_DEVID       XILINX_ML605
 
 const uint32 grlib_version    = 1100;//version.vhd
 const uint32 grlib_build      = 4113;//version.vhd
@@ -138,7 +138,7 @@ const uint32 ADDR_BUILD_LIB_MAX  = 0xFFFFFFFF;
 
 #define CFG_MAC                       0
 #define CFG_BP                        1
-#define CFG_SVT                       1
+#define CFG_SVT                       1// single vector trapping
 #define CFG_RSTADDR                   0x00000//16#00000#;
 #define CFG_LDDEL                     (1)
 #define CFG_NOTAG                     0
@@ -199,7 +199,7 @@ const uint32 ADDR_BUILD_LIB_MAX  = 0xFFFFFFFF;
 #define CFG_AHBRAMMASK                0xFFF
 
 
-//#define CFG_AHBROM_ENA      0
+#define CFG_AHBROM_ENA      1
 #define CFG_COPROC_ENA      0 // co-copressor 1=ena; 0=dis
 #define CFG_MMU_PAGESIZE    0//integer range 0 to 5  := 0;
 #define CFG_SCANTEST_ENA    0//

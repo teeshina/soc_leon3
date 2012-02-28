@@ -99,6 +99,7 @@ void GetInitSettings(LibInitData *p)
   //p->uiBenchEna[TB_apbctrl] = PRINT_TESTBENCH_ENABLE;
   //p->uiBenchEna[TB_apbuart] = PRINT_TESTBENCH_ENABLE;
   //p->uiBenchEna[TB_finderr] = PRINT_TESTBENCH_ENABLE;
+  p->uiBenchEna[TB_soc_leon3] = PRINT_TESTBENCH_ENABLE;
 }
 
 

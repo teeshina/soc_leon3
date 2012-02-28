@@ -312,6 +312,7 @@ class dbg
     void regfile_3p_tb(SystemOnChipIO &io);
     void tbufmem_tb(SystemOnChipIO &io);
     void finderr_tb(SystemOnChipIO &io);
+    void soc_leon3_tb(SystemOnChipIO &io);
 
 #ifdef DBG_ahbctrl
     ahbctrl::reg_type  r;//      : in reg_type;

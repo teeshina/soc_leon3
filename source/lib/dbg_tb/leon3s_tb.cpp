@@ -106,7 +106,7 @@ void dbg::leon3s_tb(SystemOnChipIO &io)
 
   // 
   tst_leon3s.Update( io.inClk,
-                     io.inNRst,
+                     topLeon3mp.wNRst,
                      in_ahbi,//   : in  ahb_mst_in_type;
                      ch_ahbo,//   : out ahb_mst_out_type;
                      in_ahbsi,//  : in  ahb_slv_in_type;
@@ -137,7 +137,7 @@ void dbg::leon3s_tb(SystemOnChipIO &io)
     //SetSkipOutput(true);
   
     // inputs:
-    pStr = PutToStr(pStr, io.inNRst, 1, "inNRst");
+    pStr = PutToStr(pStr, topLeon3mp.wNRst, 1, "inNRst");
     //
     pStr = PutToStr(pStr, pin_ahbi->hgrant,AHB_MASTERS_MAX,"in_ahbi.hgrant",true);//[0:15]  : (0 to AHB_MASTERS_MAX-1);     -- bus grant
     pStr = PutToStr(pStr, pin_ahbi->hready,1,"in_ahbi.hready");//  ;                           -- transfer done
@@ -239,7 +239,8 @@ void dbg::leon3s_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pch_irqo->intack,1,"ch_irqo.intack");//  : std_ulogic;
     pStr = PutToStr(pStr, pch_irqo->irl,4,"ch_irqo.irl");//   : std_logic_vector(3 downto 0);
     pStr = PutToStr(pStr, pch_irqo->pwd,1,"ch_irqo.pwd");//         : std_ulogic;
-    pStr = PutToStr(pStr, pch_irqo->fpen,1,"--ch_irqo.fpen");//        : std_ulogic;
+    pStr = PutToStr(pStr, pch_irqo->fpen,1,"ch_irqo.fpen");//        : std_ulogic;
+    pStr = PutToStr(pStr, pch_irqo->idle,1,"ch_irqo.idle");//        : std_ulogic;
     //
     pStr = PutToStr(pStr, pch_dbgo->data,32,"ch_dbgo.data");//    : std_logic_vector(31 downto 0);
     pStr = PutToStr(pStr, pch_dbgo->crdy,1,"ch_dbgo.crdy");//    : std_ulogic;

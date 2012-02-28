@@ -61,7 +61,7 @@ void dbg::ahbctrl_tb(SystemOnChipIO &io)
     ResetPutStr();
 
     // Input:
-    pStr = PutToStr(pStr, io.inNRst, 1,"inNRst");
+    pStr = PutToStr(pStr, topLeon3mp.wNRst, 1,"inNRst");
     //
     for(int32 i=0; i<AHB_MASTER_TOTAL; i++)
     {

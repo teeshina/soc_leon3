@@ -164,7 +164,7 @@ void dbg::dsu3x_tb(SystemOnChipIO &io)
 #endif
 
   
-  tst_dsu3x.Update(io.inNRst,//    : in  std_ulogic;
+  tst_dsu3x.Update(topLeon3mp.wNRst,//    : in  std_ulogic;
                 io.inClk,//   : in  std_ulogic;
                 io.inClk,// : in std_ulogic;
                 in_ahbmi,//  : in  ahb_mst_in_type;
@@ -194,7 +194,7 @@ void dbg::dsu3x_tb(SystemOnChipIO &io)
     ResetPutStr();
   
     // inputs:
-    pStr = PutToStr(pStr, io.inNRst, 1, "inNRst");
+    pStr = PutToStr(pStr, topLeon3mp.wNRst, 1, "inNRst");
     pStr = PutToStr(pStr, hclken, 1, "in_hclken");
     //
     pStr = PutToStr(pStr, pin_ahbmi->hgrant,AHB_MASTERS_MAX,"in_ahbmi.hgrant",true);//[0:15]  : (0 to AHB_MASTERS_MAX-1);     -- bus grant

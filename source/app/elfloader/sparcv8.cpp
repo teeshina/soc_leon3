@@ -19,8 +19,7 @@ void SparcV8::Disassemler(uint32 entry_adr, uint32 *data, int32 bytes, std::ofst
 #if 1
   for (int32 i=0; i<=190; i++)
   {
-    instr.u.v  = RomDataDF[i].data;
-//    instr.u.f2a.imm22 = 0xf30000e0>>10;
+    instr.u.v  = RomData[i].data;
     entry_adr=0;
 #else
   for (int32 i=0; i<=(bytes>>2); i++)

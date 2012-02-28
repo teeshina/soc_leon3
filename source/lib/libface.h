@@ -45,6 +45,7 @@ enum ETestBenchName
   TB_apbctrl,
   TB_apbuart,
   TB_finderr,
+  TB_soc_leon3,
   
   TB_TOTAL
 };
@@ -77,7 +78,8 @@ const char chBenchFile[TB_TOTAL][64]=
   "ahbram_tb.txt",
   "apbctrl_tb.txt",
   "apbuart_tb.txt",
-  "finderr1_tb.txt"
+  "finderr1_tb.txt",
+  "soc_leon3_tb.txt"
 };
 
 
@@ -98,7 +100,7 @@ const uint32 JTAG_INSTRUCTION_USER2 = 0x3C3;  // instruction to accept data (33 
 //****************************************************************************
 struct SystemOnChipIO
 {
-  uint32 inNRst;  // in: common reset
+  uint32 inNRst;  // in: common reset !!WARNING!! "button" has active high level
   SClock inClk;   // in: System clock: (default 66 MHz)
   // JTAG interface:
   struct SJTag

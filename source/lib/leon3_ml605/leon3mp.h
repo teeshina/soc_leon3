@@ -51,13 +51,18 @@ class leon3mp
 
     ahbrom *pclAhbRom;
 
+    uint32 wSysReset;
+    uint32 wNRst;
+    TDFF<uint32> rbPllLock;
+    TDFF<uint32> rReset;
+
   public:
     leon3mp();
     ~leon3mp();
 
     void Update
     (
-      uint32 inNRst,
+      uint32 inRst,
       SClock inClk,
       // JTAG interface:
       uint32 nTRST,
@@ -86,6 +91,8 @@ class leon3mp
 #if (CFG_AHBROM_ENA==1)
       pclAhbRom->ClkUpdate();
 #endif
+      rbPllLock.ClkUpdate();
+      rReset.ClkUpdate();
     }
 };
 

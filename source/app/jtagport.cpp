@@ -22,7 +22,7 @@ jtag_port::~jtag_port()
 
 
 //****************************************************************************
-void jtag_port::Update(uint32 inNRst,
+void jtag_port::Update(uint32 inRst,
                         uint32 inTDO,
                         SClock &outTCK,
                         uint32 &outnTRST,
@@ -30,7 +30,7 @@ void jtag_port::Update(uint32 inNRst,
                         uint32 &outTDI
                         )
 {
-  if(!inNRst)
+  if(inRst) // button has active high level
   {
     eState   = STATE_RESET;
     outnTRST = 0;

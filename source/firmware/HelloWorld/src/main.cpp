@@ -2,8 +2,12 @@
 //
 //****************************************************************************
 
+#include <stdio.h>
+
 int main()
 {
+  printf("-------------Start---------\n");
+
   unsigned int *adr, *status;
   adr = (unsigned int *)0x8000010c;
   *adr = 71;//scaler = 66MHz/(8*(1+rate)) = 115200 = 71

@@ -61,7 +61,7 @@
 #define TBUFBITS  (10+log2[CFG_ITBSZ]-4)//: integer := 10 + log2(tbuf) - 4;
 #define PWRD1     (false)//: boolean := false; --(pwd = 1) and not (index /= 0);
 #define PWRD2     (CFG_PWD!=0)//: boolean := pwd /= 0; --(pwd = 2) or (index /= 0);
-#define RS1OPT    (fabtech!=0)//: boolean := (is_fpga(FABTECH) /= 0);
+#define RS1OPT    (is_fpga[fabtech]!=0)//: boolean := (is_fpga(FABTECH) /= 0);
 #define DYNRST    (CFG_RSTADDR==0xFFFF)//: boolean := (rstaddr = 16#FFFFF#);
 #define CASAEN    ((CFG_NOTAG==0)&&(CFG_LDDEL==1))//: boolean := (notag = 0) and (lddel = 1);
 
@@ -3528,7 +3528,10 @@ void iu3::Update
       }
     }
   }
-
+#if 1
+if((iClkCnt>=3704)||(iClkCnt>=2845))
+bool st = true;
+#endif
   ex_add_res = ((uint64(ex_op1)<<1)|0x1) + ((uint64(ex_op2)<<1)|r.e.alucin);
 
   if (BITS32(ex_add_res,2,1)==0) v.m.nalign = 0;
@@ -3950,15 +3953,15 @@ void iu3::Update
   }
   if (!rstn)
   {
-    rbR.D.w.s.cwp = 0;
-    rbR.D.w.s.tba = 0;
-    rbR.D.w.s.y   = 0;
-    rbR.D.w.s.icc = 0;
-    rbR.D.w.s.pil = 0;
-    rbR.D.w.s.wim = 0;
-    rbR.D.w.s.asr18 = 0;
-    rbR.D.x.y     = 0;
-    rbR.D.x.icc   = 0;
+//    rbR.D.w.s.cwp = 0;
+//    rbR.D.w.s.tba = 0;
+//    rbR.D.w.s.y   = 0;
+//    rbR.D.w.s.icc = 0;
+//    rbR.D.w.s.pil = 0;
+//    rbR.D.w.s.wim = 0;
+//    rbR.D.w.s.asr18 = 0;
+//    rbR.D.x.y     = 0;
+//    rbR.D.x.icc   = 0;
 
     rbR.D.w.s.s  = 1;
     rbR.D.w.s.ps = 1; 

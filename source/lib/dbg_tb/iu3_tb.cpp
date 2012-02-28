@@ -520,7 +520,7 @@ void dbg::iu3_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pch_ici->flush,1,"ch_ici.flush");//            : std_ulogic;      -- flush icache
     pStr = PutToStr(pStr, pch_ici->flushl,1,"ch_ici.flushl");//           : std_ulogic;                        -- flush line
     pStr = PutToStr(pStr, (pch_ici->fline>>3),29,"ch_ici.fline");//            : std_logic_vector(31 downto 3);     -- flush line offset
-    pStr = PutToStr(pStr, pch_ici->pnull,1,"--ch_ici.pnull");//            : std_ulogic;
+    pStr = PutToStr(pStr, pch_ici->pnull,1,"ch_ici.pnull");//            : std_ulogic;
     //dcache_in_type *pDci = &dci;
     pStr = PutToStr(pStr, pch_dci->asi,8,"ch_dci.asi");//              : std_logic_vector(7 downto 0); 
     pStr = PutToStr(pStr, pch_dci->maddress,32,"ch_dci.maddress");//         : std_logic_vector(31 downto 0); 
@@ -534,7 +534,7 @@ void dbg::iu3_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pch_dci->read,1,"ch_dci.read");//             : std_ulogic;
     pStr = PutToStr(pStr, pch_dci->write,1,"ch_dci.write");//            : std_ulogic;
     pStr = PutToStr(pStr, pch_dci->flush,1,"ch_dci.flush");//            : std_ulogic;
-    pStr = PutToStr(pStr, pch_dci->flushl,1,"--ch_dci.flushl");//           : std_ulogic;                        -- flush line  
+    pStr = PutToStr(pStr, pch_dci->flushl,1,"ch_dci.flushl");//           : std_ulogic;                        -- flush line  
     pStr = PutToStr(pStr, pch_dci->dsuen,1,"ch_dci.dsuen");//            : std_ulogic;
     pStr = PutToStr(pStr, pch_dci->msu,1,"ch_dci.msu");//              : std_ulogic;                   -- memory stage supervisor
     pStr = PutToStr(pStr, pch_dci->esu,1,"ch_dci.esu");//              : std_ulogic;                   -- execution stage supervisor
@@ -552,7 +552,8 @@ void dbg::iu3_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pch_irqo->intack,1,"ch_irqo.intack");//  : std_ulogic;
     pStr = PutToStr(pStr, pch_irqo->irl,4,"ch_irqo.irl");//   : std_logic_vector(3 downto 0);
     pStr = PutToStr(pStr, pch_irqo->pwd,1,"ch_irqo.pwd");//         : std_ulogic;
-    pStr = PutToStr(pStr, pch_irqo->fpen,1,"--ch_irqo.fpen");//        : std_ulogic;
+    pStr = PutToStr(pStr, pch_irqo->fpen,1,"ch_irqo.fpen");//        : std_ulogic;
+    pStr = PutToStr(pStr, pch_irqo->idle,1,"ch_irqo.idle");//        : std_ulogic;
     //l3_debug_out_type &dbgo,//  : out l3_debug_out_type;
     pStr = PutToStr(pStr, pch_dbgo->data,32,"ch_dbgo.data");//    : std_logic_vector(31 downto 0);
     pStr = PutToStr(pStr, pch_dbgo->crdy,1,"ch_dbgo.crdy");//    : std_ulogic;
@@ -564,19 +565,19 @@ void dbg::iu3_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pch_dbgo->idle,1,"ch_dbgo.idle");//    : std_ulogic;
     pStr = PutToStr(pStr, pch_dbgo->ipend,1,"ch_dbgo.ipend");//   : std_ulogic;
     pStr = PutToStr(pStr, pch_dbgo->icnt,1,"ch_dbgo.icnt");//    : std_ulogic;
-    pStr = PutToStr(pStr, pch_dbgo->fcnt,1,"--ch_dbgo.fcnt");//    : std_ulogic;
-    pStr = PutToStr(pStr, pch_dbgo->optype,6,"--ch_dbgo.optype");//  : std_logic_vector(5 downto 0); -- instruction type
-    pStr = PutToStr(pStr, pch_dbgo->bpmiss,1,"--ch_dbgo.bpmiss");//  : std_ulogic;     -- branch predict miss
-    pStr = PutToStr(pStr, pch_dbgo->istat.cmiss,1,"--ch_dbgo.istat.cmiss");//   : std_ulogic;			-- cache miss
-    pStr = PutToStr(pStr, pch_dbgo->istat.tmiss,1,"--ch_dbgo.istat.tmiss");//   : std_ulogic;			-- TLB miss
-    pStr = PutToStr(pStr, pch_dbgo->istat.chold,1,"--ch_dbgo.istat.chold");//   : std_ulogic;			-- cache hold
-    pStr = PutToStr(pStr, pch_dbgo->istat.mhold,1,"--ch_dbgo.istat.mhold");//   : std_ulogic;			-- cache mmu hold
-    pStr = PutToStr(pStr, pch_dbgo->dstat.cmiss,1,"--ch_dbgo.dstat.cmiss");//   : std_ulogic;			-- cache miss
-    pStr = PutToStr(pStr, pch_dbgo->dstat.tmiss,1,"--ch_dbgo.dstat.tmiss");//   : std_ulogic;			-- TLB miss
-    pStr = PutToStr(pStr, pch_dbgo->dstat.chold,1,"--ch_dbgo.dstat.chold");//   : std_ulogic;			-- cache hold
-    pStr = PutToStr(pStr, pch_dbgo->dstat.mhold,1,"--ch_dbgo.dstat.mhold");//   : std_ulogic;			-- cache mmu hold
-    pStr = PutToStr(pStr, pch_dbgo->wbhold,1,"--ch_dbgo.wbhold");//  : std_ulogic;     -- write buffer hold
-    pStr = PutToStr(pStr, pch_dbgo->su,1,"--ch_dbgo.su");//      : std_ulogic;     -- supervisor state
+    pStr = PutToStr(pStr, pch_dbgo->fcnt,1,"ch_dbgo.fcnt");//    : std_ulogic;
+    pStr = PutToStr(pStr, pch_dbgo->optype,6,"ch_dbgo.optype");//  : std_logic_vector(5 downto 0); -- instruction type
+    pStr = PutToStr(pStr, pch_dbgo->bpmiss,1,"ch_dbgo.bpmiss");//  : std_ulogic;     -- branch predict miss
+    pStr = PutToStr(pStr, pch_dbgo->istat.cmiss,1,"ch_dbgo.istat.cmiss");//   : std_ulogic;			-- cache miss
+    pStr = PutToStr(pStr, pch_dbgo->istat.tmiss,1,"ch_dbgo.istat.tmiss");//   : std_ulogic;			-- TLB miss
+    pStr = PutToStr(pStr, pch_dbgo->istat.chold,1,"ch_dbgo.istat.chold");//   : std_ulogic;			-- cache hold
+    pStr = PutToStr(pStr, pch_dbgo->istat.mhold,1,"ch_dbgo.istat.mhold");//   : std_ulogic;			-- cache mmu hold
+    pStr = PutToStr(pStr, pch_dbgo->dstat.cmiss,1,"ch_dbgo.dstat.cmiss");//   : std_ulogic;			-- cache miss
+    pStr = PutToStr(pStr, pch_dbgo->dstat.tmiss,1,"ch_dbgo.dstat.tmiss");//   : std_ulogic;			-- TLB miss
+    pStr = PutToStr(pStr, pch_dbgo->dstat.chold,1,"ch_dbgo.dstat.chold");//   : std_ulogic;			-- cache hold
+    pStr = PutToStr(pStr, pch_dbgo->dstat.mhold,1,"ch_dbgo.dstat.mhold");//   : std_ulogic;			-- cache mmu hold
+    pStr = PutToStr(pStr, pch_dbgo->wbhold,1,"ch_dbgo.wbhold");//  : std_ulogic;     -- write buffer hold
+    pStr = PutToStr(pStr, pch_dbgo->su,1,"ch_dbgo.su");//      : std_ulogic;     -- supervisor state
     //mul32_in_type &muli,//  : out mul32_in_type;
     pStr = PutToStr(pStr, pch_muli->op1, 33,"ch_muli.op1");
     pStr = PutToStr(pStr, pch_muli->op2, 33,"ch_muli.op2");
@@ -824,6 +825,12 @@ void dbg::iu3_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, t_inClk,1,"t_inClk");
     pStr = PutToStr(pStr, topLeon3mp.pclLeon3s[0]->cramo.icramo.data.arr[0], 32, "t_cramo_data0");
     pStr = PutToStr(pStr, topLeon3mp.pclLeon3s[0]->pclProc3->pclCacheMMU->mcio.data, 32, "t_mcio_data");
+    
+    pStr = PutToStr(pStr, ptst_iu3->xc_result,32, "t_xc_result");
+    pStr = PutToStr(pStr, ptst_iu3->ex_op1,32, "t_ex_op1");
+    pStr = PutToStr(pStr, ptst_iu3->v.a.rsel1,8,"t_v_a_rsel1");
+    pStr = PutToStr(pStr, ptst_iu3->rbR.Q.a.rsel1,8,"t_r_a_rsel1");
+    pStr = PutToStr(pStr, ptst_iu3->ra_op1,32, "t_ra_op1");
 
     PrintIndexStr();
 

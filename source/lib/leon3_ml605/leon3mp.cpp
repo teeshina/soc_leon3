@@ -12,6 +12,9 @@
 leon3mp::leon3mp()
 {
   clkZero.eClock = clkZero.eClock_z = SClock::CLK_NEGATIVE;
+  
+  for(int32 i=0; i<AHB_MASTERS_MAX; i++) stMst2Ctrl.arr[i] = ahbm_none;
+  for(int32 i=0; i<AHB_SLAVES_MAX; i++) stSlv2Ctrl.arr[i] = ahbs_none;
 
   for(int32 i=0; i<CFG_NCPU; i++)
     pclLeon3s[i] = new leon3s(AHB_MASTER_LEON3+i);
@@ -26,8 +29,6 @@ leon3mp::leon3mp()
 
 #if (CFG_AHBROM_ENA==1)
   pclAhbRom = new ahbrom(AHB_SLAVE_ROM, 0x000, 0xfff);
-#else
-  stSlv2Ctrl.arr[AHB_SLAVE_ROM] = ahbs_none;
 #endif
 
   pApbControl = new apbctrl(AHB_SLAVE_APBBRIDGE, 0x800, 0xfff);
@@ -49,7 +50,7 @@ leon3mp::~leon3mp()
 }
 
 //****************************************************************************
-void leon3mp::Update( uint32 inNRst,
+void leon3mp::Update( uint32 inRst,
                       SClock inClk,
                       // JTAG interface:
                       uint32 nTRST,
@@ -65,8 +66,18 @@ void leon3mp::Update( uint32 inNRst,
                     )
 {
 
+  // reset logic:
+  wSysReset    = inRst;// TODO: change it to positive push button nad add PllLocked
+  rbPllLock.CLK = inClk;
+  if(wSysReset) rbPllLock.D = 0;
+  else          rbPllLock.D = BITS32( ((rbPllLock.Q<<1)|1), 4, 0);
+  
+  rReset.CLK = inClk;
+  rReset.D  =  BIT32(rbPllLock.Q,4) & BIT32(rbPllLock.Q,3) & BIT32(rbPllLock.Q,2);
+  wNRst = rReset.Q;
+
   // AHB controller:
-  clAhbControl.Update(inNRst,
+  clAhbControl.Update(wNRst,
                       inClk,
                       stCtrl2Mst,
                       stMst2Ctrl,
@@ -74,7 +85,7 @@ void leon3mp::Update( uint32 inNRst,
                       stSlv2Ctrl );
 
   // JTAG unit:
-  clAhbMasterJtag.Update( inNRst,
+  clAhbMasterJtag.Update( wNRst,
                           inClk,
                           // JTAG interface:
                           nTRST, TCK, TMS, TDI, TDO,
@@ -88,7 +99,7 @@ void leon3mp::Update( uint32 inNRst,
   for(int32 i=0; i<CFG_NCPU; i++)
   {
     pclLeon3s[i]->Update(inClk, 
-                        inNRst,
+                        wNRst,
                         stCtrl2Mst,
                         stMst2Ctrl.arr[AHB_MASTER_LEON3+i],
                         stCtrl2Slv,
@@ -99,7 +110,9 @@ void leon3mp::Update( uint32 inNRst,
                         dbgo.arr[i]);
   }
 
-  pclDsu3x->Update(inNRst, 
+  dsui.enable = 1;
+  dsui.Break  = 0;  // push button emulation
+  pclDsu3x->Update(wNRst, 
                    clkZero,
                    inClk,
                    stCtrl2Mst,  // only to make AHB trace
@@ -110,26 +123,24 @@ void leon3mp::Update( uint32 inNRst,
                    dsui,
                    dsuo,
                    1);
-  dsui.enable = 1;
-  dsui.Break  = 0;  // push button emulation
 
 #if (CFG_AHBROM_ENA==1)
   // Internal RAM:
-  pclAhbRom->Update(inNRst, inClk, stCtrl2Slv, stSlv2Ctrl.arr[AHB_SLAVE_ROM]);
+  pclAhbRom->Update(wNRst, inClk, stCtrl2Slv, stSlv2Ctrl.arr[AHB_SLAVE_ROM]);
 #endif
 
   // Internal RAM:
-  pclAhbRAM->Update( inNRst, inClk, stCtrl2Slv, stSlv2Ctrl.arr[AHB_SLAVE_RAM] );
+  pclAhbRAM->Update( wNRst, inClk, stCtrl2Slv, stSlv2Ctrl.arr[AHB_SLAVE_RAM] );
 
 
   // AHB/APB bridge
-  pApbControl->Update(inNRst, inClk, stCtrl2Slv, stSlv2Ctrl.arr[AHB_SLAVE_APBBRIDGE], apbi, apbo);
+  pApbControl->Update(wNRst, inClk, stCtrl2Slv, stSlv2Ctrl.arr[AHB_SLAVE_APBBRIDGE], apbi, apbo);
   
   // APB UART 1 (config)
   uarti.rxd    = inRX;
   uarti.ctsn   = inCTS;
   uarti.extclk = 0;
-  pclApbUartA->Update(inNRst, inClk, apbi, apbo.arr[APB_UART_CFG], uarti, uarto);
+  pclApbUartA->Update(wNRst, inClk, apbi, apbo.arr[APB_UART_CFG], uarti, uarto);
   outTX  = uarto.txd;
   outRTS = uarto.rtsn;
 }

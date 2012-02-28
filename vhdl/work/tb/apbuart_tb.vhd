@@ -107,7 +107,7 @@ begin
   tt : apbuart generic map 
   (
     pindex   => 0, 
-    cfg_paddr => 1, 
+    paddr => 1, 
     pirq => 2, 
     console => 0, 
     fifosize => 8--CFG_UART1_FIFO

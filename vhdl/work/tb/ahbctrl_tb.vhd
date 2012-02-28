@@ -209,7 +209,7 @@ begin
                  ioaddr => CFG_AHBCTRL_AHBIO, ioen => 1, 
                  nahbm => AHB_MASTER_TOTAL, 
                  nahbs => AHB_SLAVE_TOTAL,
-                 devid => 16#0401#)--VIRTEX_ML401)
+                 devid => 16#0605#)--VIRTEX_ML401)
     port map (inNRst, inClk, msti, in_msto, slvi, in_slvo);
 
   

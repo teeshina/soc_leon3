@@ -713,6 +713,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\source\lib\dbg_tb\soc_tb.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\source\lib\dbg_tb\tbufmem_tb.cpp"
 					>
 				</File>

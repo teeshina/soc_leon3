@@ -21,7 +21,7 @@ class uart_port
     uart_port();
     ~uart_port();
     
-    void Update( uint32 inNRst,
+    void Update( uint32 inRst,
                  SClock inSysClk,
                  uint32 inTD,
                  uint32 inRTS,

@@ -132,6 +132,8 @@ void dbg::Update(SystemOnChipIO &io)
 
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_finderr]) finderr_tb(io);
 
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_soc_leon3]) soc_leon3_tb(io);
+
   if(io.inClk.eClock==SClock::CLK_POSEDGE)
     iClkCnt++;
 }

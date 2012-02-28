@@ -39,7 +39,7 @@ void dbg::ahbram_tb(SystemOnChipIO &io)
 
 
   
-  ptst_ahbram->Update(io.inNRst,//    : in  std_ulogic;
+  ptst_ahbram->Update(topLeon3mp.wNRst,//    : in  std_ulogic;
                       io.inClk,//   : in  std_ulogic;
                       in_ahbsi,//  : in  ahb_slv_in_type;
                       ch_ahbso );
@@ -58,7 +58,7 @@ void dbg::ahbram_tb(SystemOnChipIO &io)
     ResetPutStr();
   
     // inputs:
-    pStr = PutToStr(pStr, io.inNRst, 1, "inNRst");
+    pStr = PutToStr(pStr, topLeon3mp.wNRst, 1, "inNRst");
     //
     pStr = PutToStr(pStr, pin_ahbsi->hsel,AHB_SLAVES_MAX,"in_ahbsi.hsel",true);//  : (0 to AHB_SLAVES_MAX-1);     -- slave select
     pStr = PutToStr(pStr, pin_ahbsi->haddr,32,"in_ahbsi.haddr");// : (31 downto 0);  -- address bus (byte)
