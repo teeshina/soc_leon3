@@ -348,11 +348,6 @@ void iu3::diagread( l3_debug_in_type &dbgi,//   : in l3_debug_in_type;
   uint32 cwp;// : std_logic_vector(4 downto 0);
   int32 i;// : integer range 0 to 3;    
 
-#if 1
-if(iClkCnt==2271)
-bool st = true;
-#endif
-
   data = 0;
   cwp = BITS32(r.w.s.cwp,NWINLOG2-1,0);
   switch ((dbgi.daddr>>20)&0x7)
@@ -3529,7 +3524,7 @@ void iu3::Update
     }
   }
 #if 1
-if((iClkCnt>=3704)||(iClkCnt>=2845))
+if(iClkCnt>=225)
 bool st = true;
 #endif
   ex_add_res = ((uint64(ex_op1)<<1)|0x1) + ((uint64(ex_op2)<<1)|r.e.alucin);
@@ -3736,7 +3731,7 @@ bool st = true;
   fe_npc = fe_pc + (1<<CFG_PCLOW);    //-- Address incrementer
 
 #if 1
-  if(iClkCnt>=1241)
+  if(iClkCnt>=368)
     bool stop = true;
 #endif
   if (xc_rstn == 0)

@@ -98,6 +98,8 @@ void leon3mp::Update( uint32 inRst,
   // Core and Dunbug support units
   for(int32 i=0; i<CFG_NCPU; i++)
   {
+    irqi.irl = 0;//TODO: add multi-proc "vector". Add irqctrl module.
+    
     pclLeon3s[i]->Update(inClk, 
                         wNRst,
                         stCtrl2Mst,

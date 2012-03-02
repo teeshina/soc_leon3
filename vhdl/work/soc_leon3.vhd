@@ -34,6 +34,13 @@ entity soc_leon3 is Port
   inRX    : in std_logic;
   outRTS  : out std_logic;
   outTX   : out std_logic;
+  -- JTAG:
+  nTRST : in std_logic; -- in: Test Reset
+  TCK   : in std_logic;   -- in: Test Clock
+  TMS   : in std_logic;   -- in: Test Mode State
+  TDI   : in std_logic;   -- in: Test Data Input
+  TDO   : out std_logic;   -- out: Test Data Output
+
 
   -- User pins
   inDIP   : in std_ulogic_vector(7 downto 0);
@@ -144,14 +151,19 @@ begin
   (
     wNRst,
     wClkBus,
-    '0','0','0',open,--tck, tms, tdi, tdo,
+    TCK, TMS, TDI, TDO,--tck, tms, tdi, tdo,
     msti, msto(AHB_MASTER_JTAG),
-    open, open, open, open, open, open, open, '0'
+    open, open, open, open, open, open, open, '0', nTRST, open
   );
 
 
   ------------------------------------
   -- LEON3 processor
+  x : for i in 0 to CFG_NCPU-1 generate
+    irqi(i).irl <= "0000";
+  end generate;
+  
+  
   cpu : for i in 0 to CFG_NCPU-1 generate
     clLeon3s : leon3s generic map (
 		AHB_MASTER_LEON3+i,

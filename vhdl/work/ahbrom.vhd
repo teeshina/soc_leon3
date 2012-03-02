@@ -90,7 +90,7 @@ begin
     case conv_integer(addr) is
     when 16#00000# => romdata <= X"81D82000";-- flush %g0 + 0
     when 16#00001# => romdata <= X"033CC000";-- sethi %hi(0xf3000000), %g1
-    when 16#00002# => romdata <= X"821060E0";-- or %g1, 0xe0, %g1; 
+    when 16#00002# => romdata <= X"821060C0";-- or %g1, 0xc0, %g1; 
     when 16#00003# => romdata <= X"81884000";-- wr %g1 ^ %g0, %psr
     when 16#00004# => romdata <= X"81900000";-- mov %g0, %wim
     when 16#00005# => romdata <= X"81980000";-- mov %g0, %tbr

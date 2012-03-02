@@ -14,22 +14,22 @@
 #include "..\..\lib\leon3_ml605\mem\romdata.h"
 
 //****************************************************************************
-void SparcV8::Disassemler(uint32 entry_adr, uint32 *data, int32 bytes, std::ofstream *pFile)
+void SparcV8::Disassemler(SrcImage *pImage, std::ofstream *pFile)
 {
-#if 1
+#if 0
   for (int32 i=0; i<=190; i++)
   {
     instr.u.v  = RomData[i].data;
     entry_adr=0;
 #else
-  for (int32 i=0; i<=(bytes>>2); i++)
+  for (int32 i=0; i<=(pImage->iSizeBytes>>2); i++)
   {
-    instr.u.v  = data[i];
+    instr.u.v  = pImage->arr[i].val;
 #endif
     instr.format = INSTR_FORMAT_UNDEF;
   
     DisasInstr(&instr);
-    PrintInstruction(entry_adr+4*i,&instr, pFile);
+    PrintInstruction(pImage->arr[i].adr, &instr, pFile);
   }
 }
 

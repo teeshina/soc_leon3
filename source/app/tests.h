@@ -24,6 +24,7 @@ struct JTagTestInput
 static const JTagTestInput TEST[] =
 {
   //write       Addr        WrData         Comment
+  {true,    0x90000000,  0x0000023f, "Reset DSU and flags" },
   {false,   0xFFFFFFF0,           0, "Device,LibVersion" },
   {false,   MST_ID(0),            0, "msto[0].hconfig[0]" },
   {false,   MST_ID(1),            0, "msto[1].hconfig[0]" },

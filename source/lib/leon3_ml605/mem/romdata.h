@@ -19,7 +19,7 @@ const RomValue RomData[ROM_SIZE] =  // dnef
 {
     {0x00000, 0x81D82000},// flush %g0 + 0
     {0x00001, 0x033CC000},// sethi %hi(0xf3000000), %g1
-    {0x00002, 0x821060E0},// or %g1, 0xe0, %g1; 
+    {0x00002, 0x821060C0},// or %g1, 0xc0, %g1; 
     {0x00003, 0x81884000},// wr %g1 ^ %g0, %psr
     {0x00004, 0x81900000},// mov %g0, %wim
     {0x00005, 0x81980000},// mov %g0, %tbr
@@ -58,26 +58,26 @@ const RomValue RomData[ROM_SIZE] =  // dnef
     {0x00026, 0x033CC000},// sethi %hi(0xf3000000), %g1
     {0x00027, 0x821060E0},// or %g1, 0xe0, %g1; 
     {0x00028, 0x81884000},// wr %g1 ^ %g0, %psr
-    {0x00029, 0x01000000},// nop
-    {0x0002A, 0x01000000},// nop
-    {0x0002B, 0x01000000},// nop. Next Multi-processors checking
-    {0x0002C, 0x87444000},// mov  %asr17, %g3
-    {0x0002D, 0x8730E01C},// srl  %g3, 28, %g3; //bit[31:28]=hindex of cpu
-    {0x0002E, 0x8688E00F},// andcc  %g3, 0xf, %g3
-    {0x0002F, 0x12800006},// bne  0x000000d4
-    {0x00030, 0x033FFC00},// sethi  %hi(0xfff00000), %g1
-    {0x00031, 0x82106100},// or  %g1, 0x100, %g1
-    {0x00032, 0x0539A81B},// sethi  %hi(0xe6a06c00), %g2
-    {0x00033, 0x8410A260},// or  %g2, 0x260, %g2
-    {0x00034, 0xC4204000},// st  %g2, [%g1]; // wr: [0xfff00100] <= 0xe6a06e60
-    {0x00035, 0x3D1000FF},// sethi  %hi(0x4003fc00), %fp
-    {0x00036, 0xBC17A3E0},// or  %fp, 0x3e0, %fp; // fp = 0x4003ffe0 = 262 112
-    {0x00037, 0x9C27A060},// sub  %fp, 96, %sp
-    {0x00038, 0x03100000},// sethi  %hi(0x40000000), %g1
-    {0x00039, 0x81C04000},// jmp  %g1
-    {0x0003A, 0x01000000},// nop
-    {0x0003B, 0x01000000},// nop
-    {0x0003C, 0x01000000},// nop
+    {0x00029, 0x01000000},//A4: nop
+    {0x0002A, 0x01000000},//A8: nop
+    {0x0002B, 0x01000000},//AC: nop. Next Multi-processors checking
+    {0x0002C, 0x87444000},//B0: mov  %asr17, %g3
+    {0x0002D, 0x8730E01C},//B4: srl  %g3, 28, %g3; //bit[31:28]=hindex of cpu
+    {0x0002E, 0x8688E00F},//B8: andcc  %g3, 0xf, %g3
+    {0x0002F, 0x12800006},//BC: bne  0x000000d4
+    {0x00030, 0x033FFC00},//C0: sethi  %hi(0xfff00000), %g1
+    {0x00031, 0x82106100},//C4 or  %g1, 0x100, %g1
+    {0x00032, 0x0539A81B},//C8: sethi  %hi(0xe6a06c00), %g2
+    {0x00033, 0x8410A260},//CC: or  %g2, 0x260, %g2
+    {0x00034, 0xC4204000},//D0: st  %g2, [%g1]; // wr: [0xfff00100] <= 0xe6a06e60
+    {0x00035, 0x3D1000FF},//D4: sethi  %hi(0x4003fc00), %fp
+    {0x00036, 0xBC17A3E0},//D8: or  %fp, 0x3e0, %fp; // fp = 0x4003ffe0 = 262 112
+    {0x00037, 0x9C27A060},//DC: sub  %fp, 96, %sp
+    {0x00038, 0x03100000},//E0: sethi  %hi(0x40000000), %g1
+    {0x00039, 0x81C04000},//E4: jmp  %g1
+    {0x0003A, 0x01000000},//E8: nop
+    {0x0003B, 0x01000000},//EC: nop
+    {0x0003C, 0x01000000},//F0: nop
     {0x0003D, 0x01000000},
     {0x0003E, 0x01000000},
     {0x0003F, 0x01000000},

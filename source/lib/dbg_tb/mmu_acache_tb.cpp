@@ -95,7 +95,7 @@ void dbg::mmu_acache_tb(SystemOnChipIO &io)
     }
   }
 
-  tst_mmu_acache.Update(io.inNRst,//    : in  std_logic;
+  tst_mmu_acache.Update(topLeon3mp.wNRst,//    : in  std_logic;
                         io.inClk,//    : in  std_logic;
                         in_mcii,//   : in  memory_ic_in_type;
                         ch_mcio,//   : out memory_ic_out_type;
@@ -130,7 +130,7 @@ void dbg::mmu_acache_tb(SystemOnChipIO &io)
     ResetPutStr();
   
     // inputs:
-    pStr = PutToStr(pStr, io.inNRst, 1, "inNRst");
+    pStr = PutToStr(pStr, topLeon3mp.wNRst, 1, "inNRst");
     pStr = PutToStr(pStr, *pin_hclken, 1, "in_hclken");
     //
     pStr = PutToStr(pStr, pin_mcii->address,32,"in_mcii.address");//          : std_logic_vector(31 downto 0); // memory address
@@ -198,7 +198,7 @@ void dbg::mmu_acache_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pch_mcio->retry,1,"ch_mcio.retry");//            : std_ulogic;          // 
     pStr = PutToStr(pStr, pch_mcio->mexc,1,"ch_mcio.mexc");//             : std_ulogic;          // memory exception
     pStr = PutToStr(pStr, pch_mcio->cache,1,"ch_mcio.cache");//            : std_ulogic;    // cacheable data
-    pStr = PutToStr(pStr, pch_mcio->par,4,"--ch_mcio.par");//              : std_logic_vector(3 downto 0);  // parity
+    pStr = PutToStr(pStr, pch_mcio->par,4,"ch_mcio.par");//              : std_logic_vector(3 downto 0);  // parity
     pStr = PutToStr(pStr, pch_mcio->scanen,1,"ch_mcio.scanen");//           : std_ulogic;
     //
     pStr = PutToStr(pStr, pch_mcdo->data,32,"ch_mcdo.data");//             : std_logic_vector(31 downto 0); // memory data
@@ -210,7 +210,7 @@ void dbg::mmu_acache_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pch_mcdo->cache,1,"ch_mcdo.cache");//            : std_ulogic;    // cacheable data
     pStr = PutToStr(pStr, pch_mcdo->ba,1,"ch_mcdo.ba");//               : std_ulogic;    // bus active (used for snooping)
     pStr = PutToStr(pStr, pch_mcdo->bg,1,"ch_mcdo.bg");//               : std_ulogic;    // bus grant  (used for snooping)
-    pStr = PutToStr(pStr, pch_mcdo->par,4,"--ch_mcdo.par");//              : std_logic_vector(3 downto 0);  // parity
+    pStr = PutToStr(pStr, pch_mcdo->par,4,"ch_mcdo.par");//              : std_logic_vector(3 downto 0);  // parity
     pStr = PutToStr(pStr, pch_mcdo->scanen,1,"ch_mcdo.scanen");//           : std_ulogic;
     pStr = PutToStr(pStr, pch_mcdo->testen,1,"ch_mcdo.testen");//           : std_ulogic;
     //

@@ -38,9 +38,8 @@ void jtag_port::Update(uint32 inRst,
     outTDI   = 1;
     bEmpty   = true;
     bRdDataRdy = false;
-    return;
   }
-  if(!pclkTck->Update(outTCK))
+  if((!pclkTck->Update(outTCK)) || inRst )
     return;
   
   outnTRST = 1;

@@ -298,7 +298,7 @@ void dsu3x::Update(uint32 rst,//    : in  std_ulogic;
         hrdata = 0x0;
         switch(hasel2>>2)
         {
-          case 0://when "00000" =>
+          case 0://when "00000" => // DSU control register
             if (r.Q.slv.hwrite == 1)
             {
               if (hclken == 1)
@@ -317,20 +317,20 @@ void dsu3x::Update(uint32 rst,//    : in  std_ulogic;
 	            }
             }
             hrdata &= ~MSK32(11,0);
-            hrdata |= r.Q.te[index];
-            hrdata |= (r.Q.be[index]<<1);
-            hrdata |= (r.Q.bw[index]<<2);
-            hrdata |= (r.Q.bs[index]<<3);
-            hrdata |= (r.Q.bx[index]<<4);
-            hrdata |= (r.Q.bz[index]<<5);
-            hrdata |= (dbgi.arr[index].dsumode<<6);
-            hrdata |= (BIT32(r.Q.dsuen,2)<<7);
-            hrdata |= (BIT32(r.Q.dsubre,2)<<8);
-            hrdata |= ((!dbgi.arr[index].error)<<9);
-            hrdata |= (dbgi.arr[index].halt<<10);
-            hrdata |= (dbgi.arr[index].pwd<<11);
+            hrdata |= r.Q.te[index];      // trace enable
+            hrdata |= (r.Q.be[index]<<1); // break on error
+            hrdata |= (r.Q.bw[index]<<2); // break on IU watchpoint
+            hrdata |= (r.Q.bs[index]<<3); // break on software breakpoint
+            hrdata |= (r.Q.bx[index]<<4); // break on trap
+            hrdata |= (r.Q.bz[index]<<5); // break on error traps
+            hrdata |= (dbgi.arr[index].dsumode<<6); // debug mode
+            hrdata |= (BIT32(r.Q.dsuen,2)<<7);      // DSU enable (read only)
+            hrdata |= (BIT32(r.Q.dsubre,2)<<8);     // DSU break (read only)
+            hrdata |= ((!dbgi.arr[index].error)<<9);  // Processor error mode
+            hrdata |= (dbgi.arr[index].halt<<10);     // Processor halt
+            hrdata |= (dbgi.arr[index].pwd<<11);      // Power down
           break;
-          case 0x02://when "00010" =>  -- timer
+          case 0x02://when "00010" =>  -- timer. Time tag counter
             if (r.Q.slv.hwrite)
             {
               if (hclken == 1) v.timer = BITS32(ahbsi2.hwdata,CFG_DSU_TBITS-1,0);
@@ -339,7 +339,7 @@ void dsu3x::Update(uint32 rst,//    : in  std_ulogic;
             hrdata &= ~MSK32(CFG_DSU_TBITS-1,0);
             hrdata |= r.Q.timer;
           break;
-          case 0x08://when "01000" =>
+          case 0x08://when "01000" => // Break and Single step tregister
             if (r.Q.slv.hwrite == 1)
             {
               if (hclken == 1)
@@ -357,7 +357,7 @@ void dsu3x::Update(uint32 rst,//    : in  std_ulogic;
             hrdata &= ~MSK32(16+CFG_NCPU-1,16);
             hrdata |= (r.Q.ss<<16); 
           break;
-          case 0x09://when "01001" =>
+          case 0x09://when "01001" => // Debug mode Mask register
             if (r.Q.slv.hwrite & hclken)
             {
               v.bmsk &= ~MSK32(CFG_NCPU-1,0);
@@ -370,7 +370,7 @@ void dsu3x::Update(uint32 rst,//    : in  std_ulogic;
             hrdata &= ~MSK32(CFG_NCPU-1+16,16);
             hrdata |= (r.Q.dmsk<<16);
           break;
-          case 0x10://when "10000" =>
+          case 0x10://when "10000" => // AHB trace buffer control register
 #if (TRACEN)
             hrdata &= ~MSK32((TBUFABITS + 15),16);
             hrdata |= (BITS32(tr.Q.delaycnt,TBUFABITS-1,0)<<16);
@@ -394,7 +394,7 @@ void dsu3x::Update(uint32 rst,//    : in  std_ulogic;
             }
 #endif
           break;
-          case 0x11://when "10001" =>
+          case 0x11://when "10001" => // AHB trace buffer index register
 #if (TRACEN)
             hrdata &= ~MSK32((TBUFABITS - 1 + 4),4);
             hrdata |= (BITS32(tr.Q.aindex,TBUFABITS- 1,0)<<4);
@@ -405,7 +405,7 @@ void dsu3x::Update(uint32 rst,//    : in  std_ulogic;
 	          }
 #endif
           break;
-          case 0x14://when "10100" =>
+          case 0x14://when "10100" => // AHB breakpoint address 1
 #if (TRACEN)
             hrdata &= ~MSK32(31,2);
             hrdata |= tr.Q.tbreg1.addr; 
@@ -413,7 +413,7 @@ void dsu3x::Update(uint32 rst,//    : in  std_ulogic;
               tv.tbreg1.addr = (ahbsi2.hwdata&MSK32(31,2)); 
 #endif
           break;
-          case 0x15://when "10101" =>
+          case 0x15://when "10101" => // AHB mask register 1
 #if (TRACEN)
             hrdata = tr.Q.tbreg1.mask | (tr.Q.tbreg1.read<<1) | (tr.Q.tbreg1.write<<0); 
             if (r.Q.slv.hwrite & hclken)
@@ -424,7 +424,7 @@ void dsu3x::Update(uint32 rst,//    : in  std_ulogic;
             }
 #endif
           break;
-          case 0x16://when "10110" =>
+          case 0x16://when "10110" => // AHB break point address 2: 0x90000058
 #if (TRACEN)
             hrdata &= ~MSK32(31,2);
             hrdata |= tr.Q.tbreg2.addr; 
@@ -432,7 +432,7 @@ void dsu3x::Update(uint32 rst,//    : in  std_ulogic;
               tv.tbreg2.addr = ahbsi2.hwdata&MSK32(31,2); 
 #endif
           break;
-          case 0x17://when "10111" =>
+          case 0x17://when "10111" => // AHB mask register 2: 0x9000005c
 #if (TRACEN)
             hrdata = tr.Q.tbreg2.mask | (tr.Q.tbreg2.read<<1) | tr.Q.tbreg2.write; 
             if (r.Q.slv.hwrite & hclken)

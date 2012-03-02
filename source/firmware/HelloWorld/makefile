@@ -3,6 +3,9 @@ include util.mak
 CC = sparc-elf-c++.exe
 CFLAGS = -c -Wall -Wno-deprecated
 LDFLAGS = 
+#Alternative entry point 
+#LDFLAGS =  -Ttext=0xA0000000 
+# -Tdata=0xA0010000  -Tbss=0xA0030000
 SOURCES = main.cpp 
 OBJECTS = $(SOURCES:.cpp=.o)
 EXECUTABLE = HelloWorld.elf

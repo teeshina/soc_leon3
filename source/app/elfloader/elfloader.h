@@ -9,6 +9,7 @@
 
 #include <fstream>
 #include "stdtypes.h"
+#include "image.h"
 #include "sparcv8.h"
 
 class ElfFile
@@ -157,23 +158,18 @@ class ElfFile
   private:
     static const int32 FILE_NAME_STRING_MAX = 1024;
     char chElfFile[FILE_NAME_STRING_MAX];
-    char chMapFile[FILE_NAME_STRING_MAX];
     char chAsmFile[FILE_NAME_STRING_MAX];
     bool bFileOpened;
     int32 iElfSize;
     uint8 *arrElf;
-    std::ofstream *posMapFile;
     std::ofstream *posAsmFile;
     
     static const int32 STRINGS_IN_SECTION_MAX = 1<<16;
     uint32 iTotalStrings;
     uint8  *pStr[STRINGS_IN_SECTION_MAX];
     
-    static const int32 ELF_IMAGE_MAXSIZE = 1<<16; // words
-    uint32 image[ELF_IMAGE_MAXSIZE];
-    SparcV8 clSparcV8;
-
-    int32 iImageBytes;
+    SrcImage image;
+    SparcV8  clSparcV8;
 
   public:
     ElfFile(char *pchElfFile);
@@ -186,7 +182,7 @@ class ElfFile
     void ReadSectionHeader();
     void RunDisassembler();
     
-    void WriteMemoryMap(SectionHeaderType *);
+    void CreateImage(SectionHeaderType *);
     
     void SwapBytes(Elf32_Half&);
     void SwapBytes(uint32&);

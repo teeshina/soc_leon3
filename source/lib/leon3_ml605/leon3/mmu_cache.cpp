@@ -54,6 +54,9 @@ void mmu_cache::Update( uint32 rst,//   : in  std_ulogic;
                         uint32 hclken// : in std_ulogic
                       )
 {
+ ahbsi2 = ahbsi;
+ ahbi2  = ahbi;
+
 //-- AMBA AHB interface     
   pclACache->Update(rst, sclk, mcii, mcio, mcdi, mcdo, mcmmi, mcmmo, ahbi2, ahbo2, ahbso, hclken);
 
@@ -86,8 +89,6 @@ void mmu_cache::Update( uint32 rst,//   : in  std_ulogic;
      port map (rst, hclk, clk, ahbi, ahbi2, ahbo2, ahbo, ahbsi, ahbsi2, mcii, mcdi, mcdo, mcmmi.req, mcmmo.grant, hclken);
 #else
 
-   ahbsi2 = ahbsi;
-   ahbi2  = ahbi;
    ahbo   = ahbo2;
 #endif
 }

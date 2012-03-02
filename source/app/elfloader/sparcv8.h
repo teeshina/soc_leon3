@@ -9,6 +9,8 @@
 
 #include <fstream>
 #include "stdtypes.h"
+#include "image.h"
+
 
 struct Format1
 {
@@ -124,7 +126,7 @@ class SparcV8
     char chString[256];
 
   public:
-    void Disassemler(uint32 entry_adr, uint32 *data, int32 size, std::ofstream *pFile);
+    void Disassemler(SrcImage *pImage, std::ofstream *pFile);
     void DisasInstr(CInstr *p);
     
     uint32 Common(CInstr *p);

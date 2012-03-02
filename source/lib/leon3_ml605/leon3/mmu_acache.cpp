@@ -120,7 +120,7 @@ void mmu_acache::Update( uint32 rst,//    : in  std_logic;
 
   //-- generate AHB signals
 #if 1
-  if(iClkCnt>35)
+  if(iClkCnt>=378)
   bool st = true;
 #endif
   dreq = mcdi.req;
@@ -167,6 +167,10 @@ void mmu_acache::Update( uint32 rst,//    : in  std_logic;
 
   dec_hcache = ahb_slv_dec_cache(mcdi.address, ahbso, CFG_DFIXED);
   
+#if 1
+  if(iClkCnt>=378)
+  bool st =true;
+#endif
   if (nbo == 0x2)
   {
     haddr  = mcmmi.address; 

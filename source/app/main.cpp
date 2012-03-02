@@ -5,6 +5,10 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
+// Question 1:
+//            Why when IU executes bne instruction from ROM, pc register is 
+//            jumping into right position, but IU proceeds execution of all
+//            afterward instructions?? And as result there's 0x2b trap occur.
 #include "headers.h"
 
 static const double SYS_CLOCK_F  = 66000000; //Hz
@@ -36,17 +40,19 @@ int _tmain(int argc, _TCHAR* argv[])
 
   clElfFile.Load();   // load execution code from *.elf file into SoC Internal RAM
   
-  while (!clDbg.IsEnd())
+  //while (!clDbg.IsEnd())
+  while(iClkCnt<3000)
   {
     clDbg.GenerateReset(iClkCnt, ioSoC.inNRst);
     clkSys.Update(ioSoC.inClk);
-    
+#if 0
     portJTAG.Update(ioSoC.inNRst,
                     ioSoC.jtag.TDO,
                     ioSoC.jtag.TCK,
                     ioSoC.jtag.nTRST,
                     ioSoC.jtag.TMS,
                     ioSoC.jtag.TDI );
+#endif
     
     portUART1.Update(ioSoC.inNRst,
                      ioSoC.inClk,
@@ -99,7 +105,7 @@ void GetInitSettings(LibInitData *p)
   //p->uiBenchEna[TB_apbctrl] = PRINT_TESTBENCH_ENABLE;
   //p->uiBenchEna[TB_apbuart] = PRINT_TESTBENCH_ENABLE;
   //p->uiBenchEna[TB_finderr] = PRINT_TESTBENCH_ENABLE;
-  p->uiBenchEna[TB_soc_leon3] = PRINT_TESTBENCH_ENABLE;
+  //p->uiBenchEna[TB_soc_leon3] = PRINT_TESTBENCH_ENABLE;
 }
 
 

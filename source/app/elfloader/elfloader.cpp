@@ -1,5 +1,4 @@
 #include "headers.h"
-//#define PRINT_MAP_FILE
 
 //****************************************************************************
 ElfFile::ElfFile(char *pchElfFile)
@@ -21,19 +20,14 @@ ElfFile::ElfFile(char *pchElfFile)
     }
     pisElf->close();
     strcpy_s(chElfFile, FILE_NAME_STRING_MAX,pchElfFile);
-#ifdef PRINT_MAP_FILE
-    strcpy_s(chMapFile, FILE_NAME_STRING_MAX,pchElfFile);
-    strcat_s(chMapFile, FILE_NAME_STRING_MAX, ".map");
-    posMapFile = new ofstream(chMapFile,ios::out);
-#endif
+
     strcpy_s(chAsmFile, FILE_NAME_STRING_MAX,pchElfFile);
     strcat_s(chAsmFile, FILE_NAME_STRING_MAX, ".asm");
     posAsmFile = new ofstream(chAsmFile,ios::out);
   }
   free(pisElf);
 
-  memset(image,0,ELF_IMAGE_MAXSIZE*sizeof(uint32));
-  iImageBytes = 0;
+  memset(&image,0,sizeof(SrcImage));
 }
 
 ElfFile::~ElfFile()
@@ -41,10 +35,7 @@ ElfFile::~ElfFile()
   if(bFileOpened)
   {
     free(arrElf);
-#ifdef PRINT_MAP_FILE
-    posMapFile->close();
-    free(posMapFile);
-#endif
+
     posAsmFile->close();
     free(posAsmFile);
   }
@@ -70,7 +61,7 @@ void ElfFile::Load()
   if(Elf32_Ehdr.e_shoff) ReadSectionHeader();
   if(Elf32_Ehdr.e_phoff) ReadProgramHeader();
 
-  clSparcV8.Disassemler(Elf32_Ehdr.e_entry, image, iImageBytes, posAsmFile);
+  clSparcV8.Disassemler(&image, posAsmFile);
 }
 
 //****************************************************************************
@@ -202,7 +193,7 @@ void ElfFile::ReadSectionHeader()
         pStr[iTotalStrings] = &arrElf[pSectionHeader[i].sh_offset + iStrLength];
         iStrInc = S_STRING(chTmp,"%s",&arrElf[pSectionHeader[i].sh_offset + iStrLength]);
         if(iStrInc==0) iStrLength++;
-        else           iStrLength+=iStrInc;
+        else           iStrLength+=(iStrInc+1);
         iTotalStrings++;
       }
     }
@@ -215,7 +206,6 @@ void ElfFile::ReadSectionHeader()
     if(pSectionHeader[i].sh_type==SectionHeaderType::SHT_SYMTAB)
     {
       SymbolTableType clSymbol;
-      pStr[pSectionHeader[pSectionHeader[i].sh_link].sh_name];
       uint32 uiSmbLength=0;
       while(uiSmbLength<pSectionHeader[i].sh_size)
       {
@@ -245,15 +235,15 @@ void ElfFile::ReadSectionHeader()
         pSectionHeader[i].sh_addr+pSectionHeader[i].sh_size
       );
       
-      WriteMemoryMap(&pSectionHeader[i]);
+      CreateImage(&pSectionHeader[i]);
     }
   }
 }
 
 //****************************************************************************
-void ElfFile::WriteMemoryMap(SectionHeaderType *p)
+void ElfFile::CreateImage(SectionHeaderType *p)
 {
-  uint32 ImgAddr;
+  uint32 ImgInd;
   // source code or data:
   uint32 word;
   int32 MsbOrder[4]={0,1,2,3};
@@ -263,6 +253,8 @@ void ElfFile::WriteMemoryMap(SectionHeaderType *p)
   if(Elf32_Ehdr.e_ident[ElfHeaderType::EI_DATA]==ElfHeaderType::ELFDATA2MSB) byte = MsbOrder;
   else                                                                       byte = LsbOrder;
   
+  image.entry = Elf32_Ehdr.e_entry;
+
   // print Program defined section:
   if(p->sh_type==SectionHeaderType::SHT_PROGBITS)
   {
@@ -273,23 +265,20 @@ void ElfFile::WriteMemoryMap(SectionHeaderType *p)
       word |= uint32(arrElf[p->sh_offset+n+byte[2]])<<8;
       word |= uint32(arrElf[p->sh_offset+n+byte[3]])<<0;
 
-      ImgAddr = (p->sh_addr+n - Elf32_Ehdr.e_entry)/sizeof(uint32);
-      if(ImgAddr<ELF_IMAGE_MAXSIZE) image[ImgAddr] = word;
-      else                          PUT_STRING("{elf} Error: Internal Image maximum address is overrun\n");
-
-      LibBackDoorLoadRAM(p->sh_addr+n, word);
+      ImgInd = (p->sh_addr+n - Elf32_Ehdr.e_entry)/sizeof(uint32);
+      if(ImgInd<ELF_IMAGE_MAXSIZE) 
+      {
+        image.arr[ImgInd].adr = p->sh_addr+n;
+        image.arr[ImgInd].val = word;
+      }else
+        PUT_STRING("{elf} Error: Internal Image maximum address is overrun\n");
 
       // Store image size using maximal address value:
-      if(uint32(iImageBytes) < (p->sh_addr+n - Elf32_Ehdr.e_entry))
-        iImageBytes = int32(p->sh_addr+n - Elf32_Ehdr.e_entry);
+      if(image.iSizeBytes < int32(p->sh_addr+n - Elf32_Ehdr.e_entry))
+        image.iSizeBytes = int32(p->sh_addr+n - Elf32_Ehdr.e_entry);
 
-#ifdef PRINT_MAP_FILE
-      S_STRING(chTmp,"0x%08x: 0x%08x ", p->sh_addr+n, word );
-      *posMapFile << chTmp;
 
-      if(n==0)*posMapFile << pStr[p->sh_name];
-      *posMapFile << "\n";
-#endif
+      LibBackDoorLoadRAM(p->sh_addr+n, word);
     }
   }
   
@@ -299,15 +288,8 @@ void ElfFile::WriteMemoryMap(SectionHeaderType *p)
     for(uint32 n=0; n<p->sh_size;n+=4)
     {
       LibBackDoorLoadRAM(p->sh_addr+n, 0);
-#ifdef PRINT_MAP_FILE
-      S_STRING(chTmp,"0x%08x: 0x%08x ", p->sh_addr+n, 0);
-      *posMapFile << chTmp;
-      if(n==0)*posMapFile << pStr[p->sh_name] ;
-      *posMapFile << "\n";
-#endif
     }
   }
-
 }
 
 //****************************************************************************

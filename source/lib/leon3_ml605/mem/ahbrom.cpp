@@ -19,7 +19,7 @@ void ahbrom::Update(uint32 rst,//     : in  std_ulogic;
   ((ahb_membar_type*)(&ahbso.hconfig.arr[4]))->cache    = 1;
 
   addr.CLK = clk;
-  addr.D = ahbsi.haddr & MSK32(9,2);
+  addr.D = ahbsi.haddr & MSK32(8,2);
 
   ahbso.hresp   = HRESP_OKAY;
   ahbso.hsplit  = 0; 

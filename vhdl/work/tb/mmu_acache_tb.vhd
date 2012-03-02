@@ -186,7 +186,7 @@ begin
   ch_mcio.retry <= S(1681);
   ch_mcio.mexc <= S(1682);
   ch_mcio.cache <= S(1683);
-  --ch_mcio.par <= S(1687 downto 1684);
+  ch_mcio.par <= S(1687 downto 1684);
   ch_mcio.scanen <= S(1688);
   ch_mcdo.data <= S(1720 downto 1689);
   ch_mcdo.ready <= S(1721);
@@ -197,7 +197,7 @@ begin
   ch_mcdo.cache <= S(1726);
   ch_mcdo.ba <= S(1727);
   ch_mcdo.bg <= S(1728);
-  --ch_mcdo.par <= S(1732 downto 1729);
+  ch_mcdo.par <= S(1732 downto 1729);
   ch_mcdo.scanen <= S(1733);
   ch_mcdo.testen <= S(1734);
   ch_mcmmo.data <= S(1766 downto 1735);

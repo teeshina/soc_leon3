@@ -19,7 +19,7 @@ dbg::dbg()
 void dbg::GenerateReset(int32 cnt, uint32 outNRst)
 {
 #if 1// button simulation
-  if(cnt < 12)  ioSoC.inNRst = 1;
+  if(cnt < 26)  ioSoC.inNRst = 1;
   else          ioSoC.inNRst = 0;
 #else
   if(cnt < 12)  ioSoC.inNRst = 0;

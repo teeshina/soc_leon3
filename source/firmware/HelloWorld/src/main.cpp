@@ -4,9 +4,23 @@
 
 #include <stdio.h>
 
+extern "C" void *catch_interrupt(void func(), int irq);
+int tmp=0;
+int tmp2=0;
+
+//****************************************************************************
+void IrqHandler()
+{
+	while(true){}
+}
+
+//****************************************************************************
 int main()
 {
-  printf("-------------Start---------\n");
+  tmp += 1;
+//  printf("-------------Start---------\n");
+
+	catch_interrupt(IrqHandler, 0);
 
   unsigned int *adr, *status;
   adr = (unsigned int *)0x8000010c;
@@ -26,7 +40,7 @@ int main()
     pchTmp++;
 
    while((*status&0x600)!=0) {}
-
+   tmp2 += 1;
   }
 	
   return 0;
