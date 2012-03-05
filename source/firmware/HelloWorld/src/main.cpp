@@ -20,7 +20,7 @@ int main()
   tmp += 1;
 //  printf("-------------Start---------\n");
 
-	catch_interrupt(IrqHandler, 0);
+	catch_interrupt(IrqHandler, 0x10);
 
   unsigned int *adr, *status;
   adr = (unsigned int *)0x8000010c;

@@ -135,7 +135,7 @@ class SparcV8
     uint32 Ticc(CInstr *p);
     uint32 Synthetic(CInstr *p);
     
-    void PrintInstruction(uint32 adr, CInstr *p, std::ofstream *pFile);
+    void PrintInstruction(SrcElement *pSrc, CInstr *p, std::ofstream *pFile);
 };
 
 

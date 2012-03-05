@@ -40,12 +40,12 @@ int _tmain(int argc, _TCHAR* argv[])
 
   clElfFile.Load();   // load execution code from *.elf file into SoC Internal RAM
   
-  //while (!clDbg.IsEnd())
-  while(iClkCnt<3000)
+  while (!clDbg.IsEnd())
+  //while(iClkCnt<3000)
   {
     clDbg.GenerateReset(iClkCnt, ioSoC.inNRst);
     clkSys.Update(ioSoC.inClk);
-#if 0
+#if 1
     portJTAG.Update(ioSoC.inNRst,
                     ioSoC.jtag.TDO,
                     ioSoC.jtag.TCK,

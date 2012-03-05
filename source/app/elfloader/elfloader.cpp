@@ -28,6 +28,9 @@ ElfFile::ElfFile(char *pchElfFile)
   free(pisElf);
 
   memset(&image,0,sizeof(SrcImage));
+
+  pStrSections = 0;
+  pStrSymbols  = 0;
 }
 
 ElfFile::~ElfFile()
@@ -62,6 +65,7 @@ void ElfFile::Load()
   if(Elf32_Ehdr.e_phoff) ReadProgramHeader();
 
   clSparcV8.Disassemler(&image, posAsmFile);
+  PUT_STRING("{elf} \"%s\" generated\n",chAsmFile);
 }
 
 //****************************************************************************
@@ -78,7 +82,7 @@ int32 ElfFile::ReadElfHeader()
   if(!bMagicPass) return (iErr=1);
 
 
-  PUT_STRING("{elf} ELF file has been opened\n");
+  PUT_STRING("{elf} \"%s\" has been opened\n",chElfFile);
 
   switch(Elf32_Ehdr.e_ident[ElfHeaderType::EI_CLASS])
   {
@@ -165,7 +169,8 @@ void ElfFile::ReadProgramHeader()
 //****************************************************************************
 void ElfFile::ReadSectionHeader()
 {
-  iTotalStrings = 0;
+  iTotalSymbols = 0;
+
   if(Elf32_Ehdr.e_shnum)
   {
     pSectionHeader = (SectionHeaderType*)malloc(Elf32_Ehdr.e_shnum*sizeof(SectionHeaderType));
@@ -186,16 +191,8 @@ void ElfFile::ReadSectionHeader()
     
     if(pSectionHeader[i].sh_type==SectionHeaderType::SHT_STRTAB)
     {
-      uint32 iStrLength=0;
-      uint32 iStrInc =0;
-      while(iStrLength<pSectionHeader[i].sh_size)
-      {
-        pStr[iTotalStrings] = &arrElf[pSectionHeader[i].sh_offset + iStrLength];
-        iStrInc = S_STRING(chTmp,"%s",&arrElf[pSectionHeader[i].sh_offset + iStrLength]);
-        if(iStrInc==0) iStrLength++;
-        else           iStrLength+=(iStrInc+1);
-        iTotalStrings++;
-      }
+      if(pStrSections==0) pStrSections = &arrElf[pSectionHeader[i].sh_offset];
+      else                pStrSymbols  = &arrElf[pSectionHeader[i].sh_offset];
     }
 
   }
@@ -203,47 +200,55 @@ void ElfFile::ReadSectionHeader()
   // Read symbols:
   for(int32 i=0; i<Elf32_Ehdr.e_shnum; i++)
   {
-    if(pSectionHeader[i].sh_type==SectionHeaderType::SHT_SYMTAB)
+    if( (pSectionHeader[i].sh_type==SectionHeaderType::SHT_SYMTAB)
+     || (pSectionHeader[i].sh_type==SectionHeaderType::SHT_DYNSYM) )
     {
-      SymbolTableType clSymbol;
       uint32 uiSmbLength=0;
       while(uiSmbLength<pSectionHeader[i].sh_size)
       {
-        clSymbol = *((SymbolTableType*)&arrElf[pSectionHeader[i].sh_offset+uiSmbLength]);
-        SwapBytes(clSymbol.st_name);
-        SwapBytes(clSymbol.st_value);
-        SwapBytes(clSymbol.st_size);
-        SwapBytes(clSymbol.st_shndx);
+        pSymbols[iTotalSymbols] = ((SymbolTableType*)&arrElf[pSectionHeader[i].sh_offset+uiSmbLength]);
+        SwapBytes(pSymbols[iTotalSymbols]->st_name);
+        SwapBytes(pSymbols[iTotalSymbols]->st_value);
+        SwapBytes(pSymbols[iTotalSymbols]->st_size);
+        SwapBytes(pSymbols[iTotalSymbols]->st_shndx);
 
-        // !!! Something wrong. I'm not correct read symbols!!!!!!!! ERROR!!!!!!
-        pStr[clSymbol.st_name];
-        uiSmbLength += sizeof(SymbolTableType);
+        if(pSectionHeader[i].sh_entsize)          uiSmbLength += pSectionHeader[i].sh_entsize;    // section with elements of fixed size
+        else if(pSymbols[iTotalSymbols]->st_size) uiSmbLength += pSymbols[iTotalSymbols]->st_size;
+        else                                      uiSmbLength += sizeof(SymbolTableType);
+        iTotalSymbols++;
       }
     }
   }
   
-  // Print implemented sections:
+  // Select non-zero sections and put it into virtual image:
   for(int32 i=0; i<Elf32_Ehdr.e_shnum; i++)
   {
-    //If the section will appear in the memory image of a process, this member gives the
-    //address at which the section’s first byte should reside. Otherwise, the member contains 0.
     if(pSectionHeader[i].sh_addr)
-    {
-      PUT_STRING("{elf} Loading section \"%s\": 0x%08x..0x%08x\n",
-        pStr[pSectionHeader[i].sh_name],
-        pSectionHeader[i].sh_addr,
-        pSectionHeader[i].sh_addr+pSectionHeader[i].sh_size
-      );
-      
       CreateImage(&pSectionHeader[i]);
-    }
+  }
+  CheckImageIntegrity();
+
+
+  // Attach symbols data to the image:
+  for(uint32 i=0; i<iTotalSymbols; i++)
+  {
+    AttachSymbol(pSymbols[i]);
+  }
+
+
+  // Copy image into internal RAM of the SOC:
+  for(int32 i=0; i<image.iSizeWords; i++)
+  {
+    if(image.arr[i].pSectionName)
+      PUT_STRING("{elf} Loading section \"%s\" at 0x%08x\n",image.arr[i].pSectionName, image.arr[i].adr);
+
+    LibBackDoorLoadRAM(image.arr[i].adr, image.arr[i].val);
   }
 }
 
 //****************************************************************************
 void ElfFile::CreateImage(SectionHeaderType *p)
 {
-  uint32 ImgInd;
   // source code or data:
   uint32 word;
   int32 MsbOrder[4]={0,1,2,3};
@@ -256,38 +261,77 @@ void ElfFile::CreateImage(SectionHeaderType *p)
   image.entry = Elf32_Ehdr.e_entry;
 
   // print Program defined section:
-  if(p->sh_type==SectionHeaderType::SHT_PROGBITS)
+  if( (p->sh_type==SectionHeaderType::SHT_PROGBITS) // intructions
+   || (p->sh_type==SectionHeaderType::SHT_NOBITS) ) // data
   {
+    image.arr[image.iSizeWords].pSectionName = (pStrSections + p->sh_name);
+    image.iSizeWords = (p->sh_addr-image.entry)/sizeof(uint32);
+
+
     for(uint32 n=0; n<p->sh_size;n+=4)
     {
-      word = uint32(arrElf[p->sh_offset+n+byte[0]])<<24;
-      word |= uint32(arrElf[p->sh_offset+n+byte[1]])<<16;
-      word |= uint32(arrElf[p->sh_offset+n+byte[2]])<<8;
-      word |= uint32(arrElf[p->sh_offset+n+byte[3]])<<0;
-
-      ImgInd = (p->sh_addr+n - Elf32_Ehdr.e_entry)/sizeof(uint32);
-      if(ImgInd<ELF_IMAGE_MAXSIZE) 
+      if(p->sh_type==SectionHeaderType::SHT_PROGBITS)
       {
-        image.arr[ImgInd].adr = p->sh_addr+n;
-        image.arr[ImgInd].val = word;
+        word = uint32(arrElf[p->sh_offset+n+byte[0]])<<24;
+        word |= uint32(arrElf[p->sh_offset+n+byte[1]])<<16;
+        word |= uint32(arrElf[p->sh_offset+n+byte[2]])<<8;
+        word |= uint32(arrElf[p->sh_offset+n+byte[3]])<<0;
+      }else if(p->sh_type==SectionHeaderType::SHT_NOBITS)
+        word = 0;
+
+      if(image.iSizeWords<ELF_IMAGE_MAXSIZE) 
+      {
+        image.arr[image.iSizeWords].adr = p->sh_addr+n;
+        image.arr[image.iSizeWords].val = word;
+        image.arr[image.iSizeWords].bInit = true;
+        image.iSizeWords++;
       }else
         PUT_STRING("{elf} Error: Internal Image maximum address is overrun\n");
 
-      // Store image size using maximal address value:
-      if(image.iSizeBytes < int32(p->sh_addr+n - Elf32_Ehdr.e_entry))
-        image.iSizeBytes = int32(p->sh_addr+n - Elf32_Ehdr.e_entry);
-
-
-      LibBackDoorLoadRAM(p->sh_addr+n, word);
     }
   }
-  
-  // print allocated space:
-  if(p->sh_type==SectionHeaderType::SHT_NOBITS)
+}
+
+//****************************************************************************
+void ElfFile::AttachSymbol(SymbolTableType *pS)
+{
+  int32 ind = 0;
+  ind =(pS->st_value - image.entry)>>2;
+  if((ind >= ELF_IMAGE_MAXSIZE)||(ind<0))
+    return;
+
+
+  uint8 *px1 = pStrSections + pS->st_name;
+  uint8 *px2 = pStrSymbols + pS->st_name;
+  switch(ELF32_ST_TYPE(pS->st_info))
   {
-    for(uint32 n=0; n<p->sh_size;n+=4)
+    case SymbolTableType::STT_OBJECT:
+      image.arr[ind].pDataName = pStrSymbols + pS->st_name;
+    break;
+    case SymbolTableType::STT_FUNC:
+      image.arr[ind].pFuncName = pStrSymbols + pS->st_name;
+    break;
+    case SymbolTableType::STT_FILE:
+      image.arr[ind].pFileName = pStrSymbols + pS->st_name;
+    break;
+    default:;
+  }
+}
+
+//****************************************************************************
+void ElfFile::CheckImageIntegrity()
+{
+  for(int32 i=0; i<image.iSizeWords; i++)
+  {
+    if(image.arr[i].adr != ((i<<2)+image.entry))
     {
-      LibBackDoorLoadRAM(p->sh_addr+n, 0);
+      if(!image.arr[i].bInit)
+      {
+        image.arr[i].bInit = true;
+        image.arr[i].adr   = ((uint32(i)<<2)+image.entry);
+      }else
+        PUT_STRING("{elf} Wrong Addres: 0x%08x\n",image.arr[i].adr);
+
     }
   }
 }

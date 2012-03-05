@@ -129,6 +129,25 @@ class ElfFile
       unsigned char st_info;
       unsigned char st_other;
       Elf32_Half    st_shndx;
+
+      #define ELF32_ST_BIND(i) ((i)>>4)
+      #define ELF32_ST_TYPE(i) ((i)&0xf)
+      #define ELF32_ST_INFO(b,t) (((b)<<4) + ((t)&0xf))
+      
+      static const unsigned char STB_LOCAL   = 0;
+      static const unsigned char STB_GLOBAL  = 1;
+      static const unsigned char STB_WEAK    = 2;
+      static const unsigned char STB_LOPROC  = 13;
+      static const unsigned char STB_HIPROC  = 15;
+
+      static const unsigned char STT_NOTYPE  = 0;
+      static const unsigned char STT_OBJECT  = 1;
+      static const unsigned char STT_FUNC    = 2;
+      static const unsigned char STT_SECTION = 3;
+      static const unsigned char STT_FILE    = 4;
+      static const unsigned char STT_LOPROC  = 13;
+      static const unsigned char STT_HIPROC  = 15;
+
     };
 
     struct ProgramHeaderType
@@ -164,9 +183,14 @@ class ElfFile
     uint8 *arrElf;
     std::ofstream *posAsmFile;
     
-    static const int32 STRINGS_IN_SECTION_MAX = 1<<16;
-    uint32 iTotalStrings;
-    uint8  *pStr[STRINGS_IN_SECTION_MAX];
+    // TODO: how to know what the string describes: section or symbols
+    //       now suppose that first is section and the second is symbol.
+    uint8 *pStrSections;
+    uint8 *pStrSymbols;
+
+    static const int32 SYMBOLS_MAX = 1<<16;
+    uint32 iTotalSymbols;
+    SymbolTableType *pSymbols[SYMBOLS_MAX];
     
     SrcImage image;
     SparcV8  clSparcV8;
@@ -183,6 +207,8 @@ class ElfFile
     void RunDisassembler();
     
     void CreateImage(SectionHeaderType *);
+    void CheckImageIntegrity();
+    void AttachSymbol(SymbolTableType *);
     
     void SwapBytes(Elf32_Half&);
     void SwapBytes(uint32&);

@@ -19,8 +19,11 @@ class SrcElement
   public:
     uint32 adr;
     uint32 val;
-    bool bIsName;
-    char *pName;
+    uint8 *pDataName;    // 0=no name
+    uint8 *pFuncName;
+    uint8 *pSectionName;
+    uint8 *pFileName;
+    bool  bInit;
 };
 
 class SrcImage
@@ -28,6 +31,6 @@ class SrcImage
   friend class dbg;
   public:
     uint32 entry;
-    int32  iSizeBytes;
+    int32  iSizeWords;
     SrcElement arr[ELF_IMAGE_MAXSIZE];
 };

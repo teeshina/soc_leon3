@@ -22,14 +22,14 @@ void SparcV8::Disassemler(SrcImage *pImage, std::ofstream *pFile)
     instr.u.v  = RomData[i].data;
     entry_adr=0;
 #else
-  for (int32 i=0; i<=(pImage->iSizeBytes>>2); i++)
+  for (int32 i=0; i<=pImage->iSizeWords; i++)
   {
     instr.u.v  = pImage->arr[i].val;
 #endif
     instr.format = INSTR_FORMAT_UNDEF;
   
     DisasInstr(&instr);
-    PrintInstruction(pImage->arr[i].adr, &instr, pFile);
+    PrintInstruction(&pImage->arr[i], &instr, pFile);
   }
 }
 
@@ -99,10 +99,27 @@ void SparcV8::DisasInstr(CInstr *p)
 }
 
 //****************************************************************************
-void SparcV8::PrintInstruction(uint32 adr, CInstr *p, std::ofstream *pFile)
+void SparcV8::PrintInstruction(SrcElement *pSrc, CInstr *p, std::ofstream *pFile)
 {
-  sprintf_s(chString, "%08x %08x   ", adr, p->u.v);
+  if(pSrc->pSectionName)
+  {
+    sprintf_s(chString, "Section: \"%s\"\n", pSrc->pSectionName);
+    *pFile << chString;
+  }
+  if(pSrc->pFileName)
+  {
+    sprintf_s(chString, "%s\n", pSrc->pFileName);
+    *pFile << chString;
+  }
+  if(pSrc->pFuncName)
+  {
+    sprintf_s(chString, "%s\n", pSrc->pFuncName);
+    *pFile << chString;
+  }
+  sprintf_s(chString, "\t%08x %08x   ", pSrc->adr, p->u.v);
   *pFile << chString;
+
+  uint32 adr = pSrc->adr;
 
   uint32 o   = p->index;
   char *cho  = stInstr[o].chText;
@@ -128,70 +145,70 @@ void SparcV8::PrintInstruction(uint32 adr, CInstr *p, std::ofstream *pFile)
 
   uint32 asi = p->u.f3a.asi;
 
-  sprintf_s(chString,"%s !!! undefined\n", cho);
+  sprintf_s(chString,"%s !!! undefined", cho);
   if(o==CALL)
   {
-    sprintf_s(chString, "call  0x%08x\n",int32(adr) + 4*disp30);
+    sprintf_s(chString, "call  0x%08x",int32(adr) + 4*disp30);
   }else if(o==UNIMP)
   {
-    sprintf_s(chString, "unimp\n");
+    sprintf_s(chString, "unimp");
   }else if(o==SETHI)
   {
-    sprintf_s(chString, "%s  %%hi(0x%x), %s\n", cho, (imm22<<10), chReg[rd]);
+    sprintf_s(chString, "%s  %%hi(0x%x), %s", cho, (imm22<<10), chReg[rd]);
   }else if( (o==OR)||(o==ORcc)||(o==XOR)||(o==XORcc) )
   {
-    if(i==0)           sprintf_s(chString, "%s  %s, %s, %s\n", cho, chReg[rs1], chReg[rs2], chReg[rd]);
-    else if(simm13==0) sprintf_s(chString, "%s  %s, %s\n", cho, chReg[rs1], chReg[rd]);
-    else               sprintf_s(chString, "%s  %s, 0x%x, %s\n", cho, chReg[rs1], simm13, chReg[rd]);
+    if(i==0)           sprintf_s(chString, "%s  %s, %s, %s", cho, chReg[rs1], chReg[rs2], chReg[rd]);
+    else if(simm13==0) sprintf_s(chString, "%s  %s, %s", cho, chReg[rs1], chReg[rd]);
+    else               sprintf_s(chString, "%s  %s, 0x%x, %s", cho, chReg[rs1], simm13, chReg[rd]);
   }else if( (o==AND)||(o==ANDN)||(o==ORN)||(o==XNOR)
           ||(o==ANDcc)||(o==ANDNcc)||(o==ORNcc)||(o==XNORcc) )
   {
-    if(i==0)          sprintf_s(chString, "%s  %s, %s, %s\n", cho, chReg[rs1], chReg[rs2], chReg[rd]);
-    else if(simm13<0) sprintf_s(chString, "%s  %s, 0x%x, %s\n", cho, chReg[rs1], simm13, chReg[rd]);
-    else              sprintf_s(chString, "%s  %s, 0x%x, %s\n", cho, chReg[rs1], simm13, chReg[rd]);
+    if(i==0)          sprintf_s(chString, "%s  %s, %s, %s", cho, chReg[rs1], chReg[rs2], chReg[rd]);
+    else if(simm13<0) sprintf_s(chString, "%s  %s, 0x%x, %s", cho, chReg[rs1], simm13, chReg[rd]);
+    else              sprintf_s(chString, "%s  %s, 0x%x, %s", cho, chReg[rs1], simm13, chReg[rd]);
 
   }else if( (o==ADD)||(o==SUB)||(o==ADDX)||(o==UMUL)||(o==SMUL)||(o==SUBX)||(o==UDIV)||(o==SDIV)
           ||(o==ADDcc)||(o==SUBcc)||(o==ADDXcc)||(o==UMULcc)||(o==SMULcc)||(o==SUBXcc)||(o==UDIVcc)||(o==SDIVcc)
           ||(o==TADDcc)||(o==TSUBcc)||(o==TADDccTV)||(o==TSUBccTV)||(o==MULScc) )
   {
     // if rs1==0, GRMON doesn't show rs1.
-    if(i==0)          sprintf_s(chString, "%s  %s, %s, %s\n", cho, chReg[rs1], chReg[rs2], chReg[rd]);
-    else if(simm13<0) sprintf_s(chString, "%s  %s, %d, %s\n", cho, chReg[rs1], simm13, chReg[rd]);
-    else              sprintf_s(chString, "%s  %s, %d, %s\n", cho, chReg[rs1], simm13, chReg[rd]);
+    if(i==0)          sprintf_s(chString, "%s  %s, %s, %s", cho, chReg[rs1], chReg[rs2], chReg[rd]);
+    else if(simm13<0) sprintf_s(chString, "%s  %s, %d, %s", cho, chReg[rs1], simm13, chReg[rd]);
+    else              sprintf_s(chString, "%s  %s, %d, %s", cho, chReg[rs1], simm13, chReg[rd]);
   }else if((o==SLL)||(o==SRL)||(o==SRA))
   {
-    if(i==0) sprintf_s(chString, "%s  %s, %s, %s\n", cho, chReg[rs1], chReg[rs2], chReg[rd]);
-    else     sprintf_s(chString, "%s  %s, %d, %s\n", cho, chReg[rs1], (simm13&0x1f), chReg[rd]);
+    if(i==0) sprintf_s(chString, "%s  %s, %s, %s", cho, chReg[rs1], chReg[rs2], chReg[rd]);
+    else     sprintf_s(chString, "%s  %s, %d, %s", cho, chReg[rs1], (simm13&0x1f), chReg[rd]);
   }else if(o==RDASR)
   {
-    sprintf_s(chString, "mov  %%asr%i, %s\n", rs1, chReg[rd]);
+    sprintf_s(chString, "mov  %%asr%i, %s", rs1, chReg[rd]);
   }else if(o==STBAR)
   {
   //TODO:
   }else if((o==RDY)||(o==RDPSR)||(o==RDWIM)||(o==RDTBR))
   {
-    sprintf_s(chString, "mov  %s, %s\n", cho, chReg[rd]);
+    sprintf_s(chString, "mov  %s, %s", cho, chReg[rd]);
   }else if(o==WRASR)
   {
     if(rs1==0)
     {
-      if(i==0) sprintf_s(chString, "mov  %s, %%asr%i\n", chReg[rs2], rd);
-      else     sprintf_s(chString, "mov  0x%x, %%asr%i\n", simm13, rd);
+      if(i==0) sprintf_s(chString, "mov  %s, %%asr%i", chReg[rs2], rd);
+      else     sprintf_s(chString, "mov  0x%x, %%asr%i", simm13, rd);
     }else
     {
-      if(i==0) sprintf_s(chString, "wr  %s ^ %s, %%asr%i\n", chReg[rs1], chReg[rs2], rd);
-      else     sprintf_s(chString, "wr  %s ^ 0x%x, %%asr%i\n", chReg[rs1], simm13, rd);
+      if(i==0) sprintf_s(chString, "wr  %s ^ %s, %%asr%i", chReg[rs1], chReg[rs2], rd);
+      else     sprintf_s(chString, "wr  %s ^ 0x%x, %%asr%i", chReg[rs1], simm13, rd);
     }
   }else if((o==WRPSR)||(o==WRTBR)||(o==WRWIM)||(o==WRY))
   {
     if(rs1==0)
     {
-      if(i==0) sprintf_s(chString, "mov  %s, %s\n", chReg[rs2], cho);
-      else     sprintf_s(chString, "mov  0x%x, %p\n", simm13, cho);
+      if(i==0) sprintf_s(chString, "mov  %s, %s", chReg[rs2], cho);
+      else     sprintf_s(chString, "mov  0x%x, %p", simm13, cho);
     }else
     {
-      if(i==0) sprintf_s(chString, "wr  %s ^ %s, %s\n", chReg[rs1], chReg[rs2], cho);
-      else     sprintf_s(chString, "wr  %s ^ 0x%x, %s\n", chReg[rs1], simm13, cho);
+      if(i==0) sprintf_s(chString, "wr  %s ^ %s, %s", chReg[rs1], chReg[rs2], cho);
+      else     sprintf_s(chString, "wr  %s ^ 0x%x, %s", chReg[rs1], simm13, cho);
     }
   }else if(o==CPop1)
   {
@@ -201,31 +218,31 @@ void SparcV8::PrintInstruction(uint32 adr, CInstr *p, std::ofstream *pFile)
   //TODO:
   }else if(o==JMPL)
   {
-    if(i==0)          sprintf_s(chString, "jmpl  %s + %s, %s\n", chReg[rs1], chReg[rs2], chReg[rd]);
-    else if(simm13<0) sprintf_s(chString, "jmpl  %s - 0x%x, %s\n", chReg[rs1], -simm13, chReg[rd]);
-    else              sprintf_s(chString, "jmpl  %s + 0x%x, %s\n", chReg[rs1], simm13, chReg[rd]);
+    if(i==0)          sprintf_s(chString, "jmpl  %s + %s, %s", chReg[rs1], chReg[rs2], chReg[rd]);
+    else if(simm13<0) sprintf_s(chString, "jmpl  %s - 0x%x, %s", chReg[rs1], -simm13, chReg[rd]);
+    else              sprintf_s(chString, "jmpl  %s + 0x%x, %s", chReg[rs1], simm13, chReg[rd]);
   }else if((o==RETT)||(o==FLUSH))
   {
-    if(i==0)          sprintf_s(chString,"%s %s + %s\n", cho, chReg[rs1],chReg[rs2]);
-    else if(simm13<0) sprintf_s(chString,"%s %s - %d\n", cho, chReg[rs1],-simm13);
-    else              sprintf_s(chString,"%s %s + %d\n", cho, chReg[rs1],simm13);
+    if(i==0)          sprintf_s(chString,"%s %s + %s", cho, chReg[rs1],chReg[rs2]);
+    else if(simm13<0) sprintf_s(chString,"%s %s - %d", cho, chReg[rs1],-simm13);
+    else              sprintf_s(chString,"%s %s + %d", cho, chReg[rs1],simm13);
   }else if((o==SAVE)||(o==RESTORE))
   {
-    if((i==0)&&(rs1==0)&&(rs2==0)&&(rd==0)) sprintf_s(chString, "%s\n",cho);
-    else if(i==0) sprintf_s(chString, "%s  %s, %s, %s\n", cho, chReg[rs1], chReg[rs2], chReg[rd]);
-    else          sprintf_s(chString, "%s  %s, %d, %s\n", cho, chReg[rs1], simm13, chReg[rd]);
+    if((i==0)&&(rs1==0)&&(rs2==0)&&(rd==0)) sprintf_s(chString, "%s",cho);
+    else if(i==0) sprintf_s(chString, "%s  %s, %s, %s", cho, chReg[rs1], chReg[rs2], chReg[rd]);
+    else          sprintf_s(chString, "%s  %s, %d, %s", cho, chReg[rs1], simm13, chReg[rd]);
   }else if((o==LD)||(o==LDUB)||(o==LDUH)||(o==LDD))
   {
-    if((i==0)&&(rs2==0)) sprintf_s(chString, "%s  [%s], %s\n", cho, chReg[rs1], chReg[rd]);
-    else if(i==0)     sprintf_s(chString, "%s  [%s + %s], %s\n", cho, chReg[rs1], chReg[rs2], chReg[rd]);
-    else if(simm13<0) sprintf_s(chString, "%s  [%s - 0x%x], %s\n", cho, chReg[rs1], -simm13, chReg[rd]);
-    else              sprintf_s(chString, "%s  [%s + 0x%x], %s\n", cho, chReg[rs1], simm13, chReg[rd]);
+    if((i==0)&&(rs2==0)) sprintf_s(chString, "%s  [%s], %s", cho, chReg[rs1], chReg[rd]);
+    else if(i==0)     sprintf_s(chString, "%s  [%s + %s], %s", cho, chReg[rs1], chReg[rs2], chReg[rd]);
+    else if(simm13<0) sprintf_s(chString, "%s  [%s - 0x%x], %s", cho, chReg[rs1], -simm13, chReg[rd]);
+    else              sprintf_s(chString, "%s  [%s + 0x%x], %s", cho, chReg[rs1], simm13, chReg[rd]);
   }else if((o==ST)||(o==STB)||(o==STH)||(o==STD))
   {
-    if((i==0)&&(rs2==0))sprintf_s(chString, "%s  %s, [%s]\n", cho, chReg[rd], chReg[rs1]);
-    else if(i==0)     sprintf_s(chString, "%s  %s, [%s + %s]\n", cho, chReg[rd], chReg[rs1], chReg[rs2]);
-    else if(simm13<0) sprintf_s(chString, "%s  %s, [%s - 0x%x]\n", cho, chReg[rd], chReg[rs1], -simm13);// checked!
-    else              sprintf_s(chString, "%s  %s, [%s + 0x%x]\n", cho, chReg[rd], chReg[rs1], simm13);
+    if((i==0)&&(rs2==0))sprintf_s(chString, "%s  %s, [%s]", cho, chReg[rd], chReg[rs1]);
+    else if(i==0)     sprintf_s(chString, "%s  %s, [%s + %s]", cho, chReg[rd], chReg[rs1], chReg[rs2]);
+    else if(simm13<0) sprintf_s(chString, "%s  %s, [%s - 0x%x]", cho, chReg[rd], chReg[rs1], -simm13);// checked!
+    else              sprintf_s(chString, "%s  %s, [%s + 0x%x]", cho, chReg[rd], chReg[rs1], simm13);
   }else if(o==LDSB)
   {
   //TODO:
@@ -252,8 +269,8 @@ void SparcV8::PrintInstruction(uint32 adr, CInstr *p, std::ofstream *pFile)
   //TODO:
   }else if((o==STA)||(o==STBA)||(o==STHA)||(o==STDA))
   {
-    if((i==0)&&(rs2==0))sprintf_s(chString, "%s  %s, [%s]%i\n", cho, chReg[rd], chReg[rs1],asi);
-    else if(i==0)     sprintf_s(chString, "%s  %s, [%s + %s]%i\n", cho, chReg[rd], chReg[rs1], chReg[rs2],asi);
+    if((i==0)&&(rs2==0))sprintf_s(chString, "%s  %s, [%s]%i", cho, chReg[rd], chReg[rs1],asi);
+    else if(i==0)     sprintf_s(chString, "%s  %s, [%s + %s]%i", cho, chReg[rd], chReg[rs1], chReg[rs2],asi);
   }else if(o==LDSBA)
   {
   //TODO:
@@ -310,53 +327,60 @@ void SparcV8::PrintInstruction(uint32 adr, CInstr *p, std::ofstream *pFile)
   //TODO:
   }else if((o>=BN)&&(o<=BVC))
   {
-    if(p->u.f2b.a) sprintf_s(chString, "%s,a  0x%08x\n",cho , adr + (4*disp22));
-    else           sprintf_s(chString, "%s  0x%08x\n",cho , adr + (4*disp22));
+    if(p->u.f2b.a) sprintf_s(chString, "%s,a  0x%08x",cho , adr + (4*disp22));
+    else           sprintf_s(chString, "%s  0x%08x",cho , adr + (4*disp22));
   }else if((o>=TN)&&(o<=TVC))
   {
-    if(i==0) sprintf_s(chString, "%s  %s + %s\n",cho, chReg[rs1], chReg[rs2]);
-    else     sprintf_s(chString, "%s  0x%x\n",cho , imm7);
+    if(i==0) sprintf_s(chString, "%s  %s + %s",cho, chReg[rs1], chReg[rs2]);
+    else     sprintf_s(chString, "%s  0x%x",cho , imm7);
   }else if(o==CLR)
   {
-    sprintf_s(chString, "clr  %s\n", chReg[rd]);
+    sprintf_s(chString, "clr  %s", chReg[rd]);
   }else if((o==CLRMEM)||(o==CLRMEMB)||(o==CLRMEMH))
   {
-    if((i==0)&&(rs2==0)) sprintf_s(chString, "%s  [%s]\n", cho, chReg[rs1]);
-    else if(i==0)        sprintf_s(chString, "%s  [%s + %s]\n", cho, chReg[rs1], chReg[rs2]);
-    else if(simm13<0)    sprintf_s(chString, "%s  [%s - 0x%x]\n", cho, chReg[rs1], -simm13);
-    else                 sprintf_s(chString, "%s  [%s + 0x%x]\n", cho, chReg[rs1], simm13);
+    if((i==0)&&(rs2==0)) sprintf_s(chString, "%s  [%s]", cho, chReg[rs1]);
+    else if(i==0)        sprintf_s(chString, "%s  [%s + %s]", cho, chReg[rs1], chReg[rs2]);
+    else if(simm13<0)    sprintf_s(chString, "%s  [%s - 0x%x]", cho, chReg[rs1], -simm13);
+    else                 sprintf_s(chString, "%s  [%s + 0x%x]", cho, chReg[rs1], simm13);
   }else if((o==JMP))
   {
-    if(simm13<0)      sprintf_s(chString, "jmp  %s - 0x%x\n", chReg[rs1],-simm13);
-    else if(simm13>0) sprintf_s(chString, "jmp  %s + 0x%x\n", chReg[rs1], simm13);
-    else              sprintf_s(chString, "jmp  %s\n", chReg[rs1]);
+    if(simm13<0)      sprintf_s(chString, "jmp  %s - 0x%x", chReg[rs1],-simm13);
+    else if(simm13>0) sprintf_s(chString, "jmp  %s + 0x%x", chReg[rs1], simm13);
+    else              sprintf_s(chString, "jmp  %s", chReg[rs1]);
   }else if(o==NOP)
   {
-    sprintf_s(chString, "nop\n");
+    sprintf_s(chString, "nop");
   }else if(o==MOV)
   {
-    if(i==0) sprintf_s(chString, "mov  %s, %s\n", chReg[rs2], chReg[rd]);
-    else     sprintf_s(chString, "mov  %i, %s\n", simm13, chReg[rd]);
+    if(i==0) sprintf_s(chString, "mov  %s, %s", chReg[rs2], chReg[rd]);
+    else     sprintf_s(chString, "mov  %i, %s", simm13, chReg[rd]);
   }else if((o==RET)||(o==RETL))
   {
-    sprintf_s(chString, "%s\n",cho);
+    sprintf_s(chString, "%s",cho);
   }else if(o==CMP)
   {
-    if((i==0)&&(rs1==0)) sprintf_s(chString, "%s  %s\n",cho, chReg[rs2]);
-    else if(i==0)        sprintf_s(chString, "%s  %s, %s\n",cho, chReg[rs1], chReg[rs2]);
-    else if(simm13==0) sprintf_s(chString, "%s  %s\n",cho, chReg[rs1]);
-    else               sprintf_s(chString, "%s  %s, %d\n",cho, chReg[rs1], simm13);
+    if((i==0)&&(rs1==0)) sprintf_s(chString, "%s  %s",cho, chReg[rs2]);
+    else if(i==0)        sprintf_s(chString, "%s  %s, %s",cho, chReg[rs1], chReg[rs2]);
+    else if(simm13==0) sprintf_s(chString, "%s  %s",cho, chReg[rs1]);
+    else               sprintf_s(chString, "%s  %s, %d",cho, chReg[rs1], simm13);
   }else if(o==CALLREG)
   {
-    if((i==0)&&(rs2==0)) sprintf_s(chString, "call  %s\n",chReg[rs1]);
-    else if(i==0)        sprintf_s(chString, "call  %s + %s\n",chReg[rs1],chReg[rs2]);
-    else if(simm13<0)    sprintf_s(chString, "call  %s - %d\n",chReg[rs1],-simm13);
-    else                 sprintf_s(chString, "call  %s + %d\n",chReg[rs1],simm13);
+    if((i==0)&&(rs2==0)) sprintf_s(chString, "call  %s",chReg[rs1]);
+    else if(i==0)        sprintf_s(chString, "call  %s + %s",chReg[rs1],chReg[rs2]);
+    else if(simm13<0)    sprintf_s(chString, "call  %s - %d",chReg[rs1],-simm13);
+    else                 sprintf_s(chString, "call  %s + %d",chReg[rs1],simm13);
   }
     
-
   
   *pFile << chString;
+
+  if(pSrc->pDataName)
+  {
+    sprintf_s(chString, "     ; %s", pSrc->pDataName);
+    *pFile << chString;
+  }
+  *pFile <<"\n";
+
 }
 
 //****************************************************************************

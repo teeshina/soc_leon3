@@ -120,7 +120,7 @@ void mmu_acache::Update( uint32 rst,//    : in  std_logic;
 
   //-- generate AHB signals
 #if 1
-  if(iClkCnt>=378)
+  if(iClkCnt>=355)
   bool st = true;
 #endif
   dreq = mcdi.req;
