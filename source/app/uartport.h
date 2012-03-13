@@ -7,6 +7,7 @@ class uart_port
   private:
     SClock clk;
     int32 iClkDivider;
+    int32 iBaudrateClkMax;
     ClockGenerator *pclkGen;
     bool bEmpty;
     bool bCharReady;
@@ -18,7 +19,7 @@ class uart_port
     uint8 uchString[1024];
     uint32 uiSymbCnt;
   public:
-    uart_port();
+    uart_port(uint32 clkscale);
     ~uart_port();
     
     void Update( uint32 inRst,

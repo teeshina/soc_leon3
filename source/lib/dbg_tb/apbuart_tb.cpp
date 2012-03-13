@@ -1,7 +1,7 @@
 //****************************************************************************
 // Property:    GNSS Sensor Limited
 // Author:      Khabarov Sergey
-// License:     GNU2
+// License:     GPL
 // Contact:     sergey.khabarov@gnss-sensor.com
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
@@ -160,7 +160,7 @@ void dbg::apbuart_tb(SystemOnChipIO &io)
     }
   }
   
-  ptst_apbuart->Update(io.inNRst,
+  ptst_apbuart->Update(topLeon3mp.wNRst,
                        io.inClk,
                        in_apbi,
                        ch_apbo,
@@ -182,7 +182,7 @@ void dbg::apbuart_tb(SystemOnChipIO &io)
     ResetPutStr();
   
     // inputs:
-    pStr = PutToStr(pStr, io.inNRst, 1, "inNRst");
+    pStr = PutToStr(pStr, topLeon3mp.wNRst, 1, "inNRst");
     //
     pStr = PutToStr(pStr, pin_apbi->psel,APB_SLAVES_MAX,"in_apbi.psel",true);//[0:15]  : (0 to APB_SLAVES_MAX-1); -- slave select
     pStr = PutToStr(pStr, pin_apbi->penable,1,"in_apbi.penable");// ;                       -- strobe

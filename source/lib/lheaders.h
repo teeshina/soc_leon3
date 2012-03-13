@@ -95,6 +95,7 @@
 #include "leon3_ml605\leon3\tbufmem.h"
 #include "leon3_ml605\leon3\leon3s.h"
 #include "leon3_ml605\leon3\dsu3x.h"
+#include "leon3_ml605\leon3\irqmp.h"
 
 #include "leon3_ml605\gnss\topgnss.h"
 

@@ -96,7 +96,8 @@ begin
     when 16#00005# => romdata <= X"81980000";-- mov %g0, %tbr
     when 16#00006# => romdata <= X"81800000";-- mov %g0, %y0
     when 16#00007# => romdata <= X"01000000";-- nop
-    when 16#00008# => romdata <= X"03000040";-- sethi  %hi(0x10000), %g1
+    --when 16#00008# => romdata <= X"03000040";-- sethi  %hi(0x10000), %g1
+    when 16#00008# => romdata <= X"03002040";-- sethi  %hi(0x810000), %g1
     when 16#00009# => romdata <= X"8210600F";-- or  %g1, 0xf, %g1
     when 16#0000A# => romdata <= X"C2A00040";-- sta %g1, [%g0]2
     when 16#0000B# => romdata <= X"87444000";-- mov %asr17, %g3

@@ -3731,7 +3731,7 @@ bool st = true;
   fe_npc = fe_pc + (1<<CFG_PCLOW);    //-- Address incrementer
 
 #if 1
-  if(iClkCnt>=368)
+  if(iClkCnt>=367)
     bool stop = true;
 #endif
   if (xc_rstn == 0)

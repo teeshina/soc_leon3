@@ -34,6 +34,8 @@ leon3mp::leon3mp()
   pApbControl = new apbctrl(AHB_SLAVE_APBBRIDGE, 0x800, 0xfff);
   
   pclApbUartA = new apbuart(APB_UART_CFG, 0x1, 0xfff); // total address 0x800001xx  = 256 bytes
+  
+  pclIrqControl = new irqmp(APB_IRQ_CONTROL, 0x2, 0xfff);
 }
 
 //****************************************************************************
@@ -47,6 +49,7 @@ leon3mp::~leon3mp()
 #endif
   free(pApbControl);
   free(pclApbUartA);
+  free(pclIrqControl);
 }
 
 //****************************************************************************
@@ -98,7 +101,7 @@ void leon3mp::Update( uint32 inRst,
   // Core and Dunbug support units
   for(int32 i=0; i<CFG_NCPU; i++)
   {
-    irqi.irl = 0;//TODO: add multi-proc "vector". Add irqctrl module.
+    irqi.arr[i].irl = 0;
     
     pclLeon3s[i]->Update(inClk, 
                         wNRst,
@@ -106,8 +109,8 @@ void leon3mp::Update( uint32 inRst,
                         stMst2Ctrl.arr[AHB_MASTER_LEON3+i],
                         stCtrl2Slv,
                         stSlv2Ctrl,
-                        irqi,
-                        irqo,
+                        irqi.arr[i],
+                        irqo.arr[i],
                         dbgi.arr[i],
                         dbgo.arr[i]);
   }
@@ -145,5 +148,8 @@ void leon3mp::Update( uint32 inRst,
   pclApbUartA->Update(wNRst, inClk, apbi, apbo.arr[APB_UART_CFG], uarti, uarto);
   outTX  = uarto.txd;
   outRTS = uarto.rtsn;
+  
+  // IRQ control:
+  pclIrqControl->Update(wNRst, inClk, apbi, apbo.arr[APB_IRQ_CONTROL], irqo, irqi);
 }
 

@@ -30,6 +30,7 @@
 //#define DBG_ahbctrl
 //#define DBG_apbctrl
 //#define DBG_apbuart
+//#define DBG_irqmp
 
 extern char* PutToStr(char *p, uint32 v, int size, char *comment=NULL, bool inv=false);
 extern char* PutToStr(char *p, uint64 v, int size, char *comment=NULL, bool inv=false);
@@ -301,6 +302,7 @@ class dbg
     void ahbram_tb(SystemOnChipIO &io);
     void apbctrl_tb(SystemOnChipIO &io);
     void apbuart_tb(SystemOnChipIO &io);
+    void irqmp_tb(SystemOnChipIO &io);
     void iu3_tb(SystemOnChipIO &io);
     void mmutlbcam_tb(SystemOnChipIO &io);
     void mmutlb_tb(SystemOnChipIO &io);
@@ -558,6 +560,14 @@ class dbg
   uart_out_type ch_uarto;//  : out uart_out_type);
 
   apbuart *ptst_apbuart;
+#endif
+#ifdef DBG_irqmp
+  apb_slv_in_type  in_apbi;//   : in  apb_slv_in_type;
+  apb_slv_out_type ch_apbo;//   : out apb_slv_out_type;
+  irq_out_vector   in_irqi;//   : in  irq_out_vector(0 to ncpu-1);
+  irq_in_vector    ch_irqo;
+  
+  irqmp *ptst_irqmp;
 #endif
 };
 

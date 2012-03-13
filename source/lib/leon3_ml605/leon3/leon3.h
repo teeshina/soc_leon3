@@ -24,6 +24,11 @@ struct l3_irq_in_type
   uint32 hrdrst;//      : std_ulogic;
 };
 
+struct irq_in_vector
+{
+  l3_irq_in_type arr[CFG_NCPU];
+};
+
 struct l3_irq_out_type
 {
   uint32 intack;//  : std_ulogic;
@@ -31,6 +36,11 @@ struct l3_irq_out_type
   uint32 pwd;//         : std_ulogic;
   uint32 fpen;//        : std_ulogic;
   uint32 idle;//        : std_ulogic;
+};
+
+struct irq_out_vector
+{
+  l3_irq_out_type arr[CFG_NCPU];
 };
 
 struct l3_debug_in_type

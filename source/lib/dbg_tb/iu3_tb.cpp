@@ -18,8 +18,8 @@ void dbg::iu3_tb(SystemOnChipIO &io)
   dcache_out_type *pin_dco    = &topLeon3mp.pclLeon3s[0]->pclProc3->dco;//   : in  dcache_out_type;
   iregfile_in_type *pch_rfi   = &topLeon3mp.pclLeon3s[0]->rfi;//   : out iregfile_in_type;
   iregfile_out_type *pin_rfo  = &topLeon3mp.pclLeon3s[0]->rfo;//   : in  iregfile_out_type;
-  l3_irq_in_type *pin_irqi    = &topLeon3mp.irqi;//  : in  l3_irq_in_type;
-  l3_irq_out_type *pch_irqo   = &topLeon3mp.irqo;//  : out l3_irq_out_type;
+  l3_irq_in_type *pin_irqi    = &topLeon3mp.irqi.arr[0];//  : in  l3_irq_in_type;
+  l3_irq_out_type *pch_irqo   = &topLeon3mp.irqo.arr[0];//  : out l3_irq_out_type;
   l3_debug_in_type *pin_dbgi  = &topLeon3mp.dbgi.arr[0];//  : in  l3_debug_in_type;
   l3_debug_out_type *pch_dbgo = &topLeon3mp.dbgo.arr[0];//  : out l3_debug_out_type;
   mul32_in_type *pch_muli     = &topLeon3mp.pclLeon3s[0]->pclProc3->muli;//  : out mul32_in_type;

@@ -31,13 +31,11 @@
 #include "clkgen.h"
 #include "jtagport.h"
 #include "uartport.h"
+#include "settings.h"
 
 #include "elfloader\elfloader.h"
 #include "dbg.h"
 
-extern const double SYS_CLOCK_F;
-extern const double JTAG_CLOCK_F;
-extern const double timescale;
 
 
 

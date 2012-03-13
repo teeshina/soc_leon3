@@ -16,6 +16,8 @@
 
 #define DIG ""
 
+static const int32 PATH_LENGTH_MAX = 1024;
+
 //****************************************************************************
 enum ETestBenchName
 {
@@ -44,13 +46,13 @@ enum ETestBenchName
   TB_ahbram,
   TB_apbctrl,
   TB_apbuart,
+  TB_irqmp,
   TB_finderr,
   TB_soc_leon3,
   
   TB_TOTAL
 };
 
-const char chDirOut[] = "e:\\";
 const char chBenchFile[TB_TOTAL][64]=
 {
   "jtagcom_tb.txt",
@@ -78,14 +80,15 @@ const char chBenchFile[TB_TOTAL][64]=
   "ahbram_tb.txt",
   "apbctrl_tb.txt",
   "apbuart_tb.txt",
+  "irqmp_tb.txt",
   "finderr1_tb.txt",
   "soc_leon3_tb.txt"
 };
 
-
 //****************************************************************************
 struct LibInitData
 {
+  char chDirOut[PATH_LENGTH_MAX];
   uint32 uiBenchEna[TB_TOTAL];
 };
 

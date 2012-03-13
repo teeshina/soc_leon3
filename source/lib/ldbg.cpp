@@ -30,6 +30,9 @@ dbg::dbg()
 #ifdef DBG_apbuart
   ptst_apbuart = new apbuart(APB_UART_CFG,0x1,0xfff); // total address 0x800001xx  = 256 bytes
 #endif
+#ifdef DBG_irqmp
+  ptst_irqmp = new irqmp(APB_IRQ_CONTROL,0x2,0xfff);
+#endif
 }
 
 dbg::~dbg()
@@ -49,6 +52,9 @@ dbg::~dbg()
 #ifdef DBG_apbuart
   free(ptst_apbuart);
 #endif
+#ifdef DBG_irqmp
+  free(ptst_irqmp);
+#endif
 }
 
 //****************************************************************************
@@ -61,7 +67,7 @@ void dbg::Init(LibInitData *p)
   {
     if(PRINT_TESTBENCH_ENABLE==p->uiBenchEna[i])
     {
-      sprintf_s(chName,"%s%s",chDirOut,chBenchFile[i]);
+      sprintf_s(chName,"%s%s",p->chDirOut,chBenchFile[i]);
       posBench[i] = new ofstream(chName,ios::out);
     }
   }
@@ -97,6 +103,8 @@ void dbg::Update(SystemOnChipIO &io)
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_apbctrl]) apbctrl_tb(io);
 
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_apbuart]) apbuart_tb(io);
+  
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_irqmp]) irqmp_tb(io);
 
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mul32]) mul32_tb(io);
 

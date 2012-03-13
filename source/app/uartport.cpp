@@ -7,20 +7,19 @@
 
 #include "headers.h"
 
-// Fclk/(8*(1+rate))=speed  => Fclk/speed/8 - 1
-//
-// baudrate values for SysClk = 66 MHz:
-//    1 = 4125 kBaud
-//    2 = 2750 kBaud
-//    4 = 1650 kBaud
-//   71 = 114583 Baud
-#define UART_BAUDRATE_VAL     4
-#define UART_BAUDRATE_CLKMAX (8*(1+UART_BAUDRATE_VAL))
-
 //****************************************************************************
-uart_port::uart_port()
+uart_port::uart_port(uint32 clkscale)
 {
+  // Fclk/(8*(1+rate))=speed  => Fclk/speed/8 - 1
+  //
+  // baudrate values for SysClk = 66 MHz:
+  //    1 = 4125 kBaud
+  //    2 = 2750 kBaud
+  //    4 = 1650 kBaud
+  //   71 = 114583 Baud
+  iBaudrateClkMax = (8*(1+clkscale));
   iClkDivider = 0;
+  
   bEmpty     = true;
   bRdDataRdy = false;
   uiSymbCnt  = 0;
@@ -56,7 +55,7 @@ void uart_port::Update(uint32 inRst,
   if(inSysClk.eClock_z!=SClock::CLK_POSEDGE) return;
 
   // In IDLE state pass to reset ClkDivider counter.
-  if( (eState!=UART_IDLE) && ((++iClkDivider)<UART_BAUDRATE_CLKMAX) ) return;
+  if( (eState!=UART_IDLE) && ((++iClkDivider)<iBaudrateClkMax) ) return;
   iClkDivider = 0;
 
   outCTS = 0;

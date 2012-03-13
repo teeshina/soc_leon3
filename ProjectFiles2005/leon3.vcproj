@@ -209,6 +209,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\source\app\settings.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\source\app\settings.h"
+				>
+			</File>
+			<File
 				RelativePath="..\source\app\tests.h"
 				>
 			</File>

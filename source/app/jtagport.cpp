@@ -8,9 +8,9 @@
 #include "headers.h"
 
 //****************************************************************************
-jtag_port::jtag_port()
+jtag_port::jtag_port(double hz,double step)
 {
-  pclkTck = new ClockGenerator(JTAG_CLOCK_F,timescale);
+  pclkTck = new ClockGenerator(hz,step);
   eState     = STATE_RESET;
   bEmpty     = true;
   bRdDataRdy = false;

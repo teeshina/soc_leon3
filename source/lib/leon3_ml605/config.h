@@ -26,6 +26,7 @@ const enum
 
 const enum
 {
+  IRQ_IRQ_CONTROL,// irqmp, has to be 0
   IRQ_DSU,
   IRQ_GNSS_ENGINE,
   IRQ_UART_CFG,

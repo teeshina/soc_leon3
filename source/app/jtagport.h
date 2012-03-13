@@ -36,7 +36,7 @@ class jtag_port//TODO: rename it a bit later
     
     ClockGenerator *pclkTck;
   public:
-    jtag_port();
+    jtag_port(double hz,double step);
     ~jtag_port();
   
     void Update(uint32 inRst,

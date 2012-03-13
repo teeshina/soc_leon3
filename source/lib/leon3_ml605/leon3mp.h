@@ -31,8 +31,8 @@ class leon3mp
 #endif
         
     //
-    l3_irq_in_type irqi;//   : in  l3_irq_in_type;
-    l3_irq_out_type irqo;//   : out l3_irq_out_type;
+    irq_in_vector irqi;//   : in  l3_irq_in_type;
+    irq_out_vector irqo;//   : out l3_irq_out_type;
     l3_debug_in_vector dbgi;//   : in  l3_debug_in_type;
     l3_debug_out_vector dbgo;
     leon3s* pclLeon3s[CFG_NCPU];
@@ -48,6 +48,8 @@ class leon3mp
     uart_in_type uarti;//  : in  uart_in_type;
     uart_out_type uarto;//  : out uart_out_type);
     apbuart *pclApbUartA;
+    
+    irqmp *pclIrqControl;
 
     ahbrom *pclAhbRom;
 
@@ -91,6 +93,8 @@ class leon3mp
 #if (CFG_AHBROM_ENA==1)
       pclAhbRom->ClkUpdate();
 #endif
+      pclIrqControl->ClkUpdate();
+      
       rbPllLock.ClkUpdate();
       rReset.ClkUpdate();
     }

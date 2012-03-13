@@ -1,0 +1,53 @@
+//****************************************************************************
+// Property:    GNSS Sensor Limited
+// License:     GPL
+// Contact:     chief@gnss-sensor.com
+// Repository:  git@github.com:teeshina/soc_leon3.git
+//****************************************************************************
+// WARNING:     Don't insert spaces.
+//****************************************************************************
+
+ELF file="..\source\firmware\HelloWorld\target_VIRTEX_ML605\elf\HelloWorld.elf"
+Output path="e:\"
+
+SystemClock Freq.,[Hz]=66000000.0
+Timescale rate=4.000
+Clocks Total=30000
+
+// UART settings (use the same clkscale at FW):
+//   at SysClk=66MHz: 4  = 1 650 000 baud. It is used for fast simulation.
+//                    71 = 114583 baud.
+UART Enable=1
+UART Baud scale=4
+JTAG Enable=0
+JtagClock Freq.,[Hz]=20000000.0
+
+// Enable/disable pattern file generation for the certain VHDL testbench file:
+TB_jtagcom=0
+TB_ahbmaster=0
+TB_ahbjtag=0
+TB_ahbctrl=0
+TB_mmutlbcam=0
+TB_mmutlb=0
+TB_mul32=0
+TB_div32=0
+TB_mmu_icache=0
+TB_iu3=0
+TB_mmu_dcache=0
+TB_mmu_acache=0
+TB_mmutw=0
+TB_mmulrue=0
+TB_mmulru=0
+TB_mmu=0
+TB_mmu_cache=0
+TB_cachemem=0
+TB_regfile_3p=0
+TB_tbufmem=0
+TB_leon3s=0
+TB_dsu3x=0
+TB_ahbram=0
+TB_apbctrl=0
+TB_apbuart=0
+TB_irqmp=0
+TB_finderr=0
+TB_soc_leon3=0
