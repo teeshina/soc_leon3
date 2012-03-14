@@ -5,6 +5,8 @@
 // Contact:     sergey.khabarov@gnss-sensor.com
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
+// WARNING!     This module was verified only for eirq=0
+//****************************************************************************
 
 #include "lheaders.h"
 
@@ -73,7 +75,7 @@ void irqmp::Update( uint32 rst,//    : in  std_ulogic;
 #if (eirq != 0)
     for (int32 i=0; i<=CFG_NCPU-1; i++)
     {
-      temp2.arr[i] = BIT32(r2.Q.ipend) & BIT32(r2.Q.imask,i);
+      temp2.arr[i] = r2.Q.ipend & r2.Q.imask.arr[i];
       ipend2 |= (orv(temp2.arr[i])<<i);
     }
 #endif
@@ -85,19 +87,18 @@ void irqmp::Update( uint32 rst,//    : in  std_ulogic;
     temp.arr[i] &= ~(1<<eirq);
     temp.arr[i] |= ((BIT32(temp.arr[i],eirq) | BIT32(ipend2,i)) << eirq);
 #endif
-    v.irl.arr[i] = prioritize( ((temp.arr[i] & r.Q.ilevel)<<1) );
+    v.irl.arr[i] = prioritize( ((temp.arr[i] & r.Q.ilevel) & MSK32(15,1)) );
     if (v.irl.arr[i] == 0)
     {
 #if (eirq != 0)
       temp.arr[i] &= ~(1<<eirq);
       temp.arr[i] |= ((BIT32(temp.arr[i],eirq) | BIT32(ipend2,i)) << eirq);
 #endif
-      v.irl.arr[i] = prioritize( ((temp.arr[i] & (~r.Q.ilevel&MSK32(15,1))) << 1) );
+      v.irl.arr[i] = prioritize( ((temp.arr[i] & (~r.Q.ilevel))  & MSK32(15,1)) );
     }
   }
 
   //-- register read
-
   prdata = 0;
   switch (BITS32(apbi.paddr,7,6))
   {
@@ -182,7 +183,7 @@ void irqmp::Update( uint32 rst,//    : in  std_ulogic;
 #endif
           break;
           case 0x2: v.iforce.arr[0] = (apbi.pwdata & MSK32(15,1)); break;
-          case 0x3: v.ipend  = r.Q.ipend & (~apbi.pwdata&MSK32(15,1));
+          case 0x3: v.ipend  = r.Q.ipend & ((~apbi.pwdata)&MSK32(15,1));
 #if (eirq != 0)
             v2.ipend = r2.Q.ipend & BITS32(~apbi.pwdata,31,16);
 #endif
@@ -239,7 +240,6 @@ void irqmp::Update( uint32 rst,//    : in  std_ulogic;
   {
     if (i > AHB_IRQ_MAX-1) break;
 
-    v.ipend &= ~(1<<i);
     if (CFG_NCPU == 1)
     {
       v.ipend |= ((BIT32(v.ipend,i) | BIT32(apbi.pirq,i)) << i);
@@ -272,18 +272,17 @@ void irqmp::Update( uint32 rst,//    : in  std_ulogic;
       tmpirq = decode(irqi.arr[i].irl);
       temp.arr[i] = tmpirq & MSK32(15,1);
       v.iforce.arr[i] = v.iforce.arr[i] & (~temp.arr[i] & MSK32(15,1));
-      v.ipend  = v.ipend & ( ~((~r.Q.iforce.arr[i]&MSK32(15,1)) & temp.arr[i]) & MSK32(15,1));
-      if (eirq != 0)
+      v.ipend  = v.ipend & ( (~(((~r.Q.iforce.arr[i])&MSK32(15,1)) & temp.arr[i])) & MSK32(15,1) );
+#if (eirq != 0)
+      if (eirq == irqi.arr[i].irl)
       {
-        if (eirq == irqi.arr[i].irl)
+        v2.irl.arr[i] = (orv(temp2.arr[i])<<4) | prioritize(temp2.arr[i]);
+        if (BIT32(v2.irl.arr[i],4) == 1)
         {
-          v2.irl.arr[i] = (orv(temp2.arr[i])<<4) | prioritize(temp2.arr[i]);
-          if (BIT32(v2.irl.arr[i],4) == 1)
-          {
-           v2.ipend &= ~(1 << (BITS32(v2.irl.arr[i],3,0)));
-          }
+         v2.ipend &= ~(1 << (BITS32(v2.irl.arr[i],3,0)));
         }
       }
+#endif
     }
   }
 

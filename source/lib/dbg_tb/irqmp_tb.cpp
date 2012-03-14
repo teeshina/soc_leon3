@@ -126,6 +126,7 @@ void dbg::irqmp_tb(SystemOnChipIO &io)
     }
 
     // Internal:
+    pStr = PutToStr(pStr, p_irqmp->v.ipend>>1,15,"t_v_ipend");
 
     PrintIndexStr();
 

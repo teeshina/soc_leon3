@@ -163,13 +163,16 @@ package config is
   constant AHB_SLAVE_APBBRIDGE  : integer := AHB_SLAVE_RAM+1;
   constant AHB_SLAVE_TOTAL      : integer := AHB_SLAVE_APBBRIDGE+1;
 
-  constant IRQ_DSU              : integer := 0;
+  constant IRQ_IRQ_CONTROL      : integer := 0;
+  constant IRQ_DSU              : integer := IRQ_IRQ_CONTROL+1;
   constant IRQ_GNSS_ENGINE      : integer := IRQ_DSU+1;
   constant IRQ_UART_1           : integer := IRQ_GNSS_ENGINE+1;
-  constant IRQ_TOTAL            : integer := IRQ_UART_1+1;
+  constant IRQ_TIMER            : integer := IRQ_UART_1+1;
+  constant IRQ_TOTAL            : integer := IRQ_TIMER+1;
 
   constant APB_UART_1           : integer := 0;
   constant APB_IRQ_CONTROL      : integer := APB_UART_1+1;
-  constant APB_TOTAL            : integer := APB_IRQ_CONTROL+1;
+  constant APB_TIMER            : integer := APB_IRQ_CONTROL+1;
+  constant APB_TOTAL            : integer := APB_TIMER+1;
 
 end;
