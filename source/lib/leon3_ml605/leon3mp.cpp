@@ -21,21 +21,17 @@ leon3mp::leon3mp()
     
   pclDsu3x = new dsu3x(AHB_SLAVE_DSU, 0x900, 0xf00);    
   
-#ifdef USE_GNSSLTD_AHBRAM
-  pclAhbRAM = new AhbSlaveMem( AHB_SLAVE_RAM, VENDOR_GAISLER, GAISLER_AHBRAM, 0x400, 0xFFF);
-#else
   pclAhbRAM = new ahbram(AHB_SLAVE_RAM, 0x400, 0xfff);
-#endif
 
-#if (CFG_AHBROM_ENA==1)
   pclAhbRom = new ahbrom(AHB_SLAVE_ROM, 0x000, 0xfff);
-#endif
 
   pApbControl = new apbctrl(AHB_SLAVE_APBBRIDGE, 0x800, 0xfff);
   
   pclApbUartA = new apbuart(APB_UART_CFG, 0x1, 0xfff); // total address 0x800001xx  = 256 bytes
   
-  pclIrqControl = new irqmp(APB_IRQ_CONTROL, 0x2, 0xfff);
+  pclIrqControl = new irqmp(APB_IRQ_CONTROL, 0x2, 0xfff);// total address 0x800002xx  = 256 bytes
+  
+  pclTimer = new gptimer(APB_TIMER, 0x3, 0xfff);// total address 0x800003xx  = 256 bytes
 }
 
 //****************************************************************************
@@ -44,12 +40,11 @@ leon3mp::~leon3mp()
   free(pclAhbRAM);
   for(int32 i=0; i<CFG_NCPU; i++) free(pclLeon3s[i]);
   free(pclDsu3x);
-#if (CFG_AHBROM_ENA==1)
   free(pclAhbRom);
-#endif
   free(pApbControl);
   free(pclApbUartA);
   free(pclIrqControl);
+  free(pclTimer);
 }
 
 //****************************************************************************
@@ -70,7 +65,7 @@ void leon3mp::Update( uint32 inRst,
 {
 
   // reset logic:
-  wSysReset    = inRst;// TODO: change it to positive push button nad add PllLocked
+  wSysReset    = inRst;
   rbPllLock.CLK = inClk;
   if(wSysReset) rbPllLock.D = 0;
   else          rbPllLock.D = BITS32( ((rbPllLock.Q<<1)|1), 4, 0);
@@ -101,8 +96,6 @@ void leon3mp::Update( uint32 inRst,
   // Core and Dunbug support units
   for(int32 i=0; i<CFG_NCPU; i++)
   {
-    irqi.arr[i].irl = 0;
-    
     pclLeon3s[i]->Update(inClk, 
                         wNRst,
                         stCtrl2Mst,
@@ -129,10 +122,8 @@ void leon3mp::Update( uint32 inRst,
                    dsuo,
                    1);
 
-#if (CFG_AHBROM_ENA==1)
   // Internal RAM:
   pclAhbRom->Update(wNRst, inClk, stCtrl2Slv, stSlv2Ctrl.arr[AHB_SLAVE_ROM]);
-#endif
 
   // Internal RAM:
   pclAhbRAM->Update( wNRst, inClk, stCtrl2Slv, stSlv2Ctrl.arr[AHB_SLAVE_RAM] );
@@ -151,5 +142,11 @@ void leon3mp::Update( uint32 inRst,
   
   // IRQ control:
   pclIrqControl->Update(wNRst, inClk, apbi, apbo.arr[APB_IRQ_CONTROL], irqo, irqi);
+
+  // Timer Unit
+  gpti.dhalt  = dsuo.tstop;
+  gpti.extclk = 0;
+  pclTimer->Update(wNRst, inClk, apbi, apbo.arr[APB_TIMER], gpti, gpto);
+
 }
 

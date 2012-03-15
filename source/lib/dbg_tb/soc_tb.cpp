@@ -26,6 +26,7 @@ void dbg::soc_leon3_tb(SystemOnChipIO &io)
     uint32 hrdata=0;
     uint32 iTck = ((pStr, io.jtag.TCK.eClock==SClock::CLK_POSEDGE)||(pStr, io.jtag.TCK.eClock==SClock::CLK_POSITIVE)) ? 1 : 0;
     iu3 *piu3 = &topLeon3mp.pclLeon3s[0]->pclProc3->clIU3;
+    uint32 wClkBus = ((io.inClk.eClock==SClock::CLK_POSEDGE)||(io.inClk.eClock==SClock::CLK_POSITIVE)) ? 1: 0;
     
     pStr = PutToStr(pStr, io.inNRst, 1, "inNRst");
     pStr = PutToStr(pStr, io.jtag.nTRST,1,"in_trst"); // in: Test Reset
@@ -33,15 +34,67 @@ void dbg::soc_leon3_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, io.jtag.TMS,1,"in_tms");   // in: Test Mode State
     pStr = PutToStr(pStr, io.jtag.TDI,1,"in_tdi");   // in: Test Data Input
     pStr = PutToStr(pStr, io.jtag.TDO,1,"ch_tdo");   // out: Test Data Output
+    pStr = PutToStr(pStr, io.uart1.CTS,1,"in_CTS");
+    pStr = PutToStr(pStr, io.uart1.RD,1,"in_RX");
+    pStr = PutToStr(pStr, io.uart1.RTS,1,"ch_RTS");
+    pStr = PutToStr(pStr, io.uart1.TD,1,"ch_TX");
+    pStr = PutToStr(pStr, uint32(0),8,"unsigned:in_DIP");
+    pStr = PutToStr(pStr, uint32(0),8,"unsigned:ch_LED");
+    pStr = PutToStr(pStr, wClkBus, 1, "unsigned:ch_ClkBus");
+    pStr = PutToStr(pStr, topLeon3mp.pclAhbRAM->ramaddr,CFG_SRAM_ADRBITS,"ch_ramaddr");
+    pStr = PutToStr(pStr, topLeon3mp.pclAhbRAM->hwdata,AHBDW,"ch_hwdata");
+    pStr = PutToStr(pStr, topLeon3mp.pclAhbRAM->ramdata,AHBDW,"in_ramdata");
+    uint32 ramsel = (topLeon3mp.pclAhbRAM->v.hsel | topLeon3mp.pclAhbRAM->r.Q.hwrite) ? 0xf : 0;
+    pStr = PutToStr(pStr, ramsel,AHBDW/8,"ch_ramsel");
+    pStr = PutToStr(pStr, topLeon3mp.pclAhbRAM->write,AHBDW/8,"ch_write");
 
+    // AHB master interface:
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Mst.hgrant,16,"t_msti.hgrant",true);//[0:15]  : (0 to AHB_MASTERS_MAX-1);     -- bus grant
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Mst.hready,1,"t_msti.hready");//  ;                           -- transfer done
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Mst.hresp,2,"t_msti.hresp");// : (1 downto 0);   -- response type
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Mst.hrdata,32,"t_msti.hrdata");//[31:0]  : (AHBDW-1 downto 0);   -- read data bus
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Mst.hcache,1,"t_msti.hcache");//                             -- cacheable
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Mst.hirq,32,"t_msti.hirq");//    : (AHB_IRQ_MAX-1 downto 0); -- interrupt result bus
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Mst.testen,1,"t_msti.testen");//                             -- scan test enable
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Mst.testrst,1,"t_msti.testrst");//                            -- scan test reset
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Mst.scanen,1,"t_msti.scanen");//                             -- scan enable
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Mst.testoen,1,"t_msti.testoen");//                              -- test output enable 
 
-    pStr = PutToStr(pStr, topLeon3mp.dbgo.arr[0].error, 1, "ch_dbgo(0).error");
-    pStr = PutToStr(pStr, piu3->v.x.nerror, 1, "t_v_x_nerror");
-    pStr = PutToStr(pStr, piu3->rp.Q.error, 1, "t_rp_error");
-    pStr = PutToStr(pStr, piu3->rbR.Q.a.ctrl.inst, 32, "t_a_ctrl_inst");
-    pStr = PutToStr(pStr, piu3->dummy, 1, "t_dummy");
-    pStr = PutToStr(pStr, piu3->rbR.Q.f.pc>>2, 30, "t_pc");
-    pStr = PutToStr(pStr, piu3->ir.Q.addr>>2, 30, "t_npc");
+    // AHB slave interface:
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Slv.hsel,AHB_SLAVES_MAX,"t_slvi.hsel",true);//  : (0 to AHB_SLAVES_MAX-1);     -- slave select
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Slv.haddr,32,"t_slvi.haddr");// : (31 downto 0);  -- address bus (byte)
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Slv.hwrite,1,"t_slvi.hwrite");//  ;                           -- read/write
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Slv.htrans,2,"t_slvi.htrans");//  : (1 downto 0);   -- transfer type
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Slv.hsize,3,"t_slvi.hsize");// : (2 downto 0);   -- transfer size
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Slv.hburst,3,"t_slvi.hburst");//  : (2 downto 0);   -- burst type
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Slv.hwdata,CFG_AHBDW,"t_slvi.hwdata");//  : (AHBDW-1 downto 0);   -- write data bus
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Slv.hprot,4,"t_slvi.hprot");// : (3 downto 0);   -- protection control
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Slv.hready,1,"t_slvi.hready");//  ;                -- transfer done
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Slv.hmaster,4,"t_slvi.hmaster");// : (3 downto 0);  -- current master
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Slv.hmastlock,1,"t_slvi.hmastlock");// ;              -- locked access
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Slv.hmbsel,AHB_MEM_ID_WIDTH,"t_slvi.hmbsel",true);//  : (0 to AHB_MEM_ID_WIDTH-1); -- memory bank select
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Slv.hcache,1,"t_slvi.hcache");//  ;                -- cacheable
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Slv.hirq,AHB_IRQ_MAX,"t_slvi.hirq");//  : (AHB_IRQ_MAX-1 downto 0); -- interrupt result bus
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Slv.testen,1,"t_slvi.testen");//                        -- scan test enable
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Slv.testrst,1,"t_slvi.testrst");//                       -- scan test reset
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Slv.scanen,1,"t_slvi.scanen");//                        -- scan enable
+    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Slv.testoen,1,"t_slvi.testoen");;//                       -- test output enable 
+
+    // APB interface:
+    pStr = PutToStr(pStr, topLeon3mp.apbi.psel,APB_SLAVES_MAX,"t_apbi.psel",true);//[0:15]  : (0 to APB_SLAVES_MAX-1); -- slave select
+    pStr = PutToStr(pStr, topLeon3mp.apbi.penable,1,"t_apbi.penable");// ;                       -- strobe
+    pStr = PutToStr(pStr, topLeon3mp.apbi.paddr,32,"t_apbi.paddr");//[31:0] : (31 downto 0);  -- address bus (byte)
+    pStr = PutToStr(pStr, topLeon3mp.apbi.pwrite,1,"t_apbi.pwrite");//  ;                       -- write
+    pStr = PutToStr(pStr, topLeon3mp.apbi.pwdata,32,"t_apbi.pwdata");//[31:0]  : (31 downto 0);  -- write data bus
+    pStr = PutToStr(pStr, topLeon3mp.apbi.pirq,AHB_IRQ_MAX,"t_apbi.pirq");//[31:0]  : (AHB_IRQ_MAX-1 downto 0); -- interrupt result bus
+    pStr = PutToStr(pStr, topLeon3mp.apbi.testen,1,"t_apbi.testen");//                          -- scan test enable
+    pStr = PutToStr(pStr, topLeon3mp.apbi.testrst,1,"t_apbi.testrst");//                         -- scan test reset
+    pStr = PutToStr(pStr, topLeon3mp.apbi.scanen,1,"t_apbi.scanen");//                          -- scan enable
+    pStr = PutToStr(pStr, topLeon3mp.apbi.testoen,1,"t_apbi.testoen");//                         -- test output enable
+
+    // IU3 regisrers:
+    pStr = PutToStr(pStr, piu3->rbR.Q.f.pc, 32, "t_pc");
+    pStr = PutToStr(pStr, piu3->ir.Q.addr, 32, "t_npc");
 
     hrdata = (15<<28) | (3<<24) | //(IMPL<<28) | (VER<<24) |
           (piu3->rbR.Q.w.s.icc<<20) | (piu3->rbR.Q.w.s.ec<<13) | (piu3->rbR.Q.w.s.ef<<12) | (piu3->rbR.Q.w.s.pil<<8) |
@@ -52,6 +105,7 @@ void dbg::soc_leon3_tb(SystemOnChipIO &io)
     hrdata = (piu3->rbR.Q.w.s.tba<<12) | (piu3->rbR.Q.w.s.tt<<4);
     pStr = PutToStr(pStr, hrdata, 32, "t_tbr");
 
+    // DSU registers:
     hrdata=0;    
     hrdata |= topLeon3mp.pclDsu3x->r.Q.te[0];
     hrdata |= (topLeon3mp.pclDsu3x->r.Q.be[0]<<1);
@@ -67,15 +121,10 @@ void dbg::soc_leon3_tb(SystemOnChipIO &io)
     hrdata |= (topLeon3mp.dbgo.arr[0].pwd<<11);
     pStr = PutToStr(pStr, hrdata, 12, "dsu_status");
 
-    pStr = PutToStr(pStr, topLeon3mp.pclLeon3s[0]->pclProc3->ico.data.arr[0], 32, "t_ico0_data");
-    pStr = PutToStr(pStr, topLeon3mp.pclLeon3s[0]->pclProc3->pclCacheMMU->mcio.data,32,"t_icramo_data");
-    pStr = PutToStr(pStr, topLeon3mp.stCtrl2Mst.hrdata, 32, "t_hrdata");
-    pStr = PutToStr(pStr, topLeon3mp.stMst2Ctrl.arr[AHB_MASTER_JTAG].haddr, 32, "jtag_haddr");
-
-    pStr = PutToStr(pStr, topLeon3mp.clAhbMasterJtag.clJTagPad.rResetLogic.Q, 1, "tResetLogic");
-    pStr = PutToStr(pStr, topLeon3mp.clAhbMasterJtag.clJTagPad.rRunTestIdle.Q, 1, "tRunTestIdle");
-
+    
+    // Internal IU3 registers pack:
     pStr = PrintAllRegIU(pStr, &piu3->rbR.Q);
+
 
     PrintIndexStr();
     
@@ -90,7 +139,7 @@ char *dbg::PrintAllRegIU(char *pStr, registers *pr)
     pStr = PutToStr(pStr, pr->d.inst.arr[0],32,"t_r.d.inst(0)");
     pStr = PutToStr(pStr, pr->d.inst.arr[1],32,"t_r.d.inst(1)");
     pStr = PutToStr(pStr, pr->d.cwp,NWINLOG2,"t_r.d.cwp");
-    pStr = PutToStr(pStr, pr->d.set,ISETMSB+1,"t_r.d.set");
+    pStr = PutToStr(pStr, pr->d.set,ISETMSB+1,"vector:t_r.d.set");
     pStr = PutToStr(pStr, pr->d.mexc,1,"t_r.d.mexc");
     pStr = PutToStr(pStr, pr->d.cnt,2,"t_r.d.cnt");
     pStr = PutToStr(pStr, pr->d.pv,1,"t_r.d.pv");
@@ -229,7 +278,7 @@ char *dbg::PrintAllRegIU(char *pStr, registers *pr)
     pStr = PutToStr(pStr, pr->x.annul_all,1,"t_r.x.annul_all");
     pStr = PutToStr(pStr, pr->x.data.arr[0],32,"t_r.x.data(0)");
     pStr = PutToStr(pStr, pr->x.data.arr[1],32,"t_r.x.data(1)");
-    pStr = PutToStr(pStr, pr->x.set,DSETMSB+1,"t_r.x.set");
+    pStr = PutToStr(pStr, pr->x.set,DSETMSB+1,"vector:t_r.x.set");
     pStr = PutToStr(pStr, pr->x.mexc,1,"t_r.x.mexc");
     pStr = PutToStr(pStr, pr->x.dci.Signed,1,"t_r.x.dci.signed");
     pStr = PutToStr(pStr, pr->x.dci.enaddr,1,"t_r.x.dci.enaddr");
@@ -249,6 +298,8 @@ char *dbg::PrintAllRegIU(char *pStr, registers *pr)
     pStr = PutToStr(pStr, pr->x.nerror,1,"t_r.x.nerror");
 
     pStr = PutToStr(pStr, pr->f.pc>>CFG_PCLOW,32-CFG_PCLOW,"t_r.f.pc");
+    pStr = PutToStr(pStr, pr->f.branch,1,"t_r.f.branch");
+    
     pStr = PutToStr(pStr, pr->w.s.cwp,NWINLOG2,"t_r.w.s.cwp");//    : cwptype;                             -- current window pointer
     pStr = PutToStr(pStr, pr->w.s.icc,4,"t_r.w.s.icc");//    : std_logic_vector(3 downto 0);	  -- integer condition codes
     pStr = PutToStr(pStr, pr->w.s.tt,8,"t_r.w.s.tt");//     : std_logic_vector(7 downto 0);	  -- trap type

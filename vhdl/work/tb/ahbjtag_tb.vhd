@@ -137,7 +137,7 @@ begin
   inJtagUpdate <= wbSignals(10 downto 9);
   inJtagRESET <= wbSignals(12 downto 11); 
   
-  inAhbMst.hgrant(CFG_NCPU+CFG_AHB_UART) <= wbSignals(13); 
+  inAhbMst.hgrant(AHB_MASTER_JTAG) <= wbSignals(13); 
   inAhbMst.hready <= wbSignals(14); 
   inAhbMst.hresp(0) <= wbSignals(15); 
   inAhbMst.hresp(1) <= wbSignals(16);

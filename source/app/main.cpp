@@ -4,6 +4,12 @@
 // Contact:     chief@gnss-sensor.com
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
+//
+// GPTIMER VHDL behavior.
+// Question 1:  vtimer.arr[i].value should be reset during (!rst), otherwise
+//              signal "z" always =0, cause value="XXXXXXXX" not equals to zero.
+//              Such behavior doesn't match to real situation.
+//
 
 #include "headers.h"
 

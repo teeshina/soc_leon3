@@ -298,6 +298,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\source\lib\leon3_ml605\amba\gptimer.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\source\lib\leon3_ml605\amba\gptimer.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\source\lib\leon3_ml605\uart\uart.h"
 						>
 					</File>
@@ -640,6 +648,10 @@
 				</File>
 				<File
 					RelativePath="..\..\source\lib\dbg_tb\finderr_tb.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\source\lib\dbg_tb\gptimer_tb.cpp"
 					>
 				</File>
 				<File

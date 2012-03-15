@@ -58,6 +58,7 @@
 #include "leon3_ml605\amba\ahbctrl.h"
 #include "leon3_ml605\amba\ahbctrl_v.h"
 #include "leon3_ml605\amba\apbctrl.h"
+#include "leon3_ml605\amba\gptimer.h"
 #include "leon3_ml605\jtag\jtagpad.h"
 #include "leon3_ml605\jtag\jtagcom_v.h"
 #include "leon3_ml605\jtag\ahbjtag.h"
@@ -96,6 +97,7 @@
 #include "leon3_ml605\leon3\leon3s.h"
 #include "leon3_ml605\leon3\dsu3x.h"
 #include "leon3_ml605\leon3\irqmp.h"
+
 
 #include "leon3_ml605\gnss\topgnss.h"
 

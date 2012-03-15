@@ -53,6 +53,32 @@ void PutWidth(int32 size, char *comment)
     }
     iSeekCnt++;
   }
+  
+  bool bUnsigned=true;
+  char chTemplate2[]="unsigned:";
+  iSeekCnt=0;
+  while((comment[iSeekCnt]!=0)&&bUnsigned&&(iSeekCnt<9))
+  {
+    if(chTemplate2[iSeekCnt]!=comment[iSeekCnt])
+    {
+      bUnsigned=false;
+      break;
+    }
+    iSeekCnt++;
+  }
+
+  bool bVector=true;
+  char chTemplate3[]="vector:";
+  iSeekCnt=0;
+  while((comment[iSeekCnt]!=0)&&bVector&&(iSeekCnt<7))
+  {
+    if(chTemplate3[iSeekCnt]!=comment[iSeekCnt])
+    {
+      bVector=false;
+      break;
+    }
+    iSeekCnt++;
+  }
 
 
   int32 tmp;
@@ -60,6 +86,14 @@ void PutWidth(int32 size, char *comment)
   {
     if(size==1) tmp = sprintf_s(pchIndS,64,"  %s <= conv_integer(S"DIG"(%i));\n", &comment[13], iIndS);
     else        tmp = sprintf_s(pchIndS,64,"  %s <= conv_integer(S"DIG"(%i downto %i));\n", &comment[13], iIndS+size-1, iIndS);
+  }else if(bUnsigned)
+  {
+    if(size==1) tmp = sprintf_s(pchIndS,64,"  %s <= U"DIG"(%i);\n", &comment[9], iIndS);
+    else        tmp = sprintf_s(pchIndS,64,"  %s <= U"DIG"(%i downto %i);\n", &comment[9], iIndS+size-1, iIndS);
+  }else if(bVector)
+  {
+    if(size==1) tmp = sprintf_s(pchIndS,64,"  %s <= S"DIG"(%i downto %i);\n", &comment[7], iIndS, iIndS);
+    else        tmp = sprintf_s(pchIndS,64,"  %s <= S"DIG"(%i downto %i);\n", &comment[7], iIndS+size-1, iIndS);
   }else
   {
     if(size==1) tmp = sprintf_s(pchIndS,64,"  %s <= S"DIG"(%i);\n", comment, iIndS);

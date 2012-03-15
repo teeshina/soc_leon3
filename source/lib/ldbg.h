@@ -31,6 +31,7 @@
 //#define DBG_apbctrl
 //#define DBG_apbuart
 //#define DBG_irqmp
+//#define DBG_gptimer
 
 extern char* PutToStr(char *p, uint32 v, int size, char *comment=NULL, bool inv=false);
 extern char* PutToStr(char *p, uint64 v, int size, char *comment=NULL, bool inv=false);
@@ -303,6 +304,7 @@ class dbg
     void apbctrl_tb(SystemOnChipIO &io);
     void apbuart_tb(SystemOnChipIO &io);
     void irqmp_tb(SystemOnChipIO &io);
+    void gptimer_tb(SystemOnChipIO &io);
     void iu3_tb(SystemOnChipIO &io);
     void mmutlbcam_tb(SystemOnChipIO &io);
     void mmutlb_tb(SystemOnChipIO &io);
@@ -568,6 +570,14 @@ class dbg
   irq_in_vector    ch_irqo;
   
   irqmp *ptst_irqmp;
+#endif
+#ifdef DBG_gptimer
+  apb_slv_in_type  in_apbi;//   : in  apb_slv_in_type;
+  apb_slv_out_type ch_apbo;//   : out apb_slv_out_type;
+  gptimer_in_type  in_gpti;//   : in  gptimer_in_type;
+  gptimer_out_type ch_gpto;//   : out gptimer_out_type
+  
+  gptimer *ptst_gptimer;
 #endif
 };
 

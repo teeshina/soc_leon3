@@ -114,6 +114,28 @@ package misc is
     ahbso  : out ahb_slv_out_type);
   end component;
 
+  component ahbram_p
+  generic (
+    hindex  : integer := 0;
+    haddr   : integer := 0;
+    hmask   : integer := 16#fff#;
+    tech    : integer := DEFMEMTECH;
+    kbytes  : integer := 1;
+    pipe    : integer := 0;
+    abits   : integer := 8);
+  port (
+    rst    : in  std_ulogic;
+    clk    : in  std_ulogic;
+    ahbsi  : in  ahb_slv_in_type;
+    ahbso  : out ahb_slv_out_type;
+    ramaddr : out std_logic_vector(abits-1 downto 0);
+    hwdata  : out std_logic_vector(AHBDW-1 downto 0);
+    ramdata : in std_logic_vector(AHBDW-1 downto 0);
+    ramsel  : out std_logic_vector(AHBDW/8-1 downto 0);
+    write   : out std_logic_vector(AHBDW/8-1 downto 0) );
+  end component;
+
+
   type ahbram_out_type is record
     ce : std_ulogic;
   end record;

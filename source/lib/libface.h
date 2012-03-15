@@ -47,6 +47,7 @@ enum ETestBenchName
   TB_apbctrl,
   TB_apbuart,
   TB_irqmp,
+  TB_gptimer,
   TB_finderr,
   TB_soc_leon3,
   
@@ -81,6 +82,7 @@ const char chBenchFile[TB_TOTAL][64]=
   "apbctrl_tb.txt",
   "apbuart_tb.txt",
   "irqmp_tb.txt",
+  "gptimer_tb.txt",
   "finderr1_tb.txt",
   "soc_leon3_tb.txt"
 };

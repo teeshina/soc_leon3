@@ -33,6 +33,9 @@ dbg::dbg()
 #ifdef DBG_irqmp
   ptst_irqmp = new irqmp(APB_IRQ_CONTROL,0x2,0xfff);
 #endif
+#ifdef DBG_gptimer
+  ptst_gptimer = new gptimer(APB_TIMER, 0x3, 0xfff);
+#endif
 }
 
 dbg::~dbg()
@@ -54,6 +57,9 @@ dbg::~dbg()
 #endif
 #ifdef DBG_irqmp
   free(ptst_irqmp);
+#endif
+#ifdef DBG_gptimer
+  free(ptst_gptimer);
 #endif
 }
 
@@ -105,6 +111,8 @@ void dbg::Update(SystemOnChipIO &io)
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_apbuart]) apbuart_tb(io);
   
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_irqmp]) irqmp_tb(io);
+  
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_gptimer]) gptimer_tb(io);
 
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_mul32]) mul32_tb(io);
 

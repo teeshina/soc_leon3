@@ -2,7 +2,6 @@
 
 //#define USE_GNSSLTD_MODULES
 #ifdef USE_GNSSLTD_MODULES
-  #define USE_GNSSLTD_AHBRAM
   #define USE_GNSSLTD_AHBCTRL
 #endif
 
@@ -18,11 +17,7 @@ class leon3mp
     ahb_slv_out_vector  stSlv2Ctrl;
 
     AhbMasterJtag clAhbMasterJtag;
-#ifdef USE_GNSSLTD_AHBRAM
-    AhbSlaveMem   *pclAhbRAM;
-#else
     ahbram *pclAhbRAM;    
-#endif
 
 #ifdef USE_GNSSLTD_AHBCTRL
     AhbControl clAhbControl;
@@ -50,6 +45,10 @@ class leon3mp
     apbuart *pclApbUartA;
     
     irqmp *pclIrqControl;
+
+    gptimer_in_type  gpti;
+    gptimer_out_type gpto;
+    gptimer *pclTimer;
 
     ahbrom *pclAhbRom;
 
@@ -90,10 +89,9 @@ class leon3mp
       pclDsu3x->ClkUpdate();
       pApbControl->ClkUpdate();
       pclApbUartA->ClkUpdate();
-#if (CFG_AHBROM_ENA==1)
       pclAhbRom->ClkUpdate();
-#endif
       pclIrqControl->ClkUpdate();
+      pclTimer->ClkUpdate();
       
       rbPllLock.ClkUpdate();
       rReset.ClkUpdate();

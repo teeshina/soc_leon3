@@ -20,15 +20,15 @@ use work.util_tb.all;
 
 
 
-entity soc_leon3_tb is
+entity soc_noram_tb is
 
   constant CLK_HPERIOD : time := 10 ps;
-  constant STRING_SIZE : integer := 1377; -- string size = index of the last element
+  constant STRING_SIZE : integer := 1671; -- string size = index of the last element
 
-end soc_leon3_tb;
-architecture behavior of soc_leon3_tb is
+end soc_noram_tb;
+architecture behavior of soc_noram_tb is
   
-  component soc_leon3 port 
+  component soc_noram port 
   ( 
     inRst       : in std_logic; -- button "Center"
     inDsuBreak  : in std_logic; -- button "North
@@ -44,7 +44,13 @@ architecture behavior of soc_leon3_tb is
     outRTS  : out std_logic;
     outTX   : out std_logic;
     inDIP   : in std_ulogic_vector(7 downto 0);
-    outLED  : out std_ulogic_vector(7 downto 0)
+    outLED  : out std_ulogic_vector(7 downto 0);
+    outClkBus : out std_logic;
+    ramaddr : out std_logic_vector(CFG_SRAM_ADRBITS-1 downto 0);
+    hwdata  : out std_logic_vector(AHBDW-1 downto 0);
+    ramdata : in std_logic_vector(AHBDW-1 downto 0);
+    ramsel  : out std_logic_vector(AHBDW/8-1 downto 0);
+    write   : out std_logic_vector(AHBDW/8-1 downto 0)
   );
   end component;
 
@@ -60,27 +66,37 @@ architecture behavior of soc_leon3_tb is
   signal ch_tdo  : std_logic;
   signal tdo     : std_logic;
   -- UART
+  signal in_CTS       : std_logic;
+  signal in_RX        : std_logic;
+  signal ch_RTS       : std_logic;
   signal RTS          : std_logic;
+  signal ch_TX        : std_logic;
   signal TX           : std_logic;
   -- others:
+  signal in_DIP       : std_ulogic_vector(7 downto 0);
+  signal ch_LED       : std_ulogic_vector(7 downto 0);
   signal LED          : std_ulogic_vector(7 downto 0);
+  -- SRAM
+  signal ch_ClkBus  : std_logic;
+  signal ClkBus  : std_logic;
+  signal ch_ramaddr : std_logic_vector(CFG_SRAM_ADRBITS-1 downto 0);
+  signal ramaddr : std_logic_vector(CFG_SRAM_ADRBITS-1 downto 0);
+  signal ch_hwdata  : std_logic_vector(AHBDW-1 downto 0);
+  signal hwdata  : std_logic_vector(AHBDW-1 downto 0);
+  signal in_ramdata : std_logic_vector(AHBDW-1 downto 0);
+  signal ch_ramsel  : std_logic_vector(AHBDW/8-1 downto 0);
+  signal ramsel  : std_logic_vector(AHBDW/8-1 downto 0);
+  signal ch_write   : std_logic_vector(AHBDW/8-1 downto 0);
+  signal write   : std_logic_vector(AHBDW/8-1 downto 0);
 
-  signal ch_dbgo : l3_debug_out_vector(0 to CFG_NCPU-1);
-  signal t_v_x_nerror  : std_logic;
-  signal t_rp_error  : std_logic;
-  signal t_a_ctrl_inst  : std_logic_vector(31 downto 0);
-  signal t_dummy  : std_logic;
-  signal t_pc  : std_logic_vector(31 downto 2);
-  signal t_npc  : std_logic_vector(31 downto 2);
+  signal t_msti : ahb_mst_in_type;
+  signal t_slvi : ahb_slv_in_type;
+  signal t_apbi : apb_slv_in_type;
+  signal t_pc  : std_logic_vector(31 downto 0);
+  signal t_npc  : std_logic_vector(31 downto 0);
   signal t_psr  : std_logic_vector(31 downto 0);
   signal t_tbr  : std_logic_vector(31 downto 0);
   signal dsu_status  : std_logic_vector(11 downto 0);
-  signal t_ico0_data  : std_logic_vector(31 downto 0);
-  signal t_icramo_data  : std_logic_vector(31 downto 0);
-  signal t_hrdata  : std_logic_vector(31 downto 0);
-  signal jtag_haddr  : std_logic_vector(31 downto 0);
-  signal tResetLogic  : std_logic;
-  signal tRunTestIdle  : std_logic;
   
   signal t_r : registers;
 
@@ -131,210 +147,248 @@ begin
   in_tms <= S(3);
   in_tdi <= S(4);
   ch_tdo <= S(5);
-
-  ch_dbgo(0).error <= S(6);
-  t_v_x_nerror <= S(7);
-  t_rp_error <= S(8);
-  t_a_ctrl_inst <= S(40 downto 9);
-  t_dummy <= S(41);
-  t_pc <= S(71 downto 42);
-  t_npc <= S(101 downto 72);
-  t_psr <= S(133 downto 102);
-  t_tbr <= S(165 downto 134);
-  dsu_status <= S(177 downto 166);
-  t_ico0_data <= S(209 downto 178);
-  t_icramo_data <= S(241 downto 210);
-  t_hrdata <= S(273 downto 242);
-  jtag_haddr <= S(305 downto 274);
-  tResetLogic <= S(306);
-  tRunTestIdle <= S(307);
-
-  t_r.d.pc <= S(337 downto 308);
-  t_r.d.inst(0) <= S(369 downto 338);
-  t_r.d.inst(1) <= S(401 downto 370);
-  t_r.d.cwp <= S(404 downto 402);
-  t_r.d.set <= S(405 downto 405);
-  t_r.d.mexc <= S(406);
-  t_r.d.cnt <= S(408 downto 407);
-  t_r.d.pv <= S(409);
-  t_r.d.annul <= S(410);
-  t_r.d.inull <= S(411);
-  t_r.d.step <= S(412);
-  t_r.d.divrdy <= S(413);
-  t_r.a.ctrl.pc <= S(443 downto 414);
-  t_r.a.ctrl.inst <= S(475 downto 444);
-  t_r.a.ctrl.cnt <= S(477 downto 476);
-  t_r.a.ctrl.rd <= S(485 downto 478);
-  t_r.a.ctrl.tt <= S(491 downto 486);
-  t_r.a.ctrl.trap <= S(492);
-  t_r.a.ctrl.annul <= S(493);
-  t_r.a.ctrl.wreg <= S(494);
-  t_r.a.ctrl.wicc <= S(495);
-  t_r.a.ctrl.wy <= S(496);
-  t_r.a.ctrl.ld <= S(497);
-  t_r.a.ctrl.pv <= S(498);
-  t_r.a.ctrl.rett <= S(499);
-  t_r.a.rs1 <= S(504 downto 500);
-  t_r.a.rfa1 <= S(512 downto 505);
-  t_r.a.rfa2 <= S(520 downto 513);
-  t_r.a.rsel1 <= S(523 downto 521);
-  t_r.a.rsel2 <= S(526 downto 524);
-  t_r.a.rfe1 <= S(527);
-  t_r.a.rfe2 <= S(528);
-  t_r.a.cwp <= S(531 downto 529);
-  t_r.a.imm <= S(563 downto 532);
-  t_r.a.ldcheck1 <= S(564);
-  t_r.a.ldcheck2 <= S(565);
-  t_r.a.ldchkra <= S(566);
-  t_r.a.ldchkex <= S(567);
-  t_r.a.su <= S(568);
-  t_r.a.et <= S(569);
-  t_r.a.wovf <= S(570);
-  t_r.a.wunf <= S(571);
-  t_r.a.ticc <= S(572);
-  t_r.a.jmpl <= S(573);
-  t_r.a.step <= S(574);
-  t_r.a.mulstart <= S(575);
-  t_r.a.divstart <= S(576);
-  t_r.a.bp <= S(577);
-  t_r.a.nobp <= S(578);
-  t_r.e.ctrl.pc <= S(608 downto 579);
-  t_r.e.ctrl.inst <= S(640 downto 609);
-  t_r.e.ctrl.cnt <= S(642 downto 641);
-  t_r.e.ctrl.rd <= S(650 downto 643);
-  t_r.e.ctrl.tt <= S(656 downto 651);
-  t_r.e.ctrl.trap <= S(657);
-  t_r.e.ctrl.annul <= S(658);
-  t_r.e.ctrl.wreg <= S(659);
-  t_r.e.ctrl.wicc <= S(660);
-  t_r.e.ctrl.wy <= S(661);
-  t_r.e.ctrl.ld <= S(662);
-  t_r.e.ctrl.pv <= S(663);
-  t_r.e.ctrl.rett <= S(664);
-  t_r.e.op1 <= S(696 downto 665);
-  t_r.e.op2 <= S(728 downto 697);
-  t_r.e.aluop <= S(731 downto 729);
-  t_r.e.alusel <= S(733 downto 732);
-  t_r.e.aluadd <= S(734);
-  t_r.e.alucin <= S(735);
-  t_r.e.ldbp1 <= S(736);
-  t_r.e.ldbp2 <= S(737);
-  t_r.e.invop2 <= S(738);
-  t_r.e.shcnt <= S(743 downto 739);
-  t_r.e.sari <= S(744);
-  t_r.e.shleft <= S(745);
-  t_r.e.ymsb <= S(746);
-  t_r.e.rd <= S(751 downto 747);
-  t_r.e.jmpl <= S(752);
-  t_r.e.su <= S(753);
-  t_r.e.et <= S(754);
-  t_r.e.cwp <= S(757 downto 755);
-  t_r.e.icc <= S(761 downto 758);
-  t_r.e.mulstep <= S(762);
-  t_r.e.mul <= S(763);
-  t_r.e.mac <= S(764);
-  t_r.e.bp <= S(765);
-  t_r.m.ctrl.pc <= S(795 downto 766);
-  t_r.m.ctrl.inst <= S(827 downto 796);
-  t_r.m.ctrl.cnt <= S(829 downto 828);
-  t_r.m.ctrl.rd <= S(837 downto 830);
-  t_r.m.ctrl.tt <= S(843 downto 838);
-  t_r.m.ctrl.trap <= S(844);
-  t_r.m.ctrl.annul <= S(845);
-  t_r.m.ctrl.wreg <= S(846);
-  t_r.m.ctrl.wicc <= S(847);
-  t_r.m.ctrl.wy <= S(848);
-  t_r.m.ctrl.ld <= S(849);
-  t_r.m.ctrl.pv <= S(850);
-  t_r.m.ctrl.rett <= S(851);
-  t_r.m.result <= S(883 downto 852);
-  t_r.m.y <= S(915 downto 884);
-  t_r.m.icc <= S(919 downto 916);
-  t_r.m.nalign <= S(920);
-  t_r.m.dci.signed <= S(921);
-  t_r.m.dci.enaddr <= S(922);
-  t_r.m.dci.read <= S(923);
-  t_r.m.dci.write <= S(924);
-  t_r.m.dci.lock <= S(925);
-  t_r.m.dci.dsuen <= S(926);
-  t_r.m.dci.size <= S(928 downto 927);
-  t_r.m.dci.asi <= S(936 downto 929);
-  t_r.m.werr <= S(937);
-  t_r.m.wcwp <= S(938);
-  t_r.m.irqen <= S(939);
-  t_r.m.irqen2 <= S(940);
-  t_r.m.mac <= S(941);
-  t_r.m.divz <= S(942);
-  t_r.m.su <= S(943);
-  t_r.m.mul <= S(944);
-  t_r.m.casa <= S(945);
-  t_r.m.casaz <= S(946);
-  t_r.x.ctrl.pc <= S(976 downto 947);
-  t_r.x.ctrl.inst <= S(1008 downto 977);
-  t_r.x.ctrl.cnt <= S(1010 downto 1009);
-  t_r.x.ctrl.rd <= S(1018 downto 1011);
-  t_r.x.ctrl.tt <= S(1024 downto 1019);
-  t_r.x.ctrl.trap <= S(1025);
-  t_r.x.ctrl.annul <= S(1026);
-  t_r.x.ctrl.wreg <= S(1027);
-  t_r.x.ctrl.wicc <= S(1028);
-  t_r.x.ctrl.wy <= S(1029);
-  t_r.x.ctrl.ld <= S(1030);
-  t_r.x.ctrl.pv <= S(1031);
-  t_r.x.ctrl.rett <= S(1032);
-  t_r.x.result <= S(1064 downto 1033);
-  t_r.x.y <= S(1096 downto 1065);
-  t_r.x.icc <= S(1100 downto 1097);
-  t_r.x.annul_all <= S(1101);
-  t_r.x.data(0) <= S(1133 downto 1102);
-  t_r.x.data(1) <= S(1165 downto 1134);
-  t_r.x.set <= S(1166 downto 1166);
-  t_r.x.mexc <= S(1167);
-  t_r.x.dci.signed <= S(1168);
-  t_r.x.dci.enaddr <= S(1169);
-  t_r.x.dci.read <= S(1170);
-  t_r.x.dci.write <= S(1171);
-  t_r.x.dci.lock <= S(1172);
-  t_r.x.dci.dsuen <= S(1173);
-  t_r.x.dci.size <= S(1175 downto 1174);
-  t_r.x.dci.asi <= S(1183 downto 1176);
-  t_r.x.laddr <= S(1185 downto 1184);
-  --  in_r.x.rstate <= S(1187 downto 1186);
-  t_r.x.npc <= S(1190 downto 1188);
-  t_r.x.intack <= S(1191);
-  t_r.x.ipend <= S(1192);
-  t_r.x.mac <= S(1193);
-  t_r.x.debug <= S(1194);
-  t_r.x.nerror <= S(1195);
-  t_r.f.pc <= S(1225 downto 1196);
-  t_r.w.s.cwp <= S(1228 downto 1226);
-  t_r.w.s.icc <= S(1232 downto 1229);
-  t_r.w.s.tt <= S(1240 downto 1233);
-  t_r.w.s.tba <= S(1260 downto 1241);
-  t_r.w.s.wim <= S(1268 downto 1261);
-  t_r.w.s.pil <= S(1272 downto 1269);
-  t_r.w.s.ec <= S(1273);
-  t_r.w.s.ef <= S(1274);
-  t_r.w.s.ps <= S(1275);
-  t_r.w.s.s <= S(1276);
-  t_r.w.s.et <= S(1277);
-  t_r.w.s.y <= S(1309 downto 1278);
-  t_r.w.s.asr18 <= S(1341 downto 1310);
-  t_r.w.s.svt <= S(1342);
-  t_r.w.s.dwt <= S(1343);
-  t_r.w.s.dbp <= S(1344);
-  t_r.w.result <= S(1376 downto 1345);
+  in_CTS <= S(6);
+  in_RX <= S(7);
+  ch_RTS <= S(8);
+  ch_TX <= S(9);
+  in_DIP <= U(17 downto 10);
+  ch_LED <= U(25 downto 18);
+  ch_ClkBus <= U(26);
+  ch_ramaddr <= S(42 downto 27);
+  ch_hwdata <= S(74 downto 43);
+  in_ramdata <= S(106 downto 75);
+  ch_ramsel <= S(110 downto 107);
+  ch_write <= S(114 downto 111);
+  t_msti.hgrant <= S(130 downto 115);
+  t_msti.hready <= S(131);
+  t_msti.hresp <= S(133 downto 132);
+  t_msti.hrdata <= S(165 downto 134);
+  t_msti.hcache <= S(166);
+  t_msti.hirq <= S(198 downto 167);
+  t_msti.testen <= S(199);
+  t_msti.testrst <= S(200);
+  t_msti.scanen <= S(201);
+  t_msti.testoen <= S(202);
+  t_slvi.hsel <= S(218 downto 203);
+  t_slvi.haddr <= S(250 downto 219);
+  t_slvi.hwrite <= S(251);
+  t_slvi.htrans <= S(253 downto 252);
+  t_slvi.hsize <= S(256 downto 254);
+  t_slvi.hburst <= S(259 downto 257);
+  t_slvi.hwdata <= S(291 downto 260);
+  t_slvi.hprot <= S(295 downto 292);
+  t_slvi.hready <= S(296);
+  t_slvi.hmaster <= S(300 downto 297);
+  t_slvi.hmastlock <= S(301);
+  t_slvi.hmbsel <= S(305 downto 302);
+  t_slvi.hcache <= S(306);
+  t_slvi.hirq <= S(338 downto 307);
+  t_slvi.testen <= S(339);
+  t_slvi.testrst <= S(340);
+  t_slvi.scanen <= S(341);
+  t_slvi.testoen <= S(342);
+  t_apbi.psel <= S(358 downto 343);
+  t_apbi.penable <= S(359);
+  t_apbi.paddr <= S(391 downto 360);
+  t_apbi.pwrite <= S(392);
+  t_apbi.pwdata <= S(424 downto 393);
+  t_apbi.pirq <= S(456 downto 425);
+  t_apbi.testen <= S(457);
+  t_apbi.testrst <= S(458);
+  t_apbi.scanen <= S(459);
+  t_apbi.testoen <= S(460);
+  t_pc <= S(492 downto 461);
+  t_npc <= S(524 downto 493);
+  t_psr <= S(556 downto 525);
+  t_tbr <= S(588 downto 557);
+  dsu_status <= S(600 downto 589);
+  t_r.d.pc <= S(630 downto 601);
+  t_r.d.inst(0) <= S(662 downto 631);
+  t_r.d.inst(1) <= S(694 downto 663);
+  t_r.d.cwp <= S(697 downto 695);
+  t_r.d.set <= S(698 downto 698);
+  t_r.d.mexc <= S(699);
+  t_r.d.cnt <= S(701 downto 700);
+  t_r.d.pv <= S(702);
+  t_r.d.annul <= S(703);
+  t_r.d.inull <= S(704);
+  t_r.d.step <= S(705);
+  t_r.d.divrdy <= S(706);
+  t_r.a.ctrl.pc <= S(736 downto 707);
+  t_r.a.ctrl.inst <= S(768 downto 737);
+  t_r.a.ctrl.cnt <= S(770 downto 769);
+  t_r.a.ctrl.rd <= S(778 downto 771);
+  t_r.a.ctrl.tt <= S(784 downto 779);
+  t_r.a.ctrl.trap <= S(785);
+  t_r.a.ctrl.annul <= S(786);
+  t_r.a.ctrl.wreg <= S(787);
+  t_r.a.ctrl.wicc <= S(788);
+  t_r.a.ctrl.wy <= S(789);
+  t_r.a.ctrl.ld <= S(790);
+  t_r.a.ctrl.pv <= S(791);
+  t_r.a.ctrl.rett <= S(792);
+  t_r.a.rs1 <= S(797 downto 793);
+  t_r.a.rfa1 <= S(805 downto 798);
+  t_r.a.rfa2 <= S(813 downto 806);
+  t_r.a.rsel1 <= S(816 downto 814);
+  t_r.a.rsel2 <= S(819 downto 817);
+  t_r.a.rfe1 <= S(820);
+  t_r.a.rfe2 <= S(821);
+  t_r.a.cwp <= S(824 downto 822);
+  t_r.a.imm <= S(856 downto 825);
+  t_r.a.ldcheck1 <= S(857);
+  t_r.a.ldcheck2 <= S(858);
+  t_r.a.ldchkra <= S(859);
+  t_r.a.ldchkex <= S(860);
+  t_r.a.su <= S(861);
+  t_r.a.et <= S(862);
+  t_r.a.wovf <= S(863);
+  t_r.a.wunf <= S(864);
+  t_r.a.ticc <= S(865);
+  t_r.a.jmpl <= S(866);
+  t_r.a.step <= S(867);
+  t_r.a.mulstart <= S(868);
+  t_r.a.divstart <= S(869);
+  t_r.a.bp <= S(870);
+  t_r.a.nobp <= S(871);
+  t_r.e.ctrl.pc <= S(901 downto 872);
+  t_r.e.ctrl.inst <= S(933 downto 902);
+  t_r.e.ctrl.cnt <= S(935 downto 934);
+  t_r.e.ctrl.rd <= S(943 downto 936);
+  t_r.e.ctrl.tt <= S(949 downto 944);
+  t_r.e.ctrl.trap <= S(950);
+  t_r.e.ctrl.annul <= S(951);
+  t_r.e.ctrl.wreg <= S(952);
+  t_r.e.ctrl.wicc <= S(953);
+  t_r.e.ctrl.wy <= S(954);
+  t_r.e.ctrl.ld <= S(955);
+  t_r.e.ctrl.pv <= S(956);
+  t_r.e.ctrl.rett <= S(957);
+  t_r.e.op1 <= S(989 downto 958);
+  t_r.e.op2 <= S(1021 downto 990);
+  t_r.e.aluop <= S(1024 downto 1022);
+  t_r.e.alusel <= S(1026 downto 1025);
+  t_r.e.aluadd <= S(1027);
+  t_r.e.alucin <= S(1028);
+  t_r.e.ldbp1 <= S(1029);
+  t_r.e.ldbp2 <= S(1030);
+  t_r.e.invop2 <= S(1031);
+  t_r.e.shcnt <= S(1036 downto 1032);
+  t_r.e.sari <= S(1037);
+  t_r.e.shleft <= S(1038);
+  t_r.e.ymsb <= S(1039);
+  t_r.e.rd <= S(1044 downto 1040);
+  t_r.e.jmpl <= S(1045);
+  t_r.e.su <= S(1046);
+  t_r.e.et <= S(1047);
+  t_r.e.cwp <= S(1050 downto 1048);
+  t_r.e.icc <= S(1054 downto 1051);
+  t_r.e.mulstep <= S(1055);
+  t_r.e.mul <= S(1056);
+  t_r.e.mac <= S(1057);
+  t_r.e.bp <= S(1058);
+  t_r.m.ctrl.pc <= S(1088 downto 1059);
+  t_r.m.ctrl.inst <= S(1120 downto 1089);
+  t_r.m.ctrl.cnt <= S(1122 downto 1121);
+  t_r.m.ctrl.rd <= S(1130 downto 1123);
+  t_r.m.ctrl.tt <= S(1136 downto 1131);
+  t_r.m.ctrl.trap <= S(1137);
+  t_r.m.ctrl.annul <= S(1138);
+  t_r.m.ctrl.wreg <= S(1139);
+  t_r.m.ctrl.wicc <= S(1140);
+  t_r.m.ctrl.wy <= S(1141);
+  t_r.m.ctrl.ld <= S(1142);
+  t_r.m.ctrl.pv <= S(1143);
+  t_r.m.ctrl.rett <= S(1144);
+  t_r.m.result <= S(1176 downto 1145);
+  t_r.m.y <= S(1208 downto 1177);
+  t_r.m.icc <= S(1212 downto 1209);
+  t_r.m.nalign <= S(1213);
+  t_r.m.dci.signed <= S(1214);
+  t_r.m.dci.enaddr <= S(1215);
+  t_r.m.dci.read <= S(1216);
+  t_r.m.dci.write <= S(1217);
+  t_r.m.dci.lock <= S(1218);
+  t_r.m.dci.dsuen <= S(1219);
+  t_r.m.dci.size <= S(1221 downto 1220);
+  t_r.m.dci.asi <= S(1229 downto 1222);
+  t_r.m.werr <= S(1230);
+  t_r.m.wcwp <= S(1231);
+  t_r.m.irqen <= S(1232);
+  t_r.m.irqen2 <= S(1233);
+  t_r.m.mac <= S(1234);
+  t_r.m.divz <= S(1235);
+  t_r.m.su <= S(1236);
+  t_r.m.mul <= S(1237);
+  t_r.m.casa <= S(1238);
+  t_r.m.casaz <= S(1239);
+  t_r.x.ctrl.pc <= S(1269 downto 1240);
+  t_r.x.ctrl.inst <= S(1301 downto 1270);
+  t_r.x.ctrl.cnt <= S(1303 downto 1302);
+  t_r.x.ctrl.rd <= S(1311 downto 1304);
+  t_r.x.ctrl.tt <= S(1317 downto 1312);
+  t_r.x.ctrl.trap <= S(1318);
+  t_r.x.ctrl.annul <= S(1319);
+  t_r.x.ctrl.wreg <= S(1320);
+  t_r.x.ctrl.wicc <= S(1321);
+  t_r.x.ctrl.wy <= S(1322);
+  t_r.x.ctrl.ld <= S(1323);
+  t_r.x.ctrl.pv <= S(1324);
+  t_r.x.ctrl.rett <= S(1325);
+  t_r.x.result <= S(1357 downto 1326);
+  t_r.x.y <= S(1389 downto 1358);
+  t_r.x.icc <= S(1393 downto 1390);
+  t_r.x.annul_all <= S(1394);
+  t_r.x.data(0) <= S(1426 downto 1395);
+  t_r.x.data(1) <= S(1458 downto 1427);
+  t_r.x.set <= S(1459 downto 1459);
+  t_r.x.mexc <= S(1460);
+  t_r.x.dci.signed <= S(1461);
+  t_r.x.dci.enaddr <= S(1462);
+  t_r.x.dci.read <= S(1463);
+  t_r.x.dci.write <= S(1464);
+  t_r.x.dci.lock <= S(1465);
+  t_r.x.dci.dsuen <= S(1466);
+  t_r.x.dci.size <= S(1468 downto 1467);
+  t_r.x.dci.asi <= S(1476 downto 1469);
+  t_r.x.laddr <= S(1478 downto 1477);
+  --  in_r.x.rstate <= S(1480 downto 1479);
+  t_r.x.npc <= S(1483 downto 1481);
+  t_r.x.intack <= S(1484);
+  t_r.x.ipend <= S(1485);
+  t_r.x.mac <= S(1486);
+  t_r.x.debug <= S(1487);
+  t_r.x.nerror <= S(1488);
+  t_r.f.pc <= S(1518 downto 1489);
+  t_r.f.branch <= S(1519);
+  t_r.w.s.cwp <= S(1522 downto 1520);
+  t_r.w.s.icc <= S(1526 downto 1523);
+  t_r.w.s.tt <= S(1534 downto 1527);
+  t_r.w.s.tba <= S(1554 downto 1535);
+  t_r.w.s.wim <= S(1562 downto 1555);
+  t_r.w.s.pil <= S(1566 downto 1563);
+  t_r.w.s.ec <= S(1567);
+  t_r.w.s.ef <= S(1568);
+  t_r.w.s.ps <= S(1569);
+  t_r.w.s.s <= S(1570);
+  t_r.w.s.et <= S(1571);
+  t_r.w.s.y <= S(1603 downto 1572);
+  t_r.w.s.asr18 <= S(1635 downto 1604);
+  t_r.w.s.svt <= S(1636);
+  t_r.w.s.dwt <= S(1637);
+  t_r.w.s.dbp <= S(1638);
+  t_r.w.result <= S(1670 downto 1639);
 
 
   
-  tt : soc_leon3  port map
+  tt : soc_noram  port map
   ( 
     inRst => inNRst,
     inDsuBreak => '0',
     inSysClk_p  => inClk,
     inSysClk_n  => '0',
-    inCTS  => '0',
-    inRX  => '0',
+    inCTS  => in_CTS,
+    inRX  => in_RX,
     outRTS  => RTS,
     outTX   => TX,
     nTRST => in_trst,
@@ -342,8 +396,14 @@ begin
     TMS => in_tms,
     TDI => in_tdi,
     TDO => tdo,
-    inDIP    => "00000000",
-    outLED  => LED
+    inDIP    => in_DIP,
+    outLED  => LED,
+    outClkBus => ClkBus,
+    ramaddr => ramaddr,
+    hwdata => hwdata,
+    ramdata => in_ramdata,
+    ramsel => ramsel,
+    write => write
   );
 
   

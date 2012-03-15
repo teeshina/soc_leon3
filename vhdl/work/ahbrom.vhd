@@ -132,32 +132,26 @@ begin
     when 16#00028# => romdata <= X"81884000";-- wr %g1 ^ %g0, %psr
     when 16#00029# => romdata <= X"01000000";-- nop
     when 16#0002A# => romdata <= X"01000000";-- nop
-    when 16#0002B# => romdata <= X"01000000";-- nop. Next Multi-processors checking
+    when 16#0002B# => romdata <= X"01000000";-- nop.
     when 16#0002C# => romdata <= X"87444000";-- mov  %asr17, %g3
     when 16#0002D# => romdata <= X"8730E01C";-- srl  %g3, 28, %g3; //bit[31:28]=hindex of cpu
     when 16#0002E# => romdata <= X"8688E00F";-- andcc  %g3, 0xf, %g3
-    when 16#0002F# => romdata <= X"12800006";-- bne  0x000000d4
-    when 16#00030# => romdata <= X"033FFC00";-- sethi  %hi(0xfff00000), %g1
-    when 16#00031# => romdata <= X"82106100";-- or  %g1, 0x100, %g1
-    when 16#00032# => romdata <= X"0539A81B";-- sethi  %hi(0xe6a06c00), %g2
-    when 16#00033# => romdata <= X"8410A260";-- or  %g2, 0x260, %g2
-    when 16#00034# => romdata <= X"C4204000";-- st  %g2, [%g1]; // wr: [0xfff00100] <= 0xe6a06e60
-    when 16#00035# => romdata <= X"3D1000FF";-- sethi  %hi(0x4003fc00), %fp
-    when 16#00036# => romdata <= X"BC17A3E0";-- or  %fp, 0x3e0, %fp; // fp = 0x4003ffe0 = 262 112
-    when 16#00037# => romdata <= X"9C27A060";-- sub  %fp, 96, %sp
-    when 16#00038# => romdata <= X"03100000";-- sethi  %hi(0x40000000), %g1
-    when 16#00039# => romdata <= X"81C04000";-- jmp  %g1
-    when 16#0003A# => romdata <= X"01000000";-- nop
-    when 16#0003B# => romdata <= X"01000000";-- nop
-    when 16#0003C# => romdata <= X"01000000";-- nop
-    when 16#0003D# => romdata <= X"01000000";
-    when 16#0003E# => romdata <= X"01000000";
-    when 16#0003F# => romdata <= X"01000000";
-    when 16#00040# => romdata <= X"00000000";
-    when 16#00041# => romdata <= X"00000000";
-    when 16#00042# => romdata <= X"00000000";
-    when 16#00043# => romdata <= X"00000000";
-    when 16#00044# => romdata <= X"00000000";
+    when 16#0002F# => romdata <= X"3D1000FF";-- sethi  %hi(0x4003fc00), %fp
+    when 16#00030# => romdata <= X"BC17A3E0";-- or  %fp, 0x3e0, %fp; // fp = 0x4003ffe0 = 262 112
+    when 16#00031# => romdata <= X"9C27A060";-- sub  %fp, 96, %sp
+    when 16#00032# => romdata <= X"03100000";-- sethi  %hi(0x40000000), %g1
+    when 16#00033# => romdata <= X"81C04000";-- jmp  %g1
+    when 16#00034# => romdata <= X"01000000";-- nop
+    when 16#00035# => romdata <= X"01000000";-- nop
+    when 16#00036# => romdata <= X"01000000";-- nop
+    when 16#00037# => romdata <= X"01000000";
+    when 16#00038# => romdata <= X"01000000";
+    when 16#00039# => romdata <= X"01000000";
+    when 16#0003A# => romdata <= X"00000000";
+    when 16#0003B# => romdata <= X"00000000";
+    when 16#0003C# => romdata <= X"00000000";
+    when 16#0003D# => romdata <= X"00000000";
+    when 16#0003E# => romdata <= X"00000000";
     when others => romdata <= (others => '-');
     end case;
   end process;

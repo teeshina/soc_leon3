@@ -1,3 +1,11 @@
+//****************************************************************************
+// Property:    GNSS Sensor Limited
+// Author:      Khabarov Sergey
+// License:     GPL
+// Contact:     sergey.khabarov@gnss-sensor.com
+// Repository:  git@github.com:teeshina/soc_leon3.git
+//****************************************************************************
+
 #include "headers.h"
 
 //****************************************************************************
@@ -51,7 +59,8 @@ void ElfFile::Load()
 {
   if(!bFileOpened)
   {
-    PUT_STRING("{elf} Error: File not found\n");
+    PUT_STRING("{elf} YOU SHOULD COMPILE SOURCE FILES AND SET PATH TO ELF-FILE\n");
+    PUT_STRING("{elf} Error: File not found. Use \"settings.txt\" file to correct path.\n");
     return;
   }
 

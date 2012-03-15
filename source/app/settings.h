@@ -46,6 +46,7 @@ enum EStringName
   STR_TB_apbctrl,
   STR_TB_apbuart,
   STR_TB_irqmp,
+  STR_TB_gptimer,
   STR_TB_finderr,
   STR_TB_soc_leon3,
 
@@ -105,6 +106,7 @@ const StringData AllStrings[] =
   {STR_TB_apbctrl,      "TB_apbctrl=",STRTYPE_INTEGER},
   {STR_TB_apbuart,      "TB_apbuart=",STRTYPE_INTEGER},
   {STR_TB_irqmp,        "TB_irqmp=",STRTYPE_INTEGER},
+  {STR_TB_gptimer,      "TB_gptimer=",STRTYPE_INTEGER},
   {STR_TB_finderr,      "TB_finderr=",STRTYPE_INTEGER},
   {STR_TB_soc_leon3,    "TB_soc_leon3=",STRTYPE_INTEGER},
 

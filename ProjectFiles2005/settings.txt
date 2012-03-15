@@ -49,5 +49,6 @@ TB_ahbram=0
 TB_apbctrl=0
 TB_apbuart=0
 TB_irqmp=0
+TB_gptimer=0
 TB_finderr=0
 TB_soc_leon3=0

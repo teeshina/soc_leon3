@@ -7,6 +7,9 @@
 
 library techmap;
 use techmap.gencomp.all;
+library grlib;
+use grlib.amba.all;
+use grlib.stdlib.all;
 
 package config is
 -- Technology and synthesis options
@@ -78,10 +81,6 @@ package config is
   constant CFG_AHB_MONERR : integer := 0;
   constant CFG_AHB_MONWAR : integer := 0;
   constant CFG_AHB_DTRACE : integer := 0;
--- DSU UART
-  constant CFG_AHB_UART : integer := 1;
--- JTAG based DSU interface
-  constant CFG_AHB_JTAG : integer := 1;
 -- Ethernet DSU
   constant CFG_DSU_ETH : integer := 1 + 0 + 0;
   constant CFG_ETH_BUF : integer := 16;
@@ -100,21 +99,15 @@ package config is
   constant CFG_MCTRL_SD64 : integer := 0;
   constant CFG_MCTRL_PAGE : integer := 0 + 0;
 -- AHB ROM
-  constant CFG_AHBROMEN : integer := 0;
   constant CFG_AHBROPIP : integer := 0;
-  constant CFG_AHBRODDR : integer := 16#000#;
-  constant CFG_ROMADDR : integer := 16#000#;
-  constant CFG_ROMMASK : integer := 16#E00# + 16#000#;
 -- AHB RAM
-  constant CFG_AHBRAMEN : integer := 0;
   constant CFG_AHBRSZ : integer := 256;
-  constant CFG_AHBRADDR : integer := 16#A00#;
+  constant CFG_SRAM_ADRBITS : integer := log2(CFG_AHBRSZ) + 8 - AHBDW/64;
 -- Gaisler Ethernet core
   constant CFG_GRETH : integer := 1;
   constant CFG_GRETH1G : integer := 0;
   constant CFG_ETH_FIFO : integer := 16;
 -- UART 1
-  constant CFG_UART1_ENABLE : integer := 1;
   constant CFG_UART1_FIFO : integer := 8;
 -- LEON3 interrupt controller
   constant CFG_IRQ3_ENABLE : integer := 1;
@@ -124,7 +117,6 @@ package config is
   constant CFG_GPT_NTIM : integer := (2);
   constant CFG_GPT_SW : integer := (16);
   constant CFG_GPT_TW : integer := (32);
-  constant CFG_GPT_IRQ : integer := (8);
   constant CFG_GPT_SEPIRQ : integer := 1;
   constant CFG_GPT_WDOGEN : integer := 0;
   constant CFG_GPT_WDOG : integer := 16#0#;
@@ -168,7 +160,8 @@ package config is
   constant IRQ_GNSS_ENGINE      : integer := IRQ_DSU+1;
   constant IRQ_UART_1           : integer := IRQ_GNSS_ENGINE+1;
   constant IRQ_TIMER            : integer := IRQ_UART_1+1;
-  constant IRQ_TOTAL            : integer := IRQ_TIMER+1;
+  constant IRQ_TOTAL            : integer := IRQ_TIMER+1+((CFG_GPT_NTIM-1)*CFG_GPT_SEPIRQ);
+
 
   constant APB_UART_1           : integer := 0;
   constant APB_IRQ_CONTROL      : integer := APB_UART_1+1;

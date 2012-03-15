@@ -8,6 +8,14 @@
 #pragma once
 
 #define LEON3_CORES_NUM 1
+//-- Modular timer
+#define CFG_GPT_NTIM    2
+#define CFG_GPT_SW      16
+#define CFG_GPT_TW      32
+#define CFG_GPT_SEPIRQ  1
+#define CFG_GPT_WDOGEN  0
+#define CFG_GPT_WDOG    0
+
 const enum 
 {
   AHB_MASTER_LEON3=0,
@@ -30,13 +38,15 @@ const enum
   IRQ_DSU,
   IRQ_GNSS_ENGINE,
   IRQ_UART_CFG,
-  IRQ_TOTAL
+  IRQ_TIMER,
+  IRQ_TOTAL=IRQ_TIMER+1+((CFG_GPT_NTIM-1)*CFG_GPT_SEPIRQ)
 };
 
 const enum
 {
   APB_UART_CFG,
   APB_IRQ_CONTROL,
+  APB_TIMER,
   APB_TOTAL
 };
 
@@ -196,11 +206,10 @@ const uint32 ADDR_BUILD_LIB_MAX  = 0xFFFFFFFF;
 #define CFG_PCLOW                     2
 
 #define CFG_AHBRAMSZ                  256//[kBytes]
+#define CFG_SRAM_ADRBITS             (log2[CFG_AHBRAMSZ]+8-(AHBDW/64))
 #define CFG_AHBRAMADDR                0x400
 #define CFG_AHBRAMMASK                0xFFF
 
-
-#define CFG_AHBROM_ENA      1
 #define CFG_COPROC_ENA      0 // co-copressor 1=ena; 0=dis
 #define CFG_MMU_PAGESIZE    0//integer range 0 to 5  := 0;
 #define CFG_SCANTEST_ENA    0//

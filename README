@@ -24,7 +24,7 @@ Project structure:
   |       |         GNSS module (only by request)
   |       |
   |       +--- app: This is a Control application which includes: 
-  |       |         Elf file loader intgrated with the disassembler;
+  |       |         Elf file loader integrated with the disassembler function;
   |       |         JTAG and UART ports transmitters.
   |       |
   |       |         Software makes simulation of the next SoC external signals:
@@ -38,8 +38,8 @@ Project structure:
   |       |         generate *.elf file.
   |       |
   |       |         Example "Hello, world" firmware:
-  |       |            1. It makes UART intialization and formatted output;
-  |       |            2. IRQ table intialzation
+  |       |            1. It makes UART initialization and formatted output;
+  |       |            2. IRQ table initialization
   |       |
   |       +--- common: Common constants and interface structure description
   |                
