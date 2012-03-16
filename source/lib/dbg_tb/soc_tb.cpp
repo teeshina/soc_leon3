@@ -16,6 +16,7 @@ extern void PrintIndexStr();
 //****************************************************************************
 void dbg::soc_leon3_tb(SystemOnChipIO &io)
 {
+  char chTmp[256];
   if(io.inClk.eClock==SClock::CLK_POSEDGE)
   {
     pStr = chStr;
@@ -59,6 +60,38 @@ void dbg::soc_leon3_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, topLeon3mp.stCtrl2Mst.testrst,1,"t_msti.testrst");//                            -- scan test reset
     pStr = PutToStr(pStr, topLeon3mp.stCtrl2Mst.scanen,1,"t_msti.scanen");//                             -- scan enable
     pStr = PutToStr(pStr, topLeon3mp.stCtrl2Mst.testoen,1,"t_msti.testoen");//                              -- test output enable 
+
+    //for(int32 i=0; i<AHB_MASTER_TOTAL; i++)
+    for(int32 i=0; i<1; i++)
+    {
+      sprintf_s(chTmp,"t_msto(%i).hbusreq",i);
+      pStr = PutToStr(pStr, topLeon3mp.stMst2Ctrl.arr[i].hbusreq,1,chTmp);
+      sprintf_s(chTmp,"t_msto(%i).hlock",i);
+      pStr = PutToStr(pStr, topLeon3mp.stMst2Ctrl.arr[i].hlock,1,chTmp);
+      sprintf_s(chTmp,"t_msto(%i).htrans",i);
+      pStr = PutToStr(pStr, topLeon3mp.stMst2Ctrl.arr[i].htrans,2,chTmp);
+      sprintf_s(chTmp,"t_msto(%i).haddr",i);
+      pStr = PutToStr(pStr, topLeon3mp.stMst2Ctrl.arr[i].haddr,32,chTmp);
+      sprintf_s(chTmp,"t_msto(%i).hwrite",i);
+      pStr = PutToStr(pStr, topLeon3mp.stMst2Ctrl.arr[i].hwrite,1,chTmp);
+      sprintf_s(chTmp,"t_msto(%i).hsize",i);
+      pStr = PutToStr(pStr, topLeon3mp.stMst2Ctrl.arr[i].hsize,3,chTmp);
+      sprintf_s(chTmp,"t_msto(%i).hburst",i);
+      pStr = PutToStr(pStr, topLeon3mp.stMst2Ctrl.arr[i].hburst,3,chTmp);
+      sprintf_s(chTmp,"t_msto(%i).hprot",i);
+      pStr = PutToStr(pStr, topLeon3mp.stMst2Ctrl.arr[i].hprot,4,chTmp);
+      sprintf_s(chTmp,"t_msto(%i).hwdata",i);
+      pStr = PutToStr(pStr, topLeon3mp.stMst2Ctrl.arr[i].hwdata,32,chTmp);
+      sprintf_s(chTmp,"t_msto(%i).hirq",i);
+      pStr = PutToStr(pStr, topLeon3mp.stMst2Ctrl.arr[i].hirq,32,chTmp);
+      for(int32 k=0; k<8; k++)
+      {
+        sprintf_s(chTmp,"t_msto(%i).hconfig(%i)",i,k);
+        pStr = PutToStr(pStr, topLeon3mp.stMst2Ctrl.arr[i].hconfig.arr[k],32,chTmp);
+      }
+      sprintf_s(chTmp,"conv_integer:t_msto(%i).hindex",i);
+      pStr = PutToStr(pStr, topLeon3mp.stMst2Ctrl.arr[i].hindex,4,chTmp);
+    }
 
     // AHB slave interface:
     pStr = PutToStr(pStr, topLeon3mp.stCtrl2Slv.hsel,AHB_SLAVES_MAX,"t_slvi.hsel",true);//  : (0 to AHB_SLAVES_MAX-1);     -- slave select
@@ -125,6 +158,25 @@ void dbg::soc_leon3_tb(SystemOnChipIO &io)
     // Internal IU3 registers pack:
     pStr = PrintAllRegIU(pStr, &piu3->rbR.Q);
 
+    pStr = PutToStr(pStr, topLeon3mp.pclLeon3s[0]->crami.icramin.tag.arr[0],32,"t_icrami_tag0");
+    pStr = PutToStr(pStr, topLeon3mp.pclLeon3s[0]->cramo.icramo.tag.arr[0],32,"t_icramo_tag0");
+    pStr = PutToStr(pStr, topLeon3mp.pclLeon3s[0]->pclProc3->pclCacheMMU->clICache.hit,1,"t_hit");
+    pStr = PutToStr(pStr, topLeon3mp.pclLeon3s[0]->pclProc3->ici.inull,1,"t_ici_inull");
+    pStr = PutToStr(pStr, topLeon3mp.pclLeon3s[0]->pclProc3->ici.fpc,32,"t_ici_fpc");
+    
+    pStr = PutToStr(pStr, topLeon3mp.pclLeon3s[0]->pclProc3->pclCacheMMU->clICache.setrepl,log2x[CFG_ISETS],"t_setrepl");
+    
+    uint32 ITAG_BITS = (TAG_HIGH - IOFFSET_BITS - ILINE_BITS - 2 + CFG_ILINE + 1);
+    uint32 ILRR_BIT  = (creplalg_tbl.arr[CFG_IREPL]);
+    uint32 ICLOCK_BIT = CFG_ILOCK;
+    uint32 MMUCTX_BITS = (8*CFG_MMUEN);
+    uint32 ITWIDTH   = (ITAG_BITS + ILRR_BIT + ICLOCK_BIT + MMUCTX_BITS);
+    pStr = PutToStr(pStr, topLeon3mp.pclLeon3s[0]->clCacheMem.itaddr>>ILINE_BITS,IOFFSET_BITS,"t_itaddr");
+    pStr = PutToStr(pStr, topLeon3mp.pclLeon3s[0]->clCacheMem.itdatain.arr[0],ITWIDTH+1,"t_itdatain0");
+    pStr = PutToStr(pStr, topLeon3mp.pclLeon3s[0]->clCacheMem.itdataout.arr[0],ITWIDTH,"t_itdataout0");
+    pStr = PutToStr(pStr, topLeon3mp.pclLeon3s[0]->clCacheMem.itenable,1,"t_itenable");
+    pStr = PutToStr(pStr, topLeon3mp.pclLeon3s[0]->clCacheMem.itwrite,MAXSETS,"t_itwrite",true);
+   
 
     PrintIndexStr();
     

@@ -527,10 +527,6 @@ void iu3::dbg_cache( uint32 holdn,//    : in std_ulogic;
                         word &mresult2,// : out word;
                         dc_in_type &dci2)//     : out dc_in_type)
 {
-#if 1
-  if(iClkCnt>=63)
-  bool st =true;
-#endif
   mresult2   = mresult;
   dci2       = dci;
   dci2.dsuen = 0; 
@@ -1427,10 +1423,7 @@ void iu3::ic_ctrl(uint32 rstn,//  : in  std_ulogic;
   mulstart      = 0;
   divstart      = 0;
   inhibit_current = 0;
-#if 1 
-if(iClkCnt>=1241)
-  bool st = true;
-#endif
+
   if (r.d.annul == 0)
   {
     switch (BITS32(inst,31,30))
@@ -1648,10 +1641,6 @@ if(iClkCnt>=1241)
 	  pv              = 0;
 	  inhibit_current = 1;
   }
-#if 1
-  if(iClkCnt>=21)
-  bool st = true;
-#endif
   if (hold_pc) de_pc = r.d.pc;
   else         de_pc = r.f.pc;
 
@@ -1865,7 +1854,6 @@ void iu3::alu_op( registers &r,// : in registers;
 //  uint32 rd;//  : std_logic_vector(4 downto 0);
   uint32 icc;// : std_logic_vector(3 downto 0);
   uint32 y0;//  : std_ulogic;
-
   op     = BITS32(r.a.ctrl.inst,31,30);
   op2    = BITS32(r.a.ctrl.inst,24,22);
   op3    = BITS32(r.a.ctrl.inst,24,19);
@@ -2287,10 +2275,6 @@ void iu3::alu_select(registers &r,// : registers;
   if (BITS64(addout,32,1) == 0) azero = 1;
   else                           azero = 0;
   mzero = azero;
-#if 1
-  if(iClkCnt>=152)
-  bool s =true;
-#endif
   
   switch(r.e.alusel)
   {
@@ -2504,10 +2488,6 @@ void iu3::dcache_gen(registers &r,
     }
   }
 
-#if 1
-if(iClkCnt>=63)
-bool sr = true;
-#endif
 
   if (r.x.ctrl.rett & !r.x.ctrl.annul) su = r.w.s.ps;
   else                                 su = r.w.s.s;
@@ -2617,10 +2597,7 @@ void iu3:: mem_trap(uint32 rstn,//  : in  std_ulogic;
   uint32 op3;// : std_logic_vector(5 downto 0);
   uint32 nalign_d;// : std_ulogic;
   uint32 trap, werr;// : std_ulogic;
-#if 1
-if(iClkCnt>=118)
-bool st = true;
-#endif
+
   op   = BITS32(r.m.ctrl.inst,31,30);
   op2  = BITS32(r.m.ctrl.inst,24,22);
   op3  = BITS32(r.m.ctrl.inst,24,19);
@@ -3518,15 +3495,11 @@ void iu3::Update
       ex_shcnt  = BITS32(r.x.data.arr[0],4,0);
       if (r.e.invop2 == 1)
       {
-        ex_op2    = !ex_op2;
-        ex_shcnt  = !ex_shcnt;
+        ex_op2    = ~ex_op2;
+        ex_shcnt  = BITS32(~ex_shcnt,4,0);
       }
     }
   }
-#if 1
-if(iClkCnt>=225)
-bool st = true;
-#endif
   ex_add_res = ((uint64(ex_op1)<<1)|0x1) + ((uint64(ex_op2)<<1)|r.e.alucin);
 
   if (BITS32(ex_add_res,2,1)==0) v.m.nalign = 0;
@@ -3730,10 +3703,6 @@ bool st = true;
   if (ex_bpmiss == 1) fe_pc = r.a.ctrl.pc;
   fe_npc = fe_pc + (1<<CFG_PCLOW);    //-- Address incrementer
 
-#if 1
-  if(iClkCnt>=367)
-    bool stop = true;
-#endif
   if (xc_rstn == 0)
   {
     v.f.pc      = 0;

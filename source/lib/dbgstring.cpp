@@ -36,61 +36,39 @@ void SetSkipOutput(bool v)
 }
 
 //****************************************************************************
+bool CheckModificator(char*ref, char*comment)
+{
+  bool bRet = true;
+  size_t iCnt=0;
+  size_t length = strlen(ref);
+  while((comment[iCnt]!=0)&&bRet&&(iCnt<length))
+  {
+    if(ref[iCnt]!=comment[iCnt])
+    {
+      bRet=false;
+      break;
+    }
+    iCnt++;
+  }
+  return bRet;
+}
+
+//****************************************************************************
 void PutWidth(int32 size, char *comment)
 {
   if(!bDoStrOutput|bSkipOutput)
     return;
 
-  bool bConvInteger=true;
-  int32 iSeekCnt = 0;
-  char chTemplate[]="conv_integer:";
-  while((comment[iSeekCnt]!=0)&&bConvInteger&&(iSeekCnt<13))
-  {
-    if(chTemplate[iSeekCnt]!=comment[iSeekCnt])
-    {
-      bConvInteger=false;
-      break;
-    }
-    iSeekCnt++;
-  }
-  
-  bool bUnsigned=true;
-  char chTemplate2[]="unsigned:";
-  iSeekCnt=0;
-  while((comment[iSeekCnt]!=0)&&bUnsigned&&(iSeekCnt<9))
-  {
-    if(chTemplate2[iSeekCnt]!=comment[iSeekCnt])
-    {
-      bUnsigned=false;
-      break;
-    }
-    iSeekCnt++;
-  }
-
-  bool bVector=true;
-  char chTemplate3[]="vector:";
-  iSeekCnt=0;
-  while((comment[iSeekCnt]!=0)&&bVector&&(iSeekCnt<7))
-  {
-    if(chTemplate3[iSeekCnt]!=comment[iSeekCnt])
-    {
-      bVector=false;
-      break;
-    }
-    iSeekCnt++;
-  }
-
-
   int32 tmp;
-  if(bConvInteger)
+  if(CheckModificator("conv_integer:", comment))
   {
     if(size==1) tmp = sprintf_s(pchIndS,64,"  %s <= conv_integer(S"DIG"(%i));\n", &comment[13], iIndS);
     else        tmp = sprintf_s(pchIndS,64,"  %s <= conv_integer(S"DIG"(%i downto %i));\n", &comment[13], iIndS+size-1, iIndS);
-  }else if(bUnsigned)
+  }else if(CheckModificator("unsigned:", comment))
   {
     if(size==1) tmp = sprintf_s(pchIndS,64,"  %s <= U"DIG"(%i);\n", &comment[9], iIndS);
     else        tmp = sprintf_s(pchIndS,64,"  %s <= U"DIG"(%i downto %i);\n", &comment[9], iIndS+size-1, iIndS);
-  }else if(bVector)
+  }else if(CheckModificator("vector:", comment))
   {
     if(size==1) tmp = sprintf_s(pchIndS,64,"  %s <= S"DIG"(%i downto %i);\n", &comment[7], iIndS, iIndS);
     else        tmp = sprintf_s(pchIndS,64,"  %s <= S"DIG"(%i downto %i);\n", &comment[7], iIndS+size-1, iIndS);
@@ -110,6 +88,7 @@ void PutWidth(int32 size, char *comment)
 void PrintIndexStr()
 {
   if(bSkipOutput) return;
+  if(!bDoStrOutput) return;
   
   bDoStrOutput = false;
   std::ofstream osStr(FILE_STRINGS_DBG, ios::out);

@@ -106,7 +106,8 @@ class mmu_icache
     lru_reg_type vl;// : lru_reg_type;
     uint32 vdiagset, rdiagset;// : integer range 0 to ISETS-1;
     uint32 lock;// : std_logic_vector(0 to ISETS-1);
-    uint32 wlock, sidle : 1;// : std_logic;
+    uint32 wlock : 1;
+    uint32 sidle : 1;// : std_logic;
     cdatatype tag;// : cdatatype;
     uint32 lramacc, ilramwr, lramcs : 1;//  : std_ulogic;
 

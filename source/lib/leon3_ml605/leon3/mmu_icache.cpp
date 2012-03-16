@@ -82,9 +82,10 @@ uint32 mmu_icache::lru_set ( lru_type lru,
     end if;
 #else
   end case;
-  set := xset(SETBITS-1 downto 0);
-  
 #endif
+  set = BITS32(xset,SETBITS-1,0);
+
+
 
   return(set);
 }
@@ -193,7 +194,10 @@ void mmu_icache::Update(uint32 rst,// : in  std_logic;
 
   v.trans_op  = r.Q.trans_op & (!mmuico.grant);
   mmuici_trans_op = r.Q.trans_op;
-  
+#if 1
+if(iClkCnt>=3407)
+bool st=true;
+#endif
   
   mmuici_su = ici.su;
               
@@ -351,6 +355,12 @@ void mmu_icache::Update(uint32 rst,// : in  std_logic;
                v.setrepl = BITS32(ici.fpc,OFFSET_HIGH+SETBITS,OFFSET_HIGH+1);
             break;
             case lru:
+#if 1
+if(iClkCnt>=3405)
+{
+  bool st=true;
+}
+#endif
               v.setrepl =  lru_set(rl.Q.arr[BITS32(ici.fpc,OFFSET_HIGH,OFFSET_LOW)], lock);
             break;
             case lrr:

@@ -96,10 +96,6 @@ void gptimer::Update( uint32 rst,//    : in  std_ulogic;
     z = 0; //-- undeflow detect
 
   //-- update corresponding register and generate irq
-#if 1
-  if(iClkCnt>=179)
-  bool st=true;
-#endif
 
   nirq = 0;
   for (int32 i=1; i<=ntimers-1; i++) nirq |= (r.Q.timers.arr[i].irq << i);

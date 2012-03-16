@@ -7,8 +7,8 @@ license:  GPL
 C++ design for the development of the processor system, which is
 build on the Leon3 core by Aeroflex Gaisler and includes our
 proprietary GNSS navigation module. This software allows:
-  - Load execution code into internal SRAM of SoC using 
-    compilation output file (.elf).
+  - Load execution code into SoC simulator's internal SRAM using 
+    only compilation output file (.elf).
   - generates test-bench patterns of the whole system or
     any single module and use them directly during RTL 
     simulation as reference or use them to compute switching 

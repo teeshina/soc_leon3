@@ -356,7 +356,10 @@ void cachemem::Update(  SClock clk,//   : in  std_ulogic;
               crami.dcramin.ldramin.write);
 #endif
 
-
+#if 1
+if(iClkCnt>=3408)
+bool st=true;
+#endif
   for (int32 i=0; i<CFG_ISETS; i++)
   {
     tmpa = (uint32)BITS64(itdataout.arr[i], ITAG_BITS-1, (ITAG_BITS-1) - (TAG_HIGH - ITAG_LOW));
