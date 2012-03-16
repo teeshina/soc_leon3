@@ -7,6 +7,7 @@
 //****************************************************************************
 
 #include "lheaders.h"
+#include "dbgstring.h"
 
 uint32 iClkCnt = 0;
 
@@ -66,7 +67,6 @@ dbg::~dbg()
 //****************************************************************************
 void dbg::Init(LibInitData *p)
 {
-  sLibInitData = *p;
   
   char chName[1024];
   for (int32 i=0; i<TB_TOTAL; i++)
@@ -75,8 +75,16 @@ void dbg::Init(LibInitData *p)
     {
       sprintf_s(chName,"%s%s",p->chDirOut,chBenchFile[i]);
       posBench[i] = new ofstream(chName,ios::out);
+      if(!posBench[i]->is_open())
+      {
+        printf_s("ERROR: can't create file \"%s%s\"\n",p->chDirOut,chBenchFile[i]);
+        p->uiBenchEna[i] = PRINT_TESTBENCH_DISABLE;
+        free(posBench[i]);
+      }
     }
   }
+  clVhdl.SetOutputPath(p->iPrintVhdlData, p->chDirOut);
+  sLibInitData = *p;
 }
 
 //****************************************************************************

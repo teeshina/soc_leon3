@@ -102,6 +102,7 @@
 #include "leon3_ml605\gnss\topgnss.h"
 
 #include "leon3_ml605\leon3mp.h"
+#include "dbgstring.h"
 #include "ldbg.h"
 
 extern uint32 iClkCnt;

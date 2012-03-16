@@ -1,12 +1,5 @@
 #include "lheaders.h"
 
-extern leon3mp  topLeon3mp;
-
-extern void ResetPutStr();
-extern void SetSkipOutput(bool v);
-extern void PrintIndexStr();
-
-
 //****************************************************************************
 void dbg::leon3s_tb(SystemOnChipIO &io)
 {

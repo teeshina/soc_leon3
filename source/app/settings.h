@@ -50,6 +50,8 @@ enum EStringName
   STR_TB_finderr,
   STR_TB_soc_leon3,
 
+  STR_PRINT_VHDLDATA,
+  
   STR_UNKNOWN
 };
 
@@ -109,6 +111,8 @@ const StringData AllStrings[] =
   {STR_TB_gptimer,      "TB_gptimer=",STRTYPE_INTEGER},
   {STR_TB_finderr,      "TB_finderr=",STRTYPE_INTEGER},
   {STR_TB_soc_leon3,    "TB_soc_leon3=",STRTYPE_INTEGER},
+  
+  {STR_PRINT_VHDLDATA,  "Print VHDL assignment=",STRTYPE_INTEGER},
 
   {STR_UNKNOWN,         "",STRTYPE_UNKNOWN}
 };

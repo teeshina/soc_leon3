@@ -8,11 +8,6 @@
 
 #include "lheaders.h"
 
-extern leon3mp  topLeon3mp;
-
-extern void ResetPutStr();
-extern void PrintIndexStr();
-
 //****************************************************************************
 void dbg::irqmp_tb(SystemOnChipIO &io)
 {

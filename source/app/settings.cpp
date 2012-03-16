@@ -80,6 +80,7 @@ void Settings::ParseLine(char *src, EStringName name)
     case STR_JTAG_ENA:        iJtagEna = GetFieldInt(src, length); break;
     case STR_JTAGCLK_HZ:      dJtagClockHz = GetFieldDouble(src, length);  break;
     case STR_CLK_DURATION:    iClkSimTotal = GetFieldInt(src, length);  break;
+    case STR_PRINT_VHDLDATA:  sLibInitData.iPrintVhdlData = GetFieldInt(src, length); break;
     default:;
   }
   if((name>=STR_TB_jtagcom)&&(name<=STR_TB_soc_leon3))
@@ -159,6 +160,8 @@ void Settings::GenerateDefaultSettings()
   
   for (int32 i=0; i<TB_TOTAL; i++)
     sLibInitData.uiBenchEna[i] = PRINT_TESTBENCH_DISABLE;
+    
+  sLibInitData.iPrintVhdlData = PRINT_TESTBENCH_DISABLE;
 }
 
 //****************************************************************************
@@ -215,5 +218,9 @@ void Settings::SaveToFile()
     sprintf_s(chLine, "%s%i\n",AllStrings[STR_TB_jtagcom+i].name, sLibInitData.uiBenchEna[i]);
     osSettings << chLine;
   }
+
+  sLibInitData.iPrintVhdlData = 
+  sprintf_s(chLine, "%s%i\n",AllStrings[STR_PRINT_VHDLDATA].name, sLibInitData.iPrintVhdlData);
+  osSettings << chLine;
 }
 

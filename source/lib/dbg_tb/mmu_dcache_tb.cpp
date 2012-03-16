@@ -1,10 +1,5 @@
 #include "lheaders.h"
 
-extern leon3mp  topLeon3mp;
-
-extern void ResetPutStr();
-extern void PrintIndexStr();
-
 #ifdef DBG_mmu_dcache
   enum EStateDCache {dcache_reset, dcache_init, dcache_other};
   EStateDCache eStateDCache = dcache_reset;

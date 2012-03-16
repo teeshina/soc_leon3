@@ -33,238 +33,7 @@
 //#define DBG_irqmp
 //#define DBG_gptimer
 
-extern char* PutToStr(char *p, uint32 v, int size, char *comment=NULL, bool inv=false);
-extern char* PutToStr(char *p, uint64 v, int size, char *comment=NULL, bool inv=false);
-extern char* PutToStr(char *p, uint32* bus, int size, char *comment=NULL, bool inv=false);
-extern char* PutToStr(char *p, char *str);
-
 extern leon3mp topLeon3mp;
-
-template<class T_RD,class T_WR> class TRegister2
-{
-  public:
-  union
-  {
-    uint32 v;
-    T_RD  r;
-    T_WR  w;
-  } u;
-};
-template<class T_RW> class TRegister
-{
-  public:
-  union
-  {
-    uint32 v;
-    T_RW   rw;
-  } u;
-};
-
-
-
-class DsuCpu
-{
-  friend class dbg;
-  private:
-  struct DsuRegBits
-  {
-    struct WR
-    {
-      static const uint32 ADR = 0x0;
-      static const uint32 SEQ = 0;
-      uint32 te     : 1;
-      uint32 berror : 1;
-      uint32 bwatch : 1;
-      uint32 bstep  : 1;
-      uint32 btrapa : 1;
-      uint32 btrape : 1;
-      uint32 null_a : 3;
-      uint32 reset  : 1;
-      uint32 halt   : 1;
-      uint32 null_b : 21;
-    };
-    struct RD
-    {
-      static const uint32 ADR = 0x0;
-      static const uint32 SEQ = 0;
-      uint32 te     : 1;
-      uint32 berror : 1;
-      uint32 bwatch : 1;
-      uint32 bstep  : 1;
-      uint32 btrapa : 1;
-      uint32 btrape : 1;
-      uint32 mode   : 1;
-      uint32 enable : 1;
-      uint32 Break  : 1;
-      uint32 nError : 1;
-      uint32 halt   : 1;
-      uint32 pwd    : 1;
-      uint32 null   : 20;
-    };
-  };
-  struct DsuRegTimer
-  {
-    static const uint32 ADR = (0x02<<2);
-    static const uint32 SEQ = 0;
-    uint32 timer  : CFG_DSU_TBITS;
-    uint32 null   : 32-CFG_DSU_TBITS;
-  };
-  struct DsuRegBreakStep
-  {
-    static const uint32 ADR = (0x08<<2);
-    static const uint32 SEQ = 0;
-    uint32 dbreak : CFG_NCPU;
-    uint32 null_a : 16-CFG_NCPU;
-    uint32 step   : CFG_NCPU;
-    uint32 null_b : 16-CFG_NCPU;
-  };  
-  struct DsuRegMask
-  {
-    static const uint32 ADR = (0x09<<2);
-    static const uint32 SEQ = 0;
-    uint32 bmsk   : CFG_NCPU;
-    uint32 null_a : 16-CFG_NCPU;
-    uint32 dmsk   : CFG_NCPU;
-    uint32 null_b : 16-CFG_NCPU;
-  };
-  struct DsuRegDelaycnt
-  {
-    static const uint32 ADR = (0x10<<2);
-    static const uint32 SEQ = 0;
-    uint32 enable   : 1;
-    uint32 dcnten   : 1;
-    uint32 Break    : 1;
-    uint32 null_a   : 13;
-    uint32 delaycnt : 8;  // TBUFABITS width
-    uint32 null_b   : 8;
-  };
-  struct DsuRegAIndex
-  {
-    static const uint32 ADR = (0x11<<2);
-    static const uint32 SEQ = 0;
-    uint32 null_a   : 4;
-    uint32 aindex   : 8;  // TBUFABITS width
-    uint32 null_b   : 20;
-  };
-  struct DsuRegTraceAddr1
-  {
-    static const uint32 ADR = (0x14<<2);
-    static const uint32 SEQ = 0;
-    uint32 null_a : 2;
-    uint32 addr   : 30;
-  };
-  struct DsuRegTraceMask1
-  {
-    static const uint32 ADR = (0x15<<2);
-    static const uint32 SEQ = 0;
-    uint32 write  : 1;
-    uint32 read   : 1;
-    uint32 mask   : 30;
-  };
-  struct DsuRegTraceAddr2
-  {
-    static const uint32 ADR = (0x16<<2);
-    static const uint32 SEQ = 0;
-    uint32 null_a : 2;
-    uint32 addr   : 30;
-  };
-  struct DsuRegTraceMask2
-  {
-    static const uint32 ADR = (0x17<<2);
-    static const uint32 SEQ = 0;
-    uint32 write  : 1;
-    uint32 read   : 1;
-    uint32 mask   : 30;
-  };
-  struct AhbBuf3
-  {
-    static const uint32 ADR = (0x2<<20)|(0x0<<2);
-    static const uint32 SEQ = 1;
-    uint32 B127_96;
-  };
-  struct AhbBuf2
-  {
-    static const uint32 ADR = (0x2<<20)|(0x1<<2);
-    static const uint32 SEQ = 1;
-    uint32 B95_64;
-  };
-  struct AhbBuf1
-  {
-    static const uint32 ADR = (0x2<<20)|(0x2<<2);
-    static const uint32 SEQ = 1;
-    uint32 B63_32;
-  };
-  struct AhbBuf0
-  {
-    static const uint32 ADR = (0x2<<20)|(0x3<<2);
-    static const uint32 SEQ = 1;
-    uint32 B31_0;
-  };
-  struct IUBuf
-  {
-    static const uint32 ADR = (0x1<<20);
-    static const uint32 SEQ = 1;
-    uint32 word;
-  };
-  struct IUReg
-  {
-    static const uint32 ADR = (0x3<<20);
-    static const uint32 SEQ = 1;
-    uint32 word;
-  };
-  struct IURegAccess
-  {
-    static const uint32 ADR = (0x4<<20);
-    static const uint32 SEQ = 3;
-    uint32 word;
-  };
-  struct DsuAsi
-  {
-    static const uint32 ADR = (0x5<<20);
-    static const uint32 SEQ = 3;
-    uint32 word;
-  };
-  
-  private:
-    TRegister2<DsuRegBits::RD,DsuRegBits::WR> rDsuRegBits;
-    TRegister<DsuRegTimer> rDsuRegTimer;
-    TRegister<DsuRegBreakStep> rDsuRegBreakStep;
-    TRegister<DsuRegMask> rDsuRegMask;
-    TRegister<DsuRegDelaycnt> rDsuRegDelaycnt;
-    TRegister<DsuRegAIndex> rDsuRegAIndex;
-    TRegister<DsuRegTraceAddr1> rDsuRegTraceAddr1;
-    TRegister<DsuRegTraceMask1> rDsuRegTraceMask1;
-    TRegister<DsuRegTraceAddr1> rDsuRegTraceAddr2;
-    TRegister<DsuRegTraceMask1> rDsuRegTraceMask2;
-    TRegister<AhbBuf3> rAhbBuf3;
-    TRegister<AhbBuf2> rAhbBuf2;
-    TRegister<AhbBuf1> rAhbBuf1;
-    TRegister<AhbBuf0> rAhbBuf0;
-    TRegister<IUBuf> rIUBuf;
-    TRegister<IUReg> rIUReg;
-    TRegister<IURegAccess> rIURegAccess;
-    TRegister<DsuAsi> rDsuAsi;
-  public:
-    DsuCpu()
-    {
-      bNewWord = false;
-    }
-
-    ahb_slv_in_type ahbsi;
-    enum EState {IDLE, NONSEQ, SEQ};
-    EState eState;
-    bool bNewWord;
-    uint32 iSeqCnt;
-
-    void Write(uint32 adr, uint32 val, uint32 seq)
-    {
-      bNewWord=true;
-    }
-    void Update(SClock inClk, ahb_slv_out_type *pahbso);
-    ahb_slv_in_type *GetpAhsi() {return &ahbsi;}
-};
-
-
 
 class dbg
 {
@@ -272,6 +41,7 @@ class dbg
     char chStr[2*64386];
     char *pStr;
     char chArr[256];
+    DbgString clVhdl;
 
     LibInitData sLibInitData;
     std::ofstream *posBench[TB_TOTAL];
@@ -319,6 +89,17 @@ class dbg
     void soc_leon3_tb(SystemOnChipIO &io);
     
     char *PrintAllRegIU(char *pStr, registers *pr);
+    
+    // 
+    void ResetPutStr(){ clVhdl.ResetPutStr(); }
+    bool CheckModificator(char*ref, char*comment){ clVhdl.CheckModificator(ref, comment); }
+    void PutWidth(int32 size, char *comment) { clVhdl.PutWidth(size, comment); }
+    void PrintIndexStr() {clVhdl.PrintIndexStr(); }
+    char* PutToStr(char *p, uint32 v, int size, char *comment=NULL, bool inv=false){ return clVhdl.Put(p,v,size,comment,inv); }
+    char* PutToStr(char *p, uint64 v, int size, char *comment=NULL, bool inv=false){ return clVhdl.Put(p,v,size,comment,inv); }
+    char* PutToStr(char *p, uint32* bus, int size, char *comment=NULL, bool inv=false){ return clVhdl.Put(p,bus,size,comment,inv); }
+    char* PutToStr(char *p, char *str){ return clVhdl.Put(p,str); }
+    
 
 #ifdef DBG_ahbctrl
     ahbctrl::reg_type  r;//      : in reg_type;

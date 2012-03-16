@@ -8,11 +8,6 @@
 
 #include "lheaders.h"
 
-extern leon3mp  topLeon3mp;
-
-extern void ResetPutStr();
-extern void PrintIndexStr();
-
 //****************************************************************************
 void dbg::soc_leon3_tb(SystemOnChipIO &io)
 {

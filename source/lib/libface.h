@@ -91,7 +91,8 @@ const char chBenchFile[TB_TOTAL][64]=
 struct LibInitData
 {
   char chDirOut[PATH_LENGTH_MAX];
-  uint32 uiBenchEna[TB_TOTAL];
+  uint32 uiBenchEna[TB_TOTAL];    // print data patterns
+  int32  iPrintVhdlData;          // print VHDL variables assignemt for fast insertion
 };
 
 //****************************************************************************

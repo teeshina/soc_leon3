@@ -8,35 +8,35 @@
 
 #include "lheaders.h"
 
-#define FILE_STRINGS_DBG "e:\\str.txt"
-
 using namespace std;
 
 //****************************************************************************
-bool bDoStrOutput=true;
-bool bSkipOutput=false;
-int32 iIndS=0;
-char chIndS[3*64386];
-char *pchIndS = chIndS;
-char chIndS2[3*64386];
-char *pchIndS2 = chIndS2;
+DbgString::DbgString()
+{
+  bDoStrOutput=true;    // Generate file just after first string has been formed
+  bSkipOutput=false;    // 
+}
 
 //****************************************************************************
-void ResetPutStr()
-{  
+void DbgString::SetOutputPath(int32 ena, char *path)
+{
+  if(ena) bDoStrOutput = true;
+  else    bDoStrOutput = false;
+  
+  strcpy_s(chVhdlNames, 1024, path);
+  strcat_s(chVhdlNames, 1024, "strdbg.txt");
+}
+
+//****************************************************************************
+void DbgString::ResetPutStr()
+{
   pchIndS = chIndS;
   pchIndS2 = chIndS2;
   iIndS = 0;
 }
 
 //****************************************************************************
-void SetSkipOutput(bool v)
-{
-  bSkipOutput = v;
-}
-
-//****************************************************************************
-bool CheckModificator(char*ref, char*comment)
+bool DbgString::CheckModificator(char*ref, char*comment)
 {
   bool bRet = true;
   size_t iCnt=0;
@@ -54,7 +54,7 @@ bool CheckModificator(char*ref, char*comment)
 }
 
 //****************************************************************************
-void PutWidth(int32 size, char *comment)
+void DbgString::PutWidth(int32 size, char *comment)
 {
   if(!bDoStrOutput|bSkipOutput)
     return;
@@ -85,23 +85,37 @@ void PutWidth(int32 size, char *comment)
   pchIndS2 += tmp;
 }
 
-void PrintIndexStr()
+//****************************************************************************
+void DbgString::PrintIndexStr()
 {
   if(bSkipOutput) return;
   if(!bDoStrOutput) return;
+  bDoStrOutput = false;   // Print only once!!!!
   
-  bDoStrOutput = false;
-  std::ofstream osStr(FILE_STRINGS_DBG, ios::out);
-  osStr << chIndS2;
-  osStr << "\n";
-  osStr << chIndS;
-  osStr.close();
+  posVhdlNames = new std::ofstream(chVhdlNames, ios::out);
+  if(posVhdlNames->is_open())
+  {
+    *posVhdlNames << "//*************************************************\n";
+    *posVhdlNames << "//VHDL Strings with declaration: \n";
+    *posVhdlNames << "//*************************************************\n\n";
+    *posVhdlNames << chIndS2;
+    *posVhdlNames << "\n";
+    
+    *posVhdlNames << "//*************************************************\n";
+    *posVhdlNames << "//VHDL Strings with assignments: \n";
+    *posVhdlNames << "//*************************************************\n\n";
+    *posVhdlNames << chIndS;
+    posVhdlNames->close();
+  }else
+  {
+    printf_s("Error: can't create file \"%s\"",chVhdlNames);
+  }
+  free(posVhdlNames);
 }
 
-//****************************************************************************
 
 //****************************************************************************
-char* PutToStr(char *p, uint32 v, int size, char *comment, bool inv)
+char* DbgString::Put(char *p, uint32 v, int size, char *comment, bool inv)
 {
   if(comment!=NULL) PutWidth(size, comment);  
 
@@ -127,7 +141,7 @@ char* PutToStr(char *p, uint32 v, int size, char *comment, bool inv)
 }
 
 //****************************************************************************
-char* PutToStr(char *p, uint64 v, int size, char *comment, bool inv)
+char* DbgString::Put(char *p, uint64 v, int size, char *comment, bool inv)
 {
   if(comment!=NULL) PutWidth(size, comment);
 
@@ -154,7 +168,7 @@ char* PutToStr(char *p, uint64 v, int size, char *comment, bool inv)
 
 
 //****************************************************************************
-char* PutToStr(char *p, uint32* bus, int size, char *comment, bool inv)
+char* DbgString::Put(char *p, uint32* bus, int size, char *comment, bool inv)
 {
   if(comment!=NULL) PutWidth(size, comment);
   if(!inv)
@@ -179,7 +193,7 @@ char* PutToStr(char *p, uint32* bus, int size, char *comment, bool inv)
 }
 
 //****************************************************************************
-char* PutToStr(char *p, char *str)
+char* DbgString::Put(char *p, char *str)
 {
   uint32 i=0;
   while(*str!='\0')

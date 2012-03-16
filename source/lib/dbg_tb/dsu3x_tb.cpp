@@ -1,78 +1,5 @@
 #include "lheaders.h"
 
-extern leon3mp  topLeon3mp;
-
-extern void ResetPutStr();
-extern void PrintIndexStr();
-
-/*struct DsuAdrFields
-{
-  uint32 nul_a    : 2;
-  uint32 DsuRegs  : 5;//(6:2)hsel2
-  uint32 nul_b    : 13;
-  uint32 TypeRegs : 4;//(23:20)hsel1
-  uint32 CpuInd   : 1;//(24+log2x[ncpu]-1;24)
-  uint32 nul_c    : 7;
-};*/
-
-
-
-void DsuCpu::Update(SClock inClk, ahb_slv_out_type *pahbso)
-{
-  if(inClk.eClock_z!=SClock::CLK_POSEDGE)
-    return;
-        
-  switch(eState)
-  {
-    case IDLE:
-      ahbsi.htrans = HTRANS_IDLE;
-      ahbsi.hsel   = 0;
-      if(bNewWord)
-      {
-        eState = NONSEQ;
-        ahbsi.haddr  = 0x90000000 | rDsuRegBits.u.r.ADR;
-        ahbsi.hsize  = HSIZE_WORD;
-        ahbsi.htrans = HTRANS_NONSEQ;
-        ahbsi.hwdata = 0x22223333;
-        ahbsi.hburst = HBURST_WRAP8;//HBURST_SINGLE;
-        ahbsi.hsel   = 1<<AHB_SLAVE_DSU;
-        ahbsi.hwrite = 1;
-        ahbsi.hready = 1;
-        iSeqCnt      = 0;
-      }
-    break;
-    case NONSEQ:
-      if(pahbso->hready)
-      {
-        iSeqCnt++;
-        if(ahbsi.hburst == HBURST_SINGLE) 
-        {
-          eState = IDLE;
-          bNewWord = false;
-        }else
-        {
-          eState = SEQ;
-          ahbsi.htrans = HTRANS_SEQ;;
-          ahbsi.haddr += 4;
-        }
-      }
-    break;
-    case SEQ:
-      if(pahbso->hready)
-      {
-        iSeqCnt++;
-        if(iSeqCnt>rDsuRegBits.u.r.SEQ)
-        {
-          eState = IDLE;
-          bNewWord = false;
-        }
-      }
-    break;
-    default:;
-  }
-}
-
-
 //****************************************************************************
 void dbg::dsu3x_tb(SystemOnChipIO &io)
 {
@@ -85,14 +12,6 @@ void dbg::dsu3x_tb(SystemOnChipIO &io)
   dsu_in_type         *pin_dsui = &topLeon3mp.dsui;//   : in dsu_in_type;
   dsu_out_type        *pch_dsuo = &topLeon3mp.dsuo;//   : out dsu_out_type;
   uint32              hclken = 1;// : in std_ulogic
-
-//#define DSU_CPU_ENA
-#ifdef DSU_CPU_ENA
-  if(iClkCnt==100)
-    clDsuCpu.Write(0,0,0);
-
-  clDsuCpu.Update(io.inClk, &ch_ahbso);
-#endif
 
 #ifdef DBG_dsu3x
   if(io.inClk.eClock_z==SClock::CLK_POSEDGE)
