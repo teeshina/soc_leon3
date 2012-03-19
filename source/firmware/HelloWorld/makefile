@@ -6,7 +6,12 @@ LDFLAGS =
 #Alternative entry point 
 #LDFLAGS =  -Ttext=0xA0000000 
 # -Tdata=0xA0010000  -Tbss=0xA0030000
-SOURCES = main.cpp 
+SOURCES = main.cpp \
+	uart.cpp \
+	timer.cpp \
+	tickhandler.cpp \
+	irqctrl.cpp \
+	sysctrl.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 EXECUTABLE = HelloWorld.elf
 SRC_DIR = src
@@ -15,7 +20,7 @@ ELF_DIR = target_$(FPGA_BOARD)/elf
 
 .PHONY: $(EXECUTABLE)
 
-all: $(SRC_DIR)/$(SOURCES) $(EXECUTABLE)
+all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
 	$(MKDIR) ./$(ELF_DIR)
