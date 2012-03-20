@@ -2,8 +2,10 @@
 //
 //****************************************************************************
 #include "sysctrl.h"
+#include "uart.h"
 
 SysControl clSysControl;
+ApbUart    clApbUart;
 
 
 //****************************************************************************
@@ -11,7 +13,8 @@ int main()
 {
   clSysControl.Init();
 
-  while(true) {}
+  while(true) {printf_uart("!\n");}
 	
   return 0;
 }
+

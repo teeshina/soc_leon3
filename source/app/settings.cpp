@@ -219,7 +219,6 @@ void Settings::SaveToFile()
     osSettings << chLine;
   }
 
-  sLibInitData.iPrintVhdlData = 
   sprintf_s(chLine, "%s%i\n",AllStrings[STR_PRINT_VHDLDATA].name, sLibInitData.iPrintVhdlData);
   osSettings << chLine;
 }

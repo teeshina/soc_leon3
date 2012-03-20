@@ -2,7 +2,13 @@
 
 set USE_ARM_MODE=0
 set USE_ARM_COMPILER=GCC_LEON3
+if "%1"=="" goto default_target
+
 set FPGA_BOARD=VIRTEX_ML605
+goto workpath
+
+:default_target
+set FPGA_BOARD=PC_SIMULATION
 
 rem ---------------------------------------------------------------------------------------------------
 :workpath
@@ -10,6 +16,8 @@ rem ----------------------------------------------------------------------------
 set PATH=E:\cygwin\bin;E:\fw_tools\gnutools;E:\fw_tools\gnutools\cyg;%SystemRoot%\SYSTEM32
 set PATH=E:\fw_tools\sparc-elf-4.4.1-mingw\bin;%PATH%
 set PATH=E:\fw_tools\sparc-elf-4.4.2-mingw\bin;%PATH%
+set PATH=C:\opt\sparc-elf-3.4.4-mingw\bin;%PATH%
+set PATH=C:\opt\sparc-elf-4.4.2-mingw\bin;%PATH%
 set TARGET=fw_hello_world
 set USE_FPU=0
 

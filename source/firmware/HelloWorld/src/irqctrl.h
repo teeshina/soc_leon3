@@ -28,7 +28,7 @@ class IrqControl
 
 	public:
 		void Init();
-
+    void ClearIrq(int32 n);
 };
 
 #endif //__IRQTEST_H__

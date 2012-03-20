@@ -7,7 +7,7 @@
 // WARNING:     Don't insert spaces.
 //****************************************************************************
 
-ELF file="..\source\firmware\HelloWorld\target_VIRTEX_ML605\elf\HelloWorld.elf"
+ELF file="..\source\firmware\HelloWorld\target_PC_SIMULATION\elf\HelloWorld.elf"
 Output path="e:\"
 
 SystemClock Freq.,[Hz]=66000000.0

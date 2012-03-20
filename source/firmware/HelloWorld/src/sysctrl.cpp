@@ -1,14 +1,16 @@
 #include "uart.h"
 #include "sysctrl.h"
 
+extern ApbUart clApbUart;
+
 void SysControl::Init()
 {
   // Uart initialization:
-	UartInit();
+  clApbUart.Init();
 
-	// Timer initialization:
-	clTimer.Init();
+  // Timer initialization:
+  clTimer.Init();
 
-	// Interrupt controller:
-	clIrqControl.Init();
+  // Interrupt controller:
+  clIrqControl.Init();
 }

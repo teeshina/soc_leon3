@@ -184,6 +184,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\source\lib\dbgstring.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\source\lib\DllMain.cpp"
 				>
 			</File>

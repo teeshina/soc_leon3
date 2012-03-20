@@ -1,7 +1,7 @@
 include util.mak
 
 CC = sparc-elf-c++.exe
-CFLAGS = -c -Wall -Wno-deprecated
+CFLAGS = -c -Wall -Wno-deprecated -D$(FPGA_BOARD)
 LDFLAGS = 
 #Alternative entry point 
 #LDFLAGS =  -Ttext=0xA0000000 

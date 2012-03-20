@@ -1,37 +1,86 @@
+#include <stdio.h>
+#include <stdarg.h>
+#include "soconfig.h"
+#include "uart.h"
+#include "sysctrl.h"
+
+extern ApbUart    clApbUart;
+
+
+char tmpUartStr[256];
 
 //****************************************************************************
-void UartInit()
+int32 printf_uart(const char *_format, ... )
 {
-	unsigned int *adr;
-  adr = (unsigned int *)0x8000010c;
+  int32 ret = 0;
+  va_list arg;
+  va_start( arg, _format );
+  
+  ret = vsprintf( tmpUartStr, _format, arg );
+  va_end( arg );
 
-  // Set scaler:
-  //		 scaler = 66MHz/(8*(1+rate)) = 115200 = 71
-#if 1
-  *adr = 4;	 // for the fast simulation. It is the same as in file "settings.txt"
-#else
-  *adr = 71; // 115200 baudrate
-#endif
+  clApbUart.Print(tmpUartStr, ret);
+  return ret;
+}
 
-  // Init port for the transmition:
-  adr = (unsigned int *)0x80000108;
-  *adr = 2;
+
+//****************************************************************************
+void uart_empty_irqhandler()
+{
+  clApbUart.Send();
 }
 
 //****************************************************************************
-void SendStringToUart(char *str)
+void ApbUart::Send()
 {
-	unsigned int *adr, *status;
-	adr = (unsigned int *)0x80000100; 		// APB UART1 write data address
-	status = (unsigned int *)0x80000104;  // APB UART1 status address
-	char *tmp = str;
-
-  while(*tmp!='\0')
+  if(iBufCnt==0) 
   {
-    while((*status&0x600)!=0) {}
-
-    *adr = (unsigned int)(*tmp);
-    tmp++;
-
+    uart->control &= ~UART_CTRL_TSEMPTY_IRQEN;
+    return;
   }
+  while((uart->status&UART_STATUS_TFULL)==0)
+  {
+    uart->data = (unsigned int)(*(pchBuf-iBufCnt));
+    if((--iBufCnt)==0)
+    {
+      uart->control &= ~UART_CTRL_TSEMPTY_IRQEN;
+      break;
+    }
+  }
+}
+
+//****************************************************************************
+void ApbUart::Print(char *str, int32 len)
+{
+  char *tmp = str;
+
+  iBufCnt += len;
+  if(iBufCnt>BUF_LENGTH) iBufCnt = BUF_LENGTH;   // Overflow buffer
+  for (int32 i=0; i<len; ++i)
+  {
+    *pchBuf = *(pchBuf-BUF_LENGTH) = str[i];
+    if((++pchBuf)>=&chBuf[2*BUF_LENGTH]) pchBuf = &chBuf[BUF_LENGTH];
+  }
+  if(iBufCnt) uart->control |= UART_CTRL_TSEMPTY_IRQEN;
+  Send();
+
+}
+
+//****************************************************************************
+void ApbUart::Init()
+{
+  uart = (uart_fields*)ADR_APBUART_BASE;
+
+  // scaler = 66MHz/(8*(1+rate)) = 115200 = 71
+#ifdef PC_SIMULATION   // 
+  uart->scaler = 4;	   // for the fast simulation. It is the same as in file "settings.txt"
+#else
+  uart->scaler = 71;       // 115200 baudrate
+#endif
+
+  pchBuf  = &chBuf[BUF_LENGTH];
+  iBufCnt = 0;
+
+  // Init port for the transmition:
+  uart->control = UART_CTRL_ENABLE_TX|UART_CTRL_TSEMPTY_IRQEN;
 }

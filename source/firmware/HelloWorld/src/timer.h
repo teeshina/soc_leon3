@@ -2,8 +2,14 @@
 #define __TIMERTEST_H__
 
 #include "stdtypes.h"
+#include "soconfig.h"
 
-#define TIMERS_TOTAL 2
+static const uint32 TIMER_CTRL_ENABLE  = 0x1<<0;
+static const uint32 TIMER_CTRL_RESTART = 0x1<<1;
+static const uint32 TIMER_CTRL_LOAD    = 0x1<<2;
+static const uint32 TIMER_CTRL_IRQENA  = 0x1<<3;
+static const uint32 TIMER_CTRL_IRQPEND = 0x1<<4;
+static const uint32 TIMER_CTRL_CHAIN   = 0x1<<5;
 
 struct timer_fields {
     volatile unsigned int counter;		/* 0x0 */
