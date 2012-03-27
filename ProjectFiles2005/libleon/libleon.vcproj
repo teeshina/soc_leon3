@@ -574,6 +574,14 @@
 					Name="gnss"
 					>
 					<File
+						RelativePath="..\..\source\lib\leon3_ml605\gnss\rfctrl.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\source\lib\leon3_ml605\gnss\rfctrl.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\source\lib\leon3_ml605\gnss\topgnss.cpp"
 						>
 					</File>
@@ -671,6 +679,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\source\lib\dbg_tb\jtagpad_tb.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\source\lib\dbg_tb\leon3s_tb.cpp"
 					>
 				</File>
@@ -738,6 +750,10 @@
 				</File>
 				<File
 					RelativePath="..\..\source\lib\dbg_tb\regfile_3p_tb.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\source\lib\dbg_tb\rfctrl_tb.cpp"
 					>
 				</File>
 				<File

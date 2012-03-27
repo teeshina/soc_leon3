@@ -25,6 +25,7 @@ JtagClock Freq.,[Hz]=20000000.0
 // Enable/disable pattern file generation for the certain VHDL testbench file:
 TB_jtagcom=0
 TB_ahbmaster=0
+TB_jtagpad=0
 TB_ahbjtag=0
 TB_ahbctrl=0
 TB_mmutlbcam=0
@@ -52,4 +53,5 @@ TB_irqmp=0
 TB_gptimer=0
 TB_finderr=0
 TB_soc_leon3=0
+TB_rfctrl=0
 Print VHDL assignment=0

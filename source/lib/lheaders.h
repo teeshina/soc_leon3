@@ -99,6 +99,7 @@
 #include "leon3_ml605\leon3\irqmp.h"
 
 
+#include "leon3_ml605\gnss\rfctrl.h"
 #include "leon3_ml605\gnss\topgnss.h"
 
 #include "leon3_ml605\leon3mp.h"

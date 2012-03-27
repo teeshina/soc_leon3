@@ -47,6 +47,7 @@ const enum
   APB_UART_CFG,
   APB_IRQ_CONTROL,
   APB_TIMER,
+  APB_RF_CONTROL,
   APB_TOTAL
 };
 

@@ -104,6 +104,8 @@ void dbg::Update(SystemOnChipIO &io)
 
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_ahbmaster]) ahbmst_tb(io);  
 
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_jtagpad]) jtagpad_tb(io);
+
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_ahbjtag]) ahbjtag_tb(io);   // (jtagcom + ahbmst)
   
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_ahbctrl]) ahbctrl_tb(io);
@@ -157,6 +159,8 @@ void dbg::Update(SystemOnChipIO &io)
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_finderr]) finderr_tb(io);
 
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_soc_leon3]) soc_leon3_tb(io);
+  
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_rfctrl]) rfctrl_tb(io);
 
   if(io.inClk.eClock==SClock::CLK_POSEDGE)
     iClkCnt++;

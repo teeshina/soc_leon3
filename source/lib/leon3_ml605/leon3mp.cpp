@@ -32,6 +32,8 @@ leon3mp::leon3mp()
   pclIrqControl = new irqmp(APB_IRQ_CONTROL, 0x2, 0xfff);// total address 0x800002xx  = 256 bytes
   
   pclTimer = new gptimer(APB_TIMER, 0x3, 0xfff);// total address 0x800003xx  = 256 bytes
+  
+  pclRfControl = new RfControl(APB_RF_CONTROL, 0x4, 0xfff);// total address 0x800004xx  = 256 bytes
 }
 
 //****************************************************************************
@@ -45,6 +47,7 @@ leon3mp::~leon3mp()
   free(pclApbUartA);
   free(pclIrqControl);
   free(pclTimer);
+  free(pclRfControl);
 }
 
 //****************************************************************************
@@ -60,7 +63,18 @@ void leon3mp::Update( uint32 inRst,
                       uint32 inCTS, // if CTS=0. then may send data via TX, otherwise wait sending
                       uint32 inRX,
                       uint32 &outRTS,// If this uart can't recieve data RX, then rise this to "1"
-                      uint32 &outTX
+                      uint32 &outTX,
+                      // SPI MAX2769 GPS L1/GLO L1
+                      uint32 inLD_GpsL1,
+                      uint32 inLD_GloL1,
+                      uint32 &outSCLK,
+                      uint32 &outSDATA,
+                      uint32 &outCSn_GpsL1,
+                      uint32 &outCSn_GloL1,
+                      // Antenna control
+                      uint32 inExtAntStat,
+                      uint32 inExtAntDetect,
+                      uint32 &outExtAntEna
                     )
 {
 
@@ -148,5 +162,8 @@ void leon3mp::Update( uint32 inRst,
   gpti.extclk = 0;
   pclTimer->Update(wNRst, inClk, apbi, apbo.arr[APB_TIMER], gpti, gpto);
 
+  // MAX2769 GPS L1/GLO L1
+//  pclRfControl->Update(wNRst, inClk, apbi, apbo.arr[APB_RF_CONTROL],
+//                     inLD_a, outSCLK_a, outSDATA_a, outCSn_a );
 }
 

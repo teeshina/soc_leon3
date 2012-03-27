@@ -22,6 +22,7 @@ enum EStringName
 
   STR_TB_jtagcom,
   STR_TB_ahbmaster,
+  STR_TB_jtagpad,
   STR_TB_ahbjtag,
   STR_TB_ahbctrl,
   STR_TB_mmutlbcam,
@@ -49,6 +50,7 @@ enum EStringName
   STR_TB_gptimer,
   STR_TB_finderr,
   STR_TB_soc_leon3,
+  STR_TB_rfctrl,
 
   STR_PRINT_VHDLDATA,
   
@@ -84,6 +86,7 @@ const StringData AllStrings[] =
 
   {STR_TB_jtagcom,      "TB_jtagcom=",STRTYPE_INTEGER},
   {STR_TB_ahbmaster,    "TB_ahbmaster=",STRTYPE_INTEGER},
+  {STR_TB_jtagpad,      "TB_jtagpad=",STRTYPE_INTEGER},
   {STR_TB_ahbjtag,      "TB_ahbjtag=",STRTYPE_INTEGER},
   {STR_TB_ahbctrl,      "TB_ahbctrl=",STRTYPE_INTEGER},
   {STR_TB_mmutlbcam,    "TB_mmutlbcam=",STRTYPE_INTEGER},
@@ -111,6 +114,7 @@ const StringData AllStrings[] =
   {STR_TB_gptimer,      "TB_gptimer=",STRTYPE_INTEGER},
   {STR_TB_finderr,      "TB_finderr=",STRTYPE_INTEGER},
   {STR_TB_soc_leon3,    "TB_soc_leon3=",STRTYPE_INTEGER},
+  {STR_TB_rfctrl,       "TB_rfctrl=", STRTYPE_INTEGER},
   
   {STR_PRINT_VHDLDATA,  "Print VHDL assignment=",STRTYPE_INTEGER},
 

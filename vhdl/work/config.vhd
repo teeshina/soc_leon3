@@ -162,7 +162,9 @@ package config is
   constant APB_UART_1           : integer := 0;
   constant APB_IRQ_CONTROL      : integer := APB_UART_1+1;
   constant APB_TIMER            : integer := APB_IRQ_CONTROL+1;
-  constant APB_TOTAL            : integer := APB_TIMER+1;
+  constant APB_RF_CONTROL       : integer := APB_TIMER+1;
+  constant APB_TOTAL            : integer := APB_RF_CONTROL+1;
 
 
+  constant CFG_USE_INIT_RAM : integer := 1;
 end;

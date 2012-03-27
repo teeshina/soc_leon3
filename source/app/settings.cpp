@@ -83,7 +83,7 @@ void Settings::ParseLine(char *src, EStringName name)
     case STR_PRINT_VHDLDATA:  sLibInitData.iPrintVhdlData = GetFieldInt(src, length); break;
     default:;
   }
-  if((name>=STR_TB_jtagcom)&&(name<=STR_TB_soc_leon3))
+  if((name>=STR_TB_jtagcom)&&(name<STR_PRINT_VHDLDATA))
     sLibInitData.uiBenchEna[name-STR_TB_jtagcom] = GetFieldInt(src, length);
 }
 

@@ -17,6 +17,7 @@ use gaisler.uart.all;
 
 library gnsslib;
 use gnsslib.gnsspll.all;
+use gnsslib.gnssmem.all;
 
 library work;
 use work.all;
@@ -119,21 +120,20 @@ begin
     write
   );
 
-  clSRAM : syncrambw generic map 
-  (
-    CFG_MEMTECH,
-    CFG_SRAM_ADRBITS,
-    AHBDW
-  )port map
-  (
-    wClkBus,
-    ramaddr,
-    hwdata,
-    ramdata,
-    ramsel,
-    write
-  ); 
-
+  -- SRAM selector.
+  sramdef: if CFG_USE_INIT_RAM=0 generate
+    clSRAM : syncrambw generic map 
+    (
+      CFG_MEMTECH,
+      CFG_SRAM_ADRBITS,
+      AHBDW
+    )port map
+    ( wClkBus, ramaddr, hwdata, ramdata, ramsel, write );
+  end generate;
+  sraminit : if CFG_USE_INIT_RAM=1 generate
+    clSRAM : InitRam port map
+    ( wClkBus, ramsel, write, ramaddr, hwdata, ramdata );
+  end generate;
 
 end Behavioral;
 

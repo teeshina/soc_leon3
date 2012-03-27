@@ -50,6 +50,8 @@ class leon3mp
     gptimer_out_type gpto;
     gptimer *pclTimer;
 
+    RfControl *pclRfControl;
+
     ahbrom *pclAhbRom;
 
     uint32 wSysReset;
@@ -75,8 +77,19 @@ class leon3mp
       uint32 inCTS, // if CTS=0. then may send data via TX, otherwise wait sending
       uint32 inRX,
       uint32 &outRTS,// If this uart can't recieve data RX, then rise this to "1"
-      uint32 &outTX
-    );
+      uint32 &outTX,
+      // SPI MAX2769 GPS L1/GLO L1
+      uint32 inLD_GpsL1,
+      uint32 inLD_GloL1,
+      uint32 &outSCLK,
+      uint32 &outSDATA,
+      uint32 &outCSn_GpsL1,
+      uint32 &outCSn_GloL1,
+      // Antenna control
+      uint32 inExtAntStat,
+      uint32 inExtAntDetect,
+      uint32 &outExtAntEna
+       );
     
     void ClkUpdate()
     {
@@ -92,6 +105,7 @@ class leon3mp
       pclAhbRom->ClkUpdate();
       pclIrqControl->ClkUpdate();
       pclTimer->ClkUpdate();
+      pclRfControl->ClkUpdate();
       
       rbPllLock.ClkUpdate();
       rReset.ClkUpdate();

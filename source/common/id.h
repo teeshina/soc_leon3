@@ -24,7 +24,7 @@ static const uint32 VENDOR_APPLECORE  = 0xAE;
 static const uint32 VENDOR_CAL        = 0xCA;
 static const uint32 VENDOR_CETON      = 0xCB;
 static const uint32 VENDOR_EMBEDDIT   = 0xEA;
-
+static const uint32 VENDOR_GNSSSENSOR = 0xF1;
 
 
 // Gaisler cores 
@@ -167,3 +167,5 @@ static const uint32 VENDOR_EMBEDDIT   = 0xEA;
 #define CFGAREA_TYPE_APB_IO  0x1
 #define CFGAREA_TYPE_AHB_MEM 0x2
 #define CFGAREA_TYPE_AHB_IO  0x3
+
+#define GNSSSENSOR_RF_CONTROL 0x077

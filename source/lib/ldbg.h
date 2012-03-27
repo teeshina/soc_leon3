@@ -32,6 +32,8 @@
 //#define DBG_apbuart
 //#define DBG_irqmp
 //#define DBG_gptimer
+//#define DBG_jtagpad
+#define DBG_RfControl
 
 extern leon3mp topLeon3mp;
 
@@ -66,6 +68,7 @@ class dbg
     void mmu_cache_tb(SystemOnChipIO &io);
     void jtagcom_tb(SystemOnChipIO &io);
     void ahbmst_tb(SystemOnChipIO &io);
+    void jtagpad_tb(SystemOnChipIO &io);
     void ahbjtag_tb(SystemOnChipIO &io);
     void ahbctrl_tb(SystemOnChipIO &io);
     void leon3s_tb(SystemOnChipIO &io);
@@ -87,6 +90,7 @@ class dbg
     void tbufmem_tb(SystemOnChipIO &io);
     void finderr_tb(SystemOnChipIO &io);
     void soc_leon3_tb(SystemOnChipIO &io);
+    void rfctrl_tb(SystemOnChipIO &io);
     
     char *PrintAllRegIU(char *pStr, registers *pr);
     
@@ -359,6 +363,35 @@ class dbg
   gptimer_out_type ch_gpto;//   : out gptimer_out_type
   
   gptimer *ptst_gptimer;
+#endif
+#ifdef DBG_jtagpad
+  uint32 in_nTRST;
+  SClock in_TCK;
+  uint32 in_TMS;
+  uint32 in_TDI;
+  uint32 ch_TDO;
+  uint32 ch_SelUser1;  //sel=1 when JTAG instruction register holds USER instruction
+  uint32 ch_SelUser2;
+  uint32 ch_TDI;       //fed through directly from FPGA TDI pin
+  uint32 ch_DRCK;      //DRCK is same as TCK. if interface is not selected it remains high
+  uint32 ch_Capture;   //Active-high pulse indicating Capture_DR state
+  uint32 ch_Shift;     //Active-high. Indicate Shift_DR state
+  uint32 ch_Update;    //Active-high indicating the Update_DR state
+  uint32 ch_Reset;     //=1 reset output
+  uint32 in_tdo1;        //2-nd register doesn't use
+  JTagPad tst_jtagpad;
+#endif
+#ifdef DBG_RfControl
+  apb_slv_in_type  in_apbi;//   : in  apb_slv_in_type;
+  apb_slv_out_type ch_apbo;//   : out apb_slv_out_type;
+  uint32 in_LD[SystemOnChipIO::TOTAL_MAXIM2769];
+  uint32 ch_SCLK;
+  uint32 ch_SDATA;
+  uint32 ch_CSn[SystemOnChipIO::TOTAL_MAXIM2769];
+  uint32 in_ExtAntStat;
+  uint32 in_ExtAntDetect;
+  uint32 ch_ExtAntEna;
+  RfControl tst_RfControl;
 #endif
 };
 

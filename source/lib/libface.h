@@ -23,6 +23,7 @@ enum ETestBenchName
 {
   TB_jtagcom,
   TB_ahbmaster,
+  TB_jtagpad,
   TB_ahbjtag,
   TB_ahbctrl,
   TB_mmutlbcam,
@@ -50,6 +51,7 @@ enum ETestBenchName
   TB_gptimer,
   TB_finderr,
   TB_soc_leon3,
+  TB_rfctrl,
   
   TB_TOTAL
 };
@@ -58,6 +60,7 @@ const char chBenchFile[TB_TOTAL][64]=
 {
   "jtagcom_tb.txt",
   "ahbmaster_tb.txt",
+  "jtagpad_tb.txt",
   "ahbjtag_tb.txt",
   "ahbctrl_tb.txt",
   "mmutlbcam_tb.txt",
@@ -84,7 +87,8 @@ const char chBenchFile[TB_TOTAL][64]=
   "irqmp_tb.txt",
   "gptimer_tb.txt",
   "finderr1_tb.txt",
-  "soc_leon3_tb.txt"
+  "soc_leon3_tb.txt",
+  "rfctrl_tb.txt"
 };
 
 //****************************************************************************
@@ -129,22 +133,29 @@ struct SystemOnChipIO
   struct SDDR
   {
   } ddr;
+
   //GNSS inputs:
+  static const int32 TOTAL_MAXIM2769 = 2;
   struct SGnss
   {
-    uint32 I[2];    // [0]=Adc Re GPS/GALILEO L1; [1]=Adc Re GLONASS L1
-    uint32 Q[2];    // [0]=Adc Im GPS/GALILEO L1; [1]=Adc Im GLONASS L1
-    SClock adc_clk; // ADC clock ~16..32 MHz
+    uint32 I[TOTAL_MAXIM2769];  // [0]=Adc Re GPS/GALILEO L1; [1]=Adc Re GLONASS L1
+    uint32 Q[TOTAL_MAXIM2769];  // [0]=Adc Im GPS/GALILEO L1; [1]=Adc Im GLONASS L1
+    SClock adc_clk;             // ADC clock ~16..32 MHz
   } gnss;
   // MAX2769 synthesizer interface:
   struct SMax2769
   {
-    uint32 LD;      // in: PLL locked
-    uint32 nSHDN;   // out: shutdown IC
+    uint32 LD[TOTAL_MAXIM2769];      // in: PLL locked
     uint32 nSDATA;  // spi interface data
     uint32 SCLK;    // spi interface clock
-    uint32 nCS;     // spi interface ncs
-  }max_gpsl1, max_glol1;
+    uint32 nCS[TOTAL_MAXIM2769];     // spi interface ncs
+  }spimax2769;
+  struct SAntennaControl
+  {
+    uint32 ExtAntStat;  // in:
+    uint32 ExtAntDetect;// in:
+    uint32 ExtAntEna;   // out:
+  }antctrl;
 };
 
 
