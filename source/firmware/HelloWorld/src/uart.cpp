@@ -6,6 +6,11 @@
 
 extern ApbUart    clApbUart;
 
+static const int32 BUF_LENGTH = 256;
+char chBuf[2*BUF_LENGTH];
+char *pchBuf;
+int32 iBufCnt=0;
+
 
 char tmpUartStr[256];
 

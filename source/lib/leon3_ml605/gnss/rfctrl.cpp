@@ -158,6 +158,8 @@ void RfControl::Update(  uint32 rst,//    : in  std_ulogic;
     v.BitCnt = 0;
     v.CS = 0;
     v.select_spi = 0;
+    v.ExtAntEna = 0;
+    v.SendWord = 0;
   }
 
 

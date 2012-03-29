@@ -48,12 +48,11 @@ class ApbUart
 {
   friend class dbg;
   private:
-    static const int32 BUF_LENGTH = 256;
+//    static const int32 BUF_LENGTH = 256;
   private:
     uart_fields *uart;
-    char chBuf[2*BUF_LENGTH];
-    char *pchBuf;
-    int32 iBufCnt;
+//    char chBuf[2*BUF_LENGTH];
+//    char *pchBuf;
   public:
     void Init();
     void Print(char *str, int32 len);

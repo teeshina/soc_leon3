@@ -140,12 +140,16 @@ begin
   );
 
 
-procCheck : process (inClk,ch_apbo)
+procCheck : process (inClk,ch_apbo,ch_ExtAntEna)
 begin
   if(rising_edge(inClk)and(iClkCnt>2)) then
---    if((apbo.prdata(30)/='U')and(apbo.prdata(1)/='U')) then
---      if(ch_apbo/=apbo) then print("Err: apbo: prdata=" & tost(apbo.prdata));  iErrCnt:=iErrCnt+1; end if;
---    end if;
+    if((apbo.prdata(30)/='U')and(apbo.prdata(1)/='U')) then
+      if(ch_apbo/=apbo) then print("Err: apbo: prdata=" & tost(apbo.prdata));  iErrCnt:=iErrCnt+1; end if;
+    end if;
+    if(ch_ExtAntEna/=ExtAntEna)then print("Err: ExtAntEna"); iErrCnt:=iErrCnt+1; end if;
+    if(ch_SCLK/=SCLK)then print("Err: SCLK"); iErrCnt:=iErrCnt+1; end if;
+    if(ch_SDATA/=SDATA)then print("Err: SDATA"); iErrCnt:=iErrCnt+1; end if;
+    if(ch_CSn/=CSn)then print("Err: CSn"); iErrCnt:=iErrCnt+1; end if;
   end if;
 end process procCheck;
 

@@ -65,12 +65,10 @@ void leon3mp::Update( uint32 inRst,
                       uint32 &outRTS,// If this uart can't recieve data RX, then rise this to "1"
                       uint32 &outTX,
                       // SPI MAX2769 GPS L1/GLO L1
-                      uint32 inLD_GpsL1,
-                      uint32 inLD_GloL1,
+                      uint32 inLD[SystemOnChipIO::TOTAL_MAXIM2769],
                       uint32 &outSCLK,
                       uint32 &outSDATA,
-                      uint32 &outCSn_GpsL1,
-                      uint32 &outCSn_GloL1,
+                      uint32 *outCSn,
                       // Antenna control
                       uint32 inExtAntStat,
                       uint32 inExtAntDetect,
@@ -162,8 +160,9 @@ void leon3mp::Update( uint32 inRst,
   gpti.extclk = 0;
   pclTimer->Update(wNRst, inClk, apbi, apbo.arr[APB_TIMER], gpti, gpto);
 
-  // MAX2769 GPS L1/GLO L1
-//  pclRfControl->Update(wNRst, inClk, apbi, apbo.arr[APB_RF_CONTROL],
-//                     inLD_a, outSCLK_a, outSDATA_a, outCSn_a );
+  // Antenna control and MAX2769 GPS/GLO-L1 SPIs
+  pclRfControl->Update(wNRst, inClk, apbi, apbo.arr[APB_RF_CONTROL],
+                      inLD, outSCLK, outSDATA, outCSn,
+                      inExtAntStat, inExtAntDetect, outExtAntEna );
 }
 

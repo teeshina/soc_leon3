@@ -33,7 +33,7 @@
 //#define DBG_irqmp
 //#define DBG_gptimer
 //#define DBG_jtagpad
-#define DBG_RfControl
+//#define DBG_RfControl
 
 extern leon3mp topLeon3mp;
 

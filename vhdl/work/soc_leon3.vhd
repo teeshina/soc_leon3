@@ -120,20 +120,14 @@ begin
     write
   );
 
-  -- SRAM selector.
-  sramdef: if CFG_USE_INIT_RAM=0 generate
-    clSRAM : syncrambw generic map 
-    (
-      CFG_MEMTECH,
-      CFG_SRAM_ADRBITS,
-      AHBDW
-    )port map
-    ( wClkBus, ramaddr, hwdata, ramdata, ramsel, write );
-  end generate;
-  sraminit : if CFG_USE_INIT_RAM=1 generate
-    clSRAM : InitRam port map
-    ( wClkBus, ramsel, write, ramaddr, hwdata, ramdata );
-  end generate;
+  -- SRAM.
+  clSRAM : syncrambw generic map 
+  (
+    CFG_MEMTECH,
+    CFG_SRAM_ADRBITS,
+    AHBDW
+  )port map
+  ( wClkBus, ramaddr, hwdata, ramdata, ramsel, write );
 
 end Behavioral;
 

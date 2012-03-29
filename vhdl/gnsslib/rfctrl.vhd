@@ -44,7 +44,7 @@ architecture rtl of rfctrl is
 
 constant VENDOR_GNSSSENSOR     : integer := 16#F1#; -- TODO: move to devices.vhd
 constant GNSSSENSOR_RF_CONTROL : integer := 16#077#;
-constant REVISION              : integer := 0;
+constant REVISION              : integer := 1;
 
 constant pconfig : apb_config_type := (
   0 => ahb_device_reg ( VENDOR_GNSSSENSOR, GNSSSENSOR_RF_CONTROL, 0, REVISION, 0),
@@ -81,7 +81,7 @@ signal r, rin : registers;
 
 begin
 
-  comb : process(rst, r, apbi, inLD, inExtAntStat, inExtAntDetect)
+  comblogic : process(rst, r, apbi, inLD, inExtAntStat, inExtAntDetect)
   variable v : registers;
   variable readdata : std_logic_vector(31 downto 0);
   variable wNewWord : std_ulogic;
@@ -131,8 +131,8 @@ begin
           v.load_run := '1';
           v.ScaleCnt := (others => '0');
           v.BitCnt := 0;
-          if(conv_integer(apbi.pwdata)=0) then v.select_spi := "01";
-          elsif(conv_integer(apbi.pwdata)=1) then v.select_spi := "10";
+          if(apbi.pwdata=zero32) then v.select_spi := "01";
+          elsif(apbi.pwdata=conv_std_logic_vector(1,32)) then v.select_spi := "10";
           else v.select_spi := "00"; end if;
         when "001111" => v.ExtAntEna := apbi.pwdata(0);
         when others => 
@@ -150,11 +150,11 @@ begin
     elsif(r.loading='1')                  then v.ScaleCnt := r.ScaleCnt+1; end if;
 
     -- scaler pulse:
-    if((conv_integer(r.scale)/=0)and(r.ScaleCnt=r.scale)) then v.SClkNegedge := '1';
-    else                                                       v.SClkNegedge := '0'; end if;
+    if((r.scale/=zero32)and(r.ScaleCnt=r.scale)) then v.SClkNegedge := '1';
+    else                                              v.SClkNegedge := '0'; end if;
 
-    if((conv_integer(r.scale)/=0)and(r.ScaleCnt=('0'& r.scale(31 downto 1)))) then v.SClkPosedge := '1';
-    else                                                         v.SClkPosedge := '0'; end if;
+    if((r.scale/=zero32)and(r.ScaleCnt=('0'& r.scale(31 downto 1)))) then v.SClkPosedge := '1';
+    else                                                                  v.SClkPosedge := '0'; end if;
 
     -- SCLK former:
     if(r.SClkPosedge='1') then v.SCLK := '1';
@@ -203,6 +203,8 @@ begin
       v.BitCnt := 0;
       v.CS := '0';
       v.select_spi := (others => '0');
+      v.ExtAntEna := '0';
+      v.SendWord := (others=>'0');
     end if;
 
     rin <= v;
