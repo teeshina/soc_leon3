@@ -25,6 +25,10 @@ leon3mp::leon3mp()
 
   pclAhbRom = new ahbrom(AHB_SLAVE_ROM, 0x000, 0xfff);
 
+#ifdef USE_GNSSLTD_GNSSENGINE
+  pclGnssEngine = new GnssEngine(AHB_SLAVE_GNSSENGINE, 0xd00, 0xfff);
+#endif
+
   pApbControl = new apbctrl(AHB_SLAVE_APBBRIDGE, 0x800, 0xfff);
   
   pclApbUartA = new apbuart(APB_UART_CFG, 0x1, 0xfff); // total address 0x800001xx  = 256 bytes
@@ -32,8 +36,10 @@ leon3mp::leon3mp()
   pclIrqControl = new irqmp(APB_IRQ_CONTROL, 0x2, 0xfff);// total address 0x800002xx  = 256 bytes
   
   pclTimer = new gptimer(APB_TIMER, 0x3, 0xfff);// total address 0x800003xx  = 256 bytes
-  
+
+#ifdef USE_GNSSLTD_RFCONTROL
   pclRfControl = new RfControl(APB_RF_CONTROL, 0x4, 0xfff);// total address 0x800004xx  = 256 bytes
+#endif
 }
 
 //****************************************************************************
@@ -43,11 +49,16 @@ leon3mp::~leon3mp()
   for(int32 i=0; i<CFG_NCPU; i++) free(pclLeon3s[i]);
   free(pclDsu3x);
   free(pclAhbRom);
+#ifdef USE_GNSSLTD_GNSSENGINE
+  free(pclGnssEngine);
+#endif
   free(pApbControl);
   free(pclApbUartA);
   free(pclIrqControl);
   free(pclTimer);
+#ifdef USE_GNSSLTD_RFCONTROL
   free(pclRfControl);
+#endif
 }
 
 //****************************************************************************
@@ -72,7 +83,13 @@ void leon3mp::Update( uint32 inRst,
                       // Antenna control
                       uint32 inExtAntStat,
                       uint32 inExtAntDetect,
-                      uint32 &outExtAntEna
+                      uint32 &outExtAntEna,
+                      // GNSS RF inputs:
+                      SClock inAdcClk,
+                      uint32 inIa,
+                      uint32 inQa,
+                      uint32 inIb,
+                      uint32 inQb
                     )
 {
 
@@ -140,6 +157,10 @@ void leon3mp::Update( uint32 inRst,
   // Internal RAM:
   pclAhbRAM->Update( wNRst, inClk, stCtrl2Slv, stSlv2Ctrl.arr[AHB_SLAVE_RAM] );
 
+#ifdef USE_GNSSLTD_GNSSENGINE
+  pclGnssEngine->Update(wNRst, inClk, stCtrl2Slv, stSlv2Ctrl.arr[AHB_SLAVE_GNSSENGINE],
+                        inAdcClk, inIa, inQa, inIb, inQb);
+#endif
 
   // AHB/APB bridge
   pApbControl->Update(wNRst, inClk, stCtrl2Slv, stSlv2Ctrl.arr[AHB_SLAVE_APBBRIDGE], apbi, apbo);
@@ -161,8 +182,10 @@ void leon3mp::Update( uint32 inRst,
   pclTimer->Update(wNRst, inClk, apbi, apbo.arr[APB_TIMER], gpti, gpto);
 
   // Antenna control and MAX2769 GPS/GLO-L1 SPIs
+#ifdef USE_GNSSLTD_RFCONTROL
   pclRfControl->Update(wNRst, inClk, apbi, apbo.arr[APB_RF_CONTROL],
                       inLD, outSCLK, outSDATA, outCSn,
                       inExtAntStat, inExtAntDetect, outExtAntEna );
+#endif
 }
 

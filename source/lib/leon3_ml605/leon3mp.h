@@ -1,8 +1,10 @@
 #pragma once
 
-//#define USE_GNSSLTD_MODULES
+#define USE_GNSSLTD_MODULES
 #ifdef USE_GNSSLTD_MODULES
-  #define USE_GNSSLTD_AHBCTRL
+  //#define USE_GNSSLTD_AHBCTRL
+  #define USE_GNSSLTD_RFCONTROL
+  #define USE_GNSSLTD_GNSSENGINE
 #endif
 
 class leon3mp
@@ -50,7 +52,12 @@ class leon3mp
     gptimer_out_type gpto;
     gptimer *pclTimer;
 
+#ifdef USE_GNSSLTD_RFCONTROL
     RfControl *pclRfControl;
+#endif
+#ifdef USE_GNSSLTD_GNSSENGINE
+    GnssEngine *pclGnssEngine;
+#endif
 
     ahbrom *pclAhbRom;
 
@@ -86,8 +93,14 @@ class leon3mp
       // Antenna control
       uint32 inExtAntStat,
       uint32 inExtAntDetect,
-      uint32 &outExtAntEna
-       );
+      uint32 &outExtAntEna,
+      // GNSS RF inputs:
+      SClock inAdcClk,
+      uint32 inIa,
+      uint32 inQa,
+      uint32 inIb,
+      uint32 inQb
+     );
     
     void ClkUpdate()
     {
@@ -103,8 +116,12 @@ class leon3mp
       pclAhbRom->ClkUpdate();
       pclIrqControl->ClkUpdate();
       pclTimer->ClkUpdate();
+#ifdef USE_GNSSLTD_RFCONTROL
       pclRfControl->ClkUpdate();
-      
+#endif      
+#ifdef USE_GNSSLTD_GNSSENGINE
+      pclGnssEngine->ClkUpdate();
+#endif
       rbPllLock.ClkUpdate();
       rReset.ClkUpdate();
     }

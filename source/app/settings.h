@@ -51,6 +51,7 @@ enum EStringName
   STR_TB_finderr,
   STR_TB_soc_leon3,
   STR_TB_rfctrl,
+  STR_TB_GnssEngine,
 
   STR_PRINT_VHDLDATA,
   
@@ -115,6 +116,7 @@ const StringData AllStrings[] =
   {STR_TB_finderr,      "TB_finderr=",STRTYPE_INTEGER},
   {STR_TB_soc_leon3,    "TB_soc_leon3=",STRTYPE_INTEGER},
   {STR_TB_rfctrl,       "TB_rfctrl=", STRTYPE_INTEGER},
+  {STR_TB_GnssEngine,   "TB_GnssEngine=", STRTYPE_INTEGER},
   
   {STR_PRINT_VHDLDATA,  "Print VHDL assignment=",STRTYPE_INTEGER},
 

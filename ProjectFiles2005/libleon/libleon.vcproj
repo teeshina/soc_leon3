@@ -39,6 +39,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/D&quot;USE_GNSSLTD_DUMMIES&quot;"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\source\common\;..\..\source\lib"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBLEON_EXPORTS"
@@ -574,6 +575,18 @@
 					Name="gnss"
 					>
 					<File
+						RelativePath="..\..\source\lib\leon3_ml605\gnss\buses.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\source\lib\leon3_ml605\gnss\gnssengine.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\source\lib\leon3_ml605\gnss\gnssengine.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\source\lib\leon3_ml605\gnss\rfctrl.cpp"
 						>
 					</File>
@@ -581,14 +594,50 @@
 						RelativePath="..\..\source\lib\leon3_ml605\gnss\rfctrl.h"
 						>
 					</File>
-					<File
-						RelativePath="..\..\source\lib\leon3_ml605\gnss\topgnss.cpp"
+					<Filter
+						Name="dummies"
 						>
-					</File>
-					<File
-						RelativePath="..\..\source\lib\leon3_ml605\gnss\topgnss.h"
-						>
-					</File>
+						<File
+							RelativePath="..\..\source\lib\leon3_ml605\gnss\dummies\chnpack.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\source\lib\leon3_ml605\gnss\dummies\chnpack.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\source\lib\leon3_ml605\gnss\dummies\glbtimer.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\source\lib\leon3_ml605\gnss\dummies\glbtimer.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\source\lib\leon3_ml605\gnss\dummies\gnssctrl.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\source\lib\leon3_ml605\gnss\dummies\gnssctrl.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\source\lib\leon3_ml605\gnss\dummies\gnsstop.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\source\lib\leon3_ml605\gnss\dummies\gnsstop.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\source\lib\leon3_ml605\gnss\dummies\reclock.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\source\lib\leon3_ml605\gnss\dummies\reclock.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter
@@ -660,6 +709,10 @@
 				</File>
 				<File
 					RelativePath="..\..\source\lib\dbg_tb\finderr_tb.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\source\lib\dbg_tb\gnssengine_tb.cpp"
 					>
 				</File>
 				<File

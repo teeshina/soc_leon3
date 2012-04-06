@@ -7,7 +7,9 @@ leon3.vcproj.*.user
 ProjectFiles2005/debug/
 ProjectFiles2005/libleon/debug/
 ProjectFiles2010/
-source/firmware/makefiles/
+svn_cli/
+vhdl/gnsslib/products/
+source/lib/leon3_ml605/gnss/products/
+source/firmware/products/
 source/firmware/HelloWorld/target_VIRTEX_ML605
 source/firmware/HelloWorld/target_PC_SIMULATION
-source/firmware/GNSS_FW/

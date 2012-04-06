@@ -25,6 +25,10 @@ DECLSPEC_TYPE void __stdcall LibClose(void)
 //****************************************************************************
 DECLSPEC_TYPE void __stdcall LibLeonUpdate(SystemOnChipIO &ioData)
 {
+#ifdef USE_GNSSLTD_DUMMIES
+  ioData.gnss.adc_clk = ioData.inClk;
+#endif
+
   topLeon3mp.Update(
     ioData.inNRst,  // system reset
     ioData.inClk,   // system clock 66 MHz
@@ -43,7 +47,12 @@ DECLSPEC_TYPE void __stdcall LibLeonUpdate(SystemOnChipIO &ioData)
     ioData.spimax2769.nCS,
     ioData.antctrl.ExtAntStat,
     ioData.antctrl.ExtAntDetect,
-    ioData.antctrl.ExtAntEna
+    ioData.antctrl.ExtAntEna,
+    ioData.gnss.adc_clk,
+    ioData.gnss.I[0],
+    ioData.gnss.Q[0],
+    ioData.gnss.I[1],
+    ioData.gnss.Q[1]
   );
 
   clDbg.Update(ioData);

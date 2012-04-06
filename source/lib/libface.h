@@ -52,6 +52,7 @@ enum ETestBenchName
   TB_finderr,
   TB_soc_leon3,
   TB_rfctrl,
+  TB_GnssEngine,
   
   TB_TOTAL
 };
@@ -88,7 +89,8 @@ const char chBenchFile[TB_TOTAL][64]=
   "gptimer_tb.txt",
   "finderr1_tb.txt",
   "soc_leon3_tb.txt",
-  "rfctrl_tb.txt"
+  "rfctrl_tb.txt",
+  "gnssengine_tb.txt"
 };
 
 //****************************************************************************

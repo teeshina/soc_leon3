@@ -54,4 +54,5 @@ TB_gptimer=0
 TB_finderr=0
 TB_soc_leon3=0
 TB_rfctrl=0
+TB_GnssEngine=0
 Print VHDL assignment=0

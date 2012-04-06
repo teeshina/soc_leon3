@@ -1,6 +1,6 @@
 //****************************************************************************
 // Property:    GNSS Sensor Limited
-// License:     GNU2
+// License:     GPL2
 // Contact:     chief@gnss-sensor.com
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
@@ -34,6 +34,7 @@
 //#define DBG_gptimer
 //#define DBG_jtagpad
 //#define DBG_RfControl
+//#define DBG_GnssEngine
 
 extern leon3mp topLeon3mp;
 
@@ -91,6 +92,7 @@ class dbg
     void finderr_tb(SystemOnChipIO &io);
     void soc_leon3_tb(SystemOnChipIO &io);
     void rfctrl_tb(SystemOnChipIO &io);
+    void GnssEngine_tb(SystemOnChipIO &io);
     
     char *PrintAllRegIU(char *pStr, registers *pr);
     
@@ -392,6 +394,15 @@ class dbg
   uint32 in_ExtAntDetect;
   uint32 ch_ExtAntEna;
   RfControl tst_RfControl;
+#endif
+#ifdef DBG_GnssEngine
+  ahb_slv_in_type in_ahbsi;
+  ahb_slv_out_type ch_ahbso;
+  uint32 inGpsI;
+  uint32 inGpsQ;
+  uint32 inGloI;
+  uint32 inGloQ;
+  GnssEngine tst_GnssEngine;
 #endif
 };
 

@@ -100,7 +100,29 @@
 
 
 #include "leon3_ml605\gnss\rfctrl.h"
-#include "leon3_ml605\gnss\topgnss.h"
+#include "leon3_ml605\gnss\buses.h"
+#ifdef USE_GNSSLTD_DUMMIES
+  #include "leon3_ml605\gnss\dummies\reclock.h"
+  #include "leon3_ml605\gnss\dummies\glbtimer.h"
+  #include "leon3_ml605\gnss\dummies\gnssctrl.h"
+  #include "leon3_ml605\gnss\dummies\chnpack.h"
+  #include "leon3_ml605\gnss\dummies\gnsstop.h"
+#else
+  #include "leon3_ml605\gnss\products\reclock.h"
+  #include "leon3_ml605\gnss\products\glbtimer.h"
+  #include "leon3_ml605\gnss\products\acc.h"
+  #include "leon3_ml605\gnss\products\prngen.h"
+  #include "leon3_ml605\gnss\products\memgen.h"
+  #include "leon3_ml605\gnss\products\prnchn.h"
+  #include "leon3_ml605\gnss\products\memchn.h"
+  #include "leon3_ml605\gnss\products\stimergps.h"
+  #include "leon3_ml605\gnss\products\stimerglo.h"
+  #include "leon3_ml605\gnss\products\sunitimer.h"
+  #include "leon3_ml605\gnss\products\gnssctrl.h"
+  #include "leon3_ml605\gnss\products\chnpack.h"
+  #include "leon3_ml605\gnss\products\gnsstop.h"
+#endif
+#include "leon3_ml605\gnss\gnssengine.h"
 
 #include "leon3_ml605\leon3mp.h"
 #include "dbgstring.h"
