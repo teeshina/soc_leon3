@@ -28,8 +28,8 @@ void GnssControl::Update(uint32 inNRst,
 {
   if(inRdEna)
   {
-    if(BIT32(inRdAdr,2) == 0) v.RdMemVal = (uint32)BITS64(dpMEM[BITS32(inRdAdr, CFG_GNSS_ADDR_WIDTH-1, 2)], 31, 0);
-    else                      v.RdMemVal = (uint32)BITS64(dpMEM[BITS32(inRdAdr, CFG_GNSS_ADDR_WIDTH-1, 2)], 63, 32);
+    if(BIT32(inRdAdr,2) == 0) v.RdMemVal = (uint32)BITS64(dpMEM[BITS32(inRdAdr, CFG_GNSS_ADDR_WIDTH-1, 3)], 31, 0);
+    else                      v.RdMemVal = (uint32)BITS64(dpMEM[BITS32(inRdAdr, CFG_GNSS_ADDR_WIDTH-1, 3)], 63, 32);
   }
   
   v.WrMemEna = inWrEna;
@@ -65,7 +65,7 @@ void GnssControl::Update(uint32 inNRst,
   outMuxBus.wbWrData      = r.Q.WrMemVal;
   
   outMuxBus.wRdEna        = r.Q.SnapEna;
-  outMuxBus.wbWrModuleSel = BITS32(r.Q.SnapCnt, CFG_GNSS_ADDR_WIDTH-1, 3);
+  outMuxBus.wbRdModuleSel = BITS32(r.Q.SnapCnt, CFG_GNSS_ADDR_WIDTH-1, 3);
   outMuxBus.wbRdFieldSel  = BITS32(r.Q.SnapCnt, 2, 0);
   
   outIrqEna = r.Q.IrqEna;

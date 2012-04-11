@@ -17,7 +17,6 @@ use gaisler.uart.all;
 
 library gnsslib;
 use gnsslib.gnsspll.all;
-use gnsslib.gnssmem.all;
 
 library work;
 use work.all;
@@ -41,6 +40,14 @@ entity soc_leon3 is Port
   TMS   : in std_logic;   -- in: Test Mode State
   TDI   : in std_logic;   -- in: Test Data Input
   TDO   : out std_logic;   -- out: Test Data Output
+  -- RF front-end control
+  inLD     : in std_logic_vector(1 downto 0);
+  outSCLK  : out std_ulogic;
+  outSDATA : out std_ulogic;
+  outCSn   : out std_logic_vector(1 downto 0);
+  inExtAntStat   : in std_ulogic;
+  inExtAntDetect : in std_ulogic;
+  outExtAntEna   : out std_ulogic;
   -- User pins
   inDIP   : in std_ulogic_vector(7 downto 0);
   outLED  : out std_ulogic_vector(7 downto 0)
@@ -68,6 +75,14 @@ architecture Behavioral of soc_leon3 is
     TMS   : in std_logic;   -- in: Test Mode State
     TDI   : in std_logic;   -- in: Test Data Input
     TDO   : out std_logic;   -- out: Test Data Output
+    -- MAX2769 SPIs and antenna controls signals:
+    inLD     : in std_logic_vector(1 downto 0);
+    outSCLK  : out std_ulogic;
+    outSDATA : out std_ulogic;
+    outCSn   : out std_logic_vector(1 downto 0);
+    inExtAntStat   : in std_ulogic;
+    inExtAntDetect : in std_ulogic;
+    outExtAntEna   : out std_ulogic;
     -- User pins
     inDIP   : in std_ulogic_vector(7 downto 0);
     outLED  : out std_ulogic_vector(7 downto 0);
@@ -108,6 +123,14 @@ begin
     TMS,
     TDI,
     TDO,
+    -- RF front-end control:
+    inLD,
+    outSCLK,
+    outSDATA,
+    outCSn,
+    inExtAntStat,
+    inExtAntDetect,
+    outExtAntEna,
     -- User pins
     inDIP,
     outLED,

@@ -6,6 +6,16 @@ NET  "inSysClk_p"   LOC = "J9";
 NET  "inSysClk_n"   LOC = "H9";
 
 
+NET "inLD[1]" LOC = "M33";
+NET "inLD[0]" LOC = "N33";
+NET "outSCLK" LOC = "L31";
+NET "outSDATA" LOC = "M31";
+NET "outCSn[1]" LOC = "M26";
+NET "outCSn[0]" LOC = "P34";
+NET "inExtAntStat" LOC = "H32";
+NET "inExtAntDetect" LOC = "K29";
+NET "outExtAntEna" LOC = "G32";
+
 
 
 # button "Center"

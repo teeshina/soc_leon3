@@ -71,7 +71,7 @@ void dbg::ahbram_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, pin_ahbsi->testen,1,"in_ahbsi.testen");//                        -- scan test enable
     pStr = PutToStr(pStr, pin_ahbsi->testrst,1,"in_ahbsi.testrst");//                       -- scan test reset
     pStr = PutToStr(pStr, pin_ahbsi->scanen,1,"in_ahbsi.scanen");//                        -- scan enable
-    pStr = PutToStr(pStr, pin_ahbsi->testoen,1,"in_ahbsi.testoen");;//                       -- test output enable 
+    pStr = PutToStr(pStr, pin_ahbsi->testoen,1,"in_ahbsi.testoen");//                       -- test output enable 
 
     // Output:
     pStr = PutToStr(pStr, pch_ahbso->hready,1,"ch_ahbso.hready");//                           -- transfer done

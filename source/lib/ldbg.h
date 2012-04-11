@@ -1,6 +1,6 @@
 //****************************************************************************
 // Property:    GNSS Sensor Limited
-// License:     GPL2
+// License:     GNU2
 // Contact:     chief@gnss-sensor.com
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
@@ -34,7 +34,7 @@
 //#define DBG_gptimer
 //#define DBG_jtagpad
 //#define DBG_RfControl
-//#define DBG_GnssEngine
+#define DBG_GnssEngine
 
 extern leon3mp topLeon3mp;
 

@@ -17,6 +17,7 @@ use gaisler.uart.all;
 
 library gnsslib;
 use gnsslib.gnsspll.all;
+use gnsslib.gnssengine.all;
 
 library work;
 use work.all;
@@ -40,7 +41,14 @@ entity soc_noram is Port
   TMS   : in std_logic;   -- in: Test Mode State
   TDI   : in std_logic;   -- in: Test Data Input
   TDO   : out std_logic;   -- out: Test Data Output
-
+  -- MAX2769 SPIs and antenna controls signals:
+  inLD     : in std_logic_vector(1 downto 0);
+  outSCLK  : out std_ulogic;
+  outSDATA : out std_ulogic;
+  outCSn   : out std_logic_vector(1 downto 0);
+  inExtAntStat   : in std_ulogic;
+  inExtAntDetect : in std_ulogic;
+  outExtAntEna   : out std_ulogic;
 
   -- User pins
   inDIP   : in std_ulogic_vector(7 downto 0);
@@ -344,6 +352,27 @@ begin
     open
   );
 
+  ------------------------------------
+  -- RF front-end control module:
+  clRfControl : rfctrl generic map
+  (
+    pindex  => APB_RF_CONTROL,
+    paddr   => 16#004#,
+    pmask   => 16#FFF#
+  )port map
+  (
+    wNRst,
+    wClkBus,
+    apbi,
+    apbo(APB_RF_CONTROL),
+    inLD,
+    outSCLK,
+    outSDATA,
+    outCSn,
+    inExtAntStat,
+    inExtAntDetect,
+    outExtAntEna
+  );
 
   ------------------------------------
   -- AHB ROM:

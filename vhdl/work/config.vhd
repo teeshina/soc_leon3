@@ -149,7 +149,8 @@ package config is
   constant AHB_SLAVE_DSU        : integer := AHB_SLAVE_ROM+1;
   constant AHB_SLAVE_RAM        : integer := AHB_SLAVE_DSU+1;
   constant AHB_SLAVE_APBBRIDGE  : integer := AHB_SLAVE_RAM+1;
-  constant AHB_SLAVE_TOTAL      : integer := AHB_SLAVE_APBBRIDGE+1;
+  constant AHB_SLAVE_GNSSENGINE : integer := AHB_SLAVE_APBBRIDGE+1;
+  constant AHB_SLAVE_TOTAL      : integer := AHB_SLAVE_GNSSENGINE+1;
 
   constant IRQ_IRQ_CONTROL      : integer := 0;
   constant IRQ_DSU              : integer := IRQ_IRQ_CONTROL+1;
