@@ -52,6 +52,8 @@ enum ETestBenchName
   TB_finderr,
   TB_soc_leon3,
   TB_rfctrl,
+  TB_gyrospi,
+  TB_accelspi,
   TB_GnssEngine,
   
   TB_TOTAL
@@ -90,6 +92,8 @@ const char chBenchFile[TB_TOTAL][64]=
   "finderr1_tb.txt",
   "soc_leon3_tb.txt",
   "rfctrl_tb.txt",
+  "gyrospi_tb.txt",
+  "accelspi_tb.txt",
   "gnssengine_tb.txt"
 };
 
@@ -144,7 +148,7 @@ struct SystemOnChipIO
     uint32 Q[TOTAL_MAXIM2769];  // [0]=Adc Im GPS/GALILEO L1; [1]=Adc Im GLONASS L1
     SClock adc_clk;             // ADC clock ~16..32 MHz
   } gnss;
-  // MAX2769 synthesizer interface:
+  // MAX2769 synthesizer SPI interface:
   struct SMax2769
   {
     uint32 LD[TOTAL_MAXIM2769];      // in: PLL locked
@@ -158,6 +162,24 @@ struct SystemOnChipIO
     uint32 ExtAntDetect;// in:
     uint32 ExtAntEna;   // out:
   }antctrl;
+  struct SGyroscope
+  {
+    uint32 SDI;  // gyroscope input  <- SoC output (SDO)
+    uint32 SDO;  // gyroscope output -> SoC input (SDI)
+    uint32 nCS;  // gyroscope input  <- SoC output
+    uint32 SPC;  // gyroscope input  -> SoC ouptut
+    uint32 Int1; // gyroscope output -> SoC input
+    uint32 Int2; // gyroscope output -> SoC input
+  }gyro;
+  struct SAccelerometer
+  {
+    uint32 SDI;  // accelerometer input  <- SoC output (SDO)
+    uint32 SDO;  // accelerometer output -> SoC input (SDI)
+    uint32 nCS;  // accelerometer input  <- SoC output
+    uint32 SPC;  // accelerometer input  -> SoC ouptut
+    uint32 Int1; // accelerometer output -> SoC input
+    uint32 Int2; // accelerometer output -> SoC input
+  }acceler;
 };
 
 

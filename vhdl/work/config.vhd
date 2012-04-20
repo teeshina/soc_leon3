@@ -164,6 +164,8 @@ package config is
   constant APB_IRQ_CONTROL      : integer := APB_UART_1+1;
   constant APB_TIMER            : integer := APB_IRQ_CONTROL+1;
   constant APB_RF_CONTROL       : integer := APB_TIMER+1;
-  constant APB_TOTAL            : integer := APB_RF_CONTROL+1;
+  constant APB_GYROSCOPE        : integer := APB_RF_CONTROL+1;
+  constant APB_ACCELEROMETER    : integer := APB_GYROSCOPE+1;
+  constant APB_TOTAL            : integer := APB_ACCELEROMETER+1;
 
 end;

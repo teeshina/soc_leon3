@@ -34,7 +34,9 @@
 //#define DBG_gptimer
 //#define DBG_jtagpad
 //#define DBG_RfControl
-#define DBG_GnssEngine
+//#define DBG_gyrospi
+//#define DBG_accelspi
+//#define DBG_GnssEngine
 
 extern leon3mp topLeon3mp;
 
@@ -92,6 +94,8 @@ class dbg
     void finderr_tb(SystemOnChipIO &io);
     void soc_leon3_tb(SystemOnChipIO &io);
     void rfctrl_tb(SystemOnChipIO &io);
+    void gyrospi_tb(SystemOnChipIO &io);
+    void accelspi_tb(SystemOnChipIO &io);
     void GnssEngine_tb(SystemOnChipIO &io);
     
     char *PrintAllRegIU(char *pStr, registers *pr);
@@ -394,6 +398,28 @@ class dbg
   uint32 in_ExtAntDetect;
   uint32 ch_ExtAntEna;
   RfControl tst_RfControl;
+#endif
+#ifdef DBG_gyrospi
+  apb_slv_in_type  in_apbi;//   : in  apb_slv_in_type;
+  apb_slv_out_type ch_apbo;//   : out apb_slv_out_type;
+  uint32 in_Int1;
+  uint32 in_Int2;
+  uint32 in_SDI;
+  uint32 ch_SPC;
+  uint32 ch_SDO;
+  uint32 ch_CSn;
+  gyrospi tst_gyrospi;
+#endif
+#ifdef DBG_accelspi
+  apb_slv_in_type  in_apbi;//   : in  apb_slv_in_type;
+  apb_slv_out_type ch_apbo;//   : out apb_slv_out_type;
+  uint32 in_Int1;
+  uint32 in_Int2;
+  uint32 in_SDI;
+  uint32 ch_SPC;
+  uint32 ch_SDO;
+  uint32 ch_CSn;
+  accelspi tst_accelspi;
 #endif
 #ifdef DBG_GnssEngine
   ahb_slv_in_type in_ahbsi;

@@ -52,7 +52,19 @@ DECLSPEC_TYPE void __stdcall LibLeonUpdate(SystemOnChipIO &ioData)
     ioData.gnss.I[0],
     ioData.gnss.Q[0],
     ioData.gnss.I[1],
-    ioData.gnss.Q[1]
+    ioData.gnss.Q[1],
+    ioData.gyro.SDO,  // gyro SDO -> soc SDI
+    ioData.gyro.Int1,
+    ioData.gyro.Int2,
+    ioData.gyro.SDI,  // soc SDO -> gyro SDI
+    ioData.gyro.nCS,
+    ioData.gyro.SPC,
+    ioData.acceler.SDO,  // acceler SDO -> soc SDI
+    ioData.acceler.Int1,
+    ioData.acceler.Int2,
+    ioData.acceler.SDI,  // acceler SDO -> gyro SDI
+    ioData.acceler.nCS,
+    ioData.acceler.SPC
   );
 
   clDbg.Update(ioData);

@@ -217,6 +217,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\source\app\stm_sim.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\source\app\stm_sim.h"
+				>
+			</File>
+			<File
 				RelativePath="..\source\app\tests.h"
 				>
 			</File>

@@ -25,18 +25,50 @@ void dbg::soc_leon3_tb(SystemOnChipIO &io)
     uint32 wClkBus = ((io.inClk.eClock==SClock::CLK_POSEDGE)||(io.inClk.eClock==SClock::CLK_POSITIVE)) ? 1: 0;
     
     pStr = PutToStr(pStr, io.inNRst, 1, "inNRst");
+    // UART:
+    pStr = PutToStr(pStr, io.uart1.CTS,1,"in_CTS");
+    pStr = PutToStr(pStr, io.uart1.RD,1,"in_RX");
+    pStr = PutToStr(pStr, io.uart1.RTS,1,"ch_RTS");
+    pStr = PutToStr(pStr, io.uart1.TD,1,"ch_TX");
+    // JTAG:
     pStr = PutToStr(pStr, io.jtag.nTRST,1,"in_trst"); // in: Test Reset
     pStr = PutToStr(pStr, iTck,1,"in_tck");   // in: Test Clock
     pStr = PutToStr(pStr, io.jtag.TMS,1,"in_tms");   // in: Test Mode State
     pStr = PutToStr(pStr, io.jtag.TDI,1,"in_tdi");   // in: Test Data Input
     pStr = PutToStr(pStr, io.jtag.TDO,1,"ch_tdo");   // out: Test Data Output
-    pStr = PutToStr(pStr, io.uart1.CTS,1,"in_CTS");
-    pStr = PutToStr(pStr, io.uart1.RD,1,"in_RX");
-    pStr = PutToStr(pStr, io.uart1.RTS,1,"ch_RTS");
-    pStr = PutToStr(pStr, io.uart1.TD,1,"ch_TX");
+    // ADC samples:
+    pStr = PutToStr(pStr, io.gnss.I[0],2,"in_Ia");
+    pStr = PutToStr(pStr, io.gnss.Q[0],2,"in_Qa");
+    pStr = PutToStr(pStr, io.gnss.I[1],2,"in_Ib");
+    pStr = PutToStr(pStr, io.gnss.Q[1],2,"in_Qb");
+    // MAX2769 SPI interface:
+    pStr = PutToStr(pStr, io.spimax2769.LD,2,"in_LD");
+    pStr = PutToStr(pStr, io.spimax2769.SCLK,1,"ch_SCLK");
+    pStr = PutToStr(pStr, io.spimax2769.nSDATA,1,"ch_SDATA");
+    pStr = PutToStr(pStr, io.spimax2769.nCS,2,"ch_CSn");
+    // Antenna controller:
+    pStr = PutToStr(pStr, io.antctrl.ExtAntStat,1,"in_ExtAntStat");
+    pStr = PutToStr(pStr, io.antctrl.ExtAntDetect,1,"in_ExtAntDetect");
+    pStr = PutToStr(pStr, io.antctrl.ExtAntEna,1,"ch_ExtAntEna");
+    // STM Gyroscope SPI
+    pStr = PutToStr(pStr, io.gyro.SDO,1,"in_GyroSDI");
+    pStr = PutToStr(pStr, io.gyro.Int1,1,"in_GyroInt1");
+    pStr = PutToStr(pStr, io.gyro.Int2,1,"in_GyroInt2");
+    pStr = PutToStr(pStr, io.gyro.SDI,1,"ch_GyroSDO");
+    pStr = PutToStr(pStr, io.gyro.nCS,1,"ch_GyroCSn");
+    pStr = PutToStr(pStr, io.gyro.SPC,1,"ch_GyroSPC");
+    // STM Accelerometer SPI
+    pStr = PutToStr(pStr, io.acceler.SDO,1,"in_AccelerSDI");
+    pStr = PutToStr(pStr, io.acceler.Int1,1,"in_AccelerInt1");
+    pStr = PutToStr(pStr, io.acceler.Int2,1,"in_AccelerInt2");
+    pStr = PutToStr(pStr, io.acceler.SDI,1,"ch_AccelerSDO");
+    pStr = PutToStr(pStr, io.acceler.nCS,1,"ch_AccelerCSn");
+    pStr = PutToStr(pStr, io.acceler.SPC,1,"ch_AccelerSPC");
+    // User pins:
     pStr = PutToStr(pStr, uint32(0),8,"unsigned:in_DIP");
     pStr = PutToStr(pStr, uint32(0),8,"unsigned:ch_LED");
     pStr = PutToStr(pStr, wClkBus, 1, "unsigned:ch_ClkBus");
+    // SRAM signals:
     pStr = PutToStr(pStr, topLeon3mp.pclAhbRAM->ramaddr,CFG_SRAM_ADRBITS,"ch_ramaddr");
     pStr = PutToStr(pStr, topLeon3mp.pclAhbRAM->hwdata,AHBDW,"ch_hwdata");
     pStr = PutToStr(pStr, topLeon3mp.pclAhbRAM->ramdata,AHBDW,"in_ramdata");
@@ -44,6 +76,8 @@ void dbg::soc_leon3_tb(SystemOnChipIO &io)
     pStr = PutToStr(pStr, ramsel,AHBDW/8,"ch_ramsel");
     pStr = PutToStr(pStr, topLeon3mp.pclAhbRAM->write,AHBDW/8,"ch_write");
 
+    // ************ SoC internal signals debug ***********
+    //
     // AHB master interface:
     pStr = PutToStr(pStr, topLeon3mp.stCtrl2Mst.hgrant,16,"t_msti.hgrant",true);//[0:15]  : (0 to AHB_MASTERS_MAX-1);     -- bus grant
     pStr = PutToStr(pStr, topLeon3mp.stCtrl2Mst.hready,1,"t_msti.hready");//  ;                           -- transfer done

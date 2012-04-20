@@ -17,7 +17,7 @@ use gaisler.uart.all;
 
 library gnsslib;
 use gnsslib.gnsspll.all;
-use gnsslib.gnssengine.all;
+use gnsslib.gnssmodule.all;
 
 library work;
 use work.all;
@@ -41,6 +41,12 @@ entity soc_noram is Port
   TMS   : in std_logic;   -- in: Test Mode State
   TDI   : in std_logic;   -- in: Test Data Input
   TDO   : out std_logic;   -- out: Test Data Output
+  -- GNSS RF inputs:
+  inAdcClk : in std_logic;
+  inIa     : in std_logic_vector(1 downto 0);
+  inQa     : in std_logic_vector(1 downto 0);
+  inIb     : in std_logic_vector(1 downto 0);
+  inQb     : in std_logic_vector(1 downto 0);
   -- MAX2769 SPIs and antenna controls signals:
   inLD     : in std_logic_vector(1 downto 0);
   outSCLK  : out std_ulogic;
@@ -49,6 +55,20 @@ entity soc_noram is Port
   inExtAntStat   : in std_ulogic;
   inExtAntDetect : in std_ulogic;
   outExtAntEna   : out std_ulogic;
+  -- Gyroscope SPI interface
+  inGyroSDI   : in std_logic;
+  inGyroInt1  : in std_logic; -- interrupt 1
+  inGyroInt2  : in std_logic; -- interrupt 2
+  outGyroSDO  : out std_logic;
+  outGyroCSn  : out std_logic;
+  outGyroSPC  : out std_logic;
+  -- Accelerometer SPI interface
+  inAccelerSDI   : in std_logic;
+  inAccelerInt1  : in std_logic; -- interrupt 1
+  inAccelerInt2  : in std_logic; -- interrupt 2
+  inAccelerSDO  : out std_logic;
+  inAccelerCSn  : out std_logic;
+  inAccelerSPC  : out std_logic;
 
   -- User pins
   inDIP   : in std_ulogic_vector(7 downto 0);
@@ -375,6 +395,49 @@ begin
   );
 
   ------------------------------------
+  -- STMicroelectronics 3-axis Gyroscope controller
+  clGyroSpi : gyrospi generic map
+  (
+    pindex => APB_GYROSCOPE,
+    paddr  => 16#006#, -- 6..7 addr fields
+    pmask  => 16#ffe#
+  ) port map
+  (
+    wNRst,
+    wClkBus,
+    apbi,
+    apbo(APB_GYROSCOPE),
+    inGyroInt1,
+    inGyroInt2,
+    inGyroSDI,
+    outGyroSPC,
+    outGyroSDO,
+    outGyroCSn
+  );
+
+  ------------------------------------
+  -- STMicroelectronics 3-axis Accelerometer controller
+  clAccelerSpi : accelspi generic map
+  (
+    pindex => APB_ACCELEROMETER,
+    paddr  => 16#008#, -- 8..9 addr fields
+    pmask  => 16#ffe#
+  ) port map
+  (
+    wNRst,
+    wClkBus,
+    apbi,
+    apbo(APB_ACCELEROMETER),
+    inAccelerInt1,
+    inAccelerInt2,
+    inAccelerSDI,
+    inAccelerSPC,
+    inAccelerSDO,
+    inAccelerCSn
+  );
+  
+
+  ------------------------------------
   -- AHB ROM:
   clAhbROM : entity work.ahbrom generic map 
   (
@@ -422,6 +485,15 @@ begin
   outLED(2) <= dsuo.active;
   outLED(3) <= inDsuBreak;
 
-
+  -- REMOVE IT:
+  regs : process(inAdcClk)
+  begin 
+    if rising_edge(inAdcClk) then 
+      outLED(7) <= (inIa(1) xor inIa(0)) and (inQa(1) xor inQa(0));
+      outLED(6) <= (inIb(1) xor inIb(0)) and (inQb(1) xor inQb(0));
+    end if; 
+  end process;
+  -- END OF REMOVE
+  
 end rtl;
 

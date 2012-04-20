@@ -15,7 +15,7 @@ use work.config.all;
 use work.util_tb.all;
 
 library gnsslib;
-use gnsslib.gnssengine.all;
+use gnsslib.gnssmodule.all;
 
 
 

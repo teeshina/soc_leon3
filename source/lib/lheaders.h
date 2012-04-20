@@ -100,6 +100,8 @@
 
 
 #include "leon3_ml605\gnss\rfctrl.h"
+#include "leon3_ml605\gnss\gyrospi.h"
+#include "leon3_ml605\gnss\accelspi.h"
 #include "leon3_ml605\gnss\buses.h"
 #ifdef USE_GNSSLTD_DUMMIES
   #include "leon3_ml605\gnss\dummies\reclock.h"

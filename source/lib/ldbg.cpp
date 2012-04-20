@@ -162,6 +162,10 @@ void dbg::Update(SystemOnChipIO &io)
   
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_rfctrl]) rfctrl_tb(io);
   
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_gyrospi]) gyrospi_tb(io);
+  
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_accelspi]) accelspi_tb(io);
+  
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_GnssEngine]) GnssEngine_tb(io);
 
   if(io.inClk.eClock==SClock::CLK_POSEDGE)

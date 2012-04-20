@@ -31,6 +31,7 @@
 #include "clkgen.h"
 #include "jtagport.h"
 #include "uartport.h"
+#include "stm_sim.h"
 #include "settings.h"
 
 #include "elfloader\elfloader.h"

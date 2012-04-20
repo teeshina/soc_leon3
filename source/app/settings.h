@@ -19,6 +19,9 @@ enum EStringName
   STR_UART_CLKSCALE,
   STR_JTAG_ENA,
   STR_JTAGCLK_HZ,
+  STR_RF_FRONTEND_ENA,
+  STR_GYRO_ENA,
+  STR_ACCELER_ENA,
 
   STR_TB_jtagcom,
   STR_TB_ahbmaster,
@@ -51,6 +54,8 @@ enum EStringName
   STR_TB_finderr,
   STR_TB_soc_leon3,
   STR_TB_rfctrl,
+  STR_TB_gyrospi,
+  STR_TB_accelspi,
   STR_TB_GnssEngine,
 
   STR_PRINT_VHDLDATA,
@@ -84,6 +89,9 @@ const StringData AllStrings[] =
   {STR_UART_CLKSCALE,   "UART Baud scale=",STRTYPE_INTEGER},
   {STR_JTAG_ENA,        "JTAG Enable=",STRTYPE_INTEGER},
   {STR_JTAGCLK_HZ,      "JtagClock Freq.,[Hz]=",STRTYPE_DOUBLE},
+  {STR_RF_FRONTEND_ENA, "RF Front-end Enable=",STRTYPE_INTEGER},
+  {STR_GYRO_ENA,        "Gyroscope Enable=",STRTYPE_INTEGER},
+  {STR_ACCELER_ENA,     "Accelerometer Enable=",STRTYPE_INTEGER},
 
   {STR_TB_jtagcom,      "TB_jtagcom=",STRTYPE_INTEGER},
   {STR_TB_ahbmaster,    "TB_ahbmaster=",STRTYPE_INTEGER},
@@ -116,6 +124,8 @@ const StringData AllStrings[] =
   {STR_TB_finderr,      "TB_finderr=",STRTYPE_INTEGER},
   {STR_TB_soc_leon3,    "TB_soc_leon3=",STRTYPE_INTEGER},
   {STR_TB_rfctrl,       "TB_rfctrl=", STRTYPE_INTEGER},
+  {STR_TB_gyrospi,      "TB_gyrospi=", STRTYPE_INTEGER},
+  {STR_TB_accelspi,     "TB_accelspi=", STRTYPE_INTEGER},
   {STR_TB_GnssEngine,   "TB_GnssEngine=", STRTYPE_INTEGER},
   
   {STR_PRINT_VHDLDATA,  "Print VHDL assignment=",STRTYPE_INTEGER},
@@ -146,6 +156,9 @@ class Settings
     uint32 uiUartClkScale;
     int32 iJtagEna;
     double dJtagClockHz;
+    int32 iRfFrontEndEna;
+    int32 iGyroEna;
+    int32 iAccelerEna;
     
     LibInitData sLibInitData;
 
@@ -170,6 +183,9 @@ class Settings
     uint32 GetUartClkScale() {return uiUartClkScale;}
     int32 IsJtagEna() {return iJtagEna; }
     double GetJtagClockHz() {return dJtagClockHz;} 
+    int32 IsGyroEna() {return iGyroEna; }
+    int32 IsAccelerEna() {return iAccelerEna; }
+    int32 IsRfFrontEndEna() {return iRfFrontEndEna; }
     LibInitData *GetpLibInitData() {return &sLibInitData;}
 };
 

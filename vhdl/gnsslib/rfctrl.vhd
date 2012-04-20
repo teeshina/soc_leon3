@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------------
--- Entity: 	RF front-end control
--- File:	  rfctrl.vhd
--- Author:	Sergey Khabarov - GNSS Sensor Ltd
--- Description:	This unit imeplements SPI interface with MAX2769 ICs
+-- Entity:  RF front-end control
+-- File:    rfctrl.vhd
+-- Author:  Sergey Khabarov - GNSS Sensor Ltd
+-- Description: This unit imeplements SPI interface with MAX2769 ICs
 --              and antenna control signals
 ------------------------------------------------------------------------------
 
@@ -16,7 +16,7 @@ library gaisler;
 use gaisler.misc.all;
 
 library gnsslib;
-use gnsslib.gnssengine.all;
+use gnsslib.gnssmodule.all;
 
 entity rfctrl is
   generic (
@@ -209,7 +209,7 @@ begin
 
     rin <= v;
 
-    apbo.prdata <= readdata; 	-- drive apb read bus
+    apbo.prdata <= readdata;  -- drive apb read bus
     apbo.pirq   <= (others => '0');
     apbo.pindex <= pindex;
 

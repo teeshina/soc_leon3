@@ -79,6 +79,9 @@ void Settings::ParseLine(char *src, EStringName name)
     case STR_UART_CLKSCALE:   uiUartClkScale = (uint32)GetFieldInt(src, length); break;
     case STR_JTAG_ENA:        iJtagEna = GetFieldInt(src, length); break;
     case STR_JTAGCLK_HZ:      dJtagClockHz = GetFieldDouble(src, length);  break;
+    case STR_RF_FRONTEND_ENA: iRfFrontEndEna = GetFieldInt(src, length); break;
+    case STR_GYRO_ENA:        iGyroEna = GetFieldInt(src, length); break;
+    case STR_ACCELER_ENA:     iAccelerEna = GetFieldInt(src, length); break;
     case STR_CLK_DURATION:    iClkSimTotal = GetFieldInt(src, length);  break;
     case STR_PRINT_VHDLDATA:  sLibInitData.iPrintVhdlData = GetFieldInt(src, length); break;
     default:;
@@ -209,6 +212,16 @@ void Settings::SaveToFile()
 
   sprintf_s(chLine, "%s%.1f\n",AllStrings[STR_JTAGCLK_HZ].name, dJtagClockHz);
   osSettings << chLine;
+
+  sprintf_s(chLine, "%s%i\n",AllStrings[STR_RF_FRONTEND_ENA].name, iRfFrontEndEna);
+  osSettings << chLine;
+
+  sprintf_s(chLine, "%s%i\n",AllStrings[STR_GYRO_ENA].name, iGyroEna);
+  osSettings << chLine;
+
+  sprintf_s(chLine, "%s%i\n",AllStrings[STR_ACCELER_ENA].name, iAccelerEna);
+  osSettings << chLine;
+
   osSettings << "\n";
   
   

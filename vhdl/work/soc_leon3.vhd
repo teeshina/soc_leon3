@@ -40,7 +40,13 @@ entity soc_leon3 is Port
   TMS   : in std_logic;   -- in: Test Mode State
   TDI   : in std_logic;   -- in: Test Data Input
   TDO   : out std_logic;   -- out: Test Data Output
-  -- RF front-end control
+  -- GNSS RF inputs:
+  inAdcClk : in std_logic;
+  inIa     : in std_logic_vector(1 downto 0);
+  inQa     : in std_logic_vector(1 downto 0);
+  inIb     : in std_logic_vector(1 downto 0);
+  inQb     : in std_logic_vector(1 downto 0);
+  -- MAX2769 SPIs and antenna controls signals:
   inLD     : in std_logic_vector(1 downto 0);
   outSCLK  : out std_ulogic;
   outSDATA : out std_ulogic;
@@ -48,6 +54,20 @@ entity soc_leon3 is Port
   inExtAntStat   : in std_ulogic;
   inExtAntDetect : in std_ulogic;
   outExtAntEna   : out std_ulogic;
+  -- Gyroscope SPI interface
+  inGyroSDI   : in std_logic;
+  inGyroInt1  : in std_logic; -- interrupt 1
+  inGyroInt2  : in std_logic; -- interrupt 2
+  outGyroSDO  : out std_logic;
+  outGyroCSn  : out std_logic;
+  outGyroSPC  : out std_logic;
+  -- Accelerometer SPI interface
+  inAccelerSDI   : in std_logic;
+  inAccelerInt1  : in std_logic; -- interrupt 1
+  inAccelerInt2  : in std_logic; -- interrupt 2
+  inAccelerSDO  : out std_logic;
+  inAccelerCSn  : out std_logic;
+  inAccelerSPC  : out std_logic;
   -- User pins
   inDIP   : in std_ulogic_vector(7 downto 0);
   outLED  : out std_ulogic_vector(7 downto 0)
@@ -75,6 +95,12 @@ architecture Behavioral of soc_leon3 is
     TMS   : in std_logic;   -- in: Test Mode State
     TDI   : in std_logic;   -- in: Test Data Input
     TDO   : out std_logic;   -- out: Test Data Output
+    -- GNSS RF inputs:
+    inAdcClk : in std_logic;
+    inIa     : in std_logic_vector(1 downto 0);
+    inQa     : in std_logic_vector(1 downto 0);
+    inIb     : in std_logic_vector(1 downto 0);
+    inQb     : in std_logic_vector(1 downto 0);
     -- MAX2769 SPIs and antenna controls signals:
     inLD     : in std_logic_vector(1 downto 0);
     outSCLK  : out std_ulogic;
@@ -83,6 +109,20 @@ architecture Behavioral of soc_leon3 is
     inExtAntStat   : in std_ulogic;
     inExtAntDetect : in std_ulogic;
     outExtAntEna   : out std_ulogic;
+    -- Gyroscope SPI interface
+    inGyroSDI   : in std_logic;
+    inGyroInt1  : in std_logic; -- interrupt 1
+    inGyroInt2  : in std_logic; -- interrupt 2
+    outGyroSDO  : out std_logic;
+    outGyroCSn  : out std_logic;
+    outGyroSPC  : out std_logic;
+    -- Accelerometer SPI interface
+    inAccelerSDI   : in std_logic;
+    inAccelerInt1  : in std_logic; -- interrupt 1
+    inAccelerInt2  : in std_logic; -- interrupt 2
+    inAccelerSDO  : out std_logic;
+    inAccelerCSn  : out std_logic;
+    inAccelerSPC  : out std_logic;
     -- User pins
     inDIP   : in std_ulogic_vector(7 downto 0);
     outLED  : out std_ulogic_vector(7 downto 0);
@@ -123,6 +163,12 @@ begin
     TMS,
     TDI,
     TDO,
+    -- ADC samples:
+    inAdcClk,
+    inIa,
+    inQa,
+    inIb,
+    inQb,
     -- RF front-end control:
     inLD,
     outSCLK,
@@ -131,6 +177,20 @@ begin
     inExtAntStat,
     inExtAntDetect,
     outExtAntEna,
+    -- Gyroscope
+    inGyroSDI,
+    inGyroInt1,
+    inGyroInt2,
+    outGyroSDO,
+    outGyroCSn,
+    outGyroSPC,
+    -- Accelerometer
+    inAccelerSDI,
+    inAccelerInt1,
+    inAccelerInt2,
+    inAccelerSDO,
+    inAccelerCSn,
+    inAccelerSPC,
     -- User pins
     inDIP,
     outLED,

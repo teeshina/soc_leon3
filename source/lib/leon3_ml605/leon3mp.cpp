@@ -40,6 +40,12 @@ leon3mp::leon3mp()
 #ifdef USE_GNSSLTD_RFCONTROL
   pclRfControl = new RfControl(APB_RF_CONTROL, 0x4, 0xfff);// total address 0x800004xx  = 256 bytes
 #endif
+#ifdef USE_GNSSLTD_GYROSCOPE
+  pclGyroscope = new gyrospi(APB_GYROSCOPE, 0x6, 0xffe);// total address 0x80000600..0x800007ff = 512 bytes
+#endif
+#ifdef USE_GNSSLTD_ACCELEROMETER
+  pclAccelerometer = new accelspi(APB_ACCELEROMETER, 0x8, 0xffe);// total address 0x80000800..0x800009ff = 512 bytes
+#endif
 }
 
 //****************************************************************************
@@ -58,6 +64,12 @@ leon3mp::~leon3mp()
   free(pclTimer);
 #ifdef USE_GNSSLTD_RFCONTROL
   free(pclRfControl);
+#endif
+#ifdef USE_GNSSLTD_GYROSCOPE
+  free(pclGyroscope);
+#endif
+#ifdef USE_GNSSLTD_ACCELEROMETER
+  free(pclAccelerometer);
 #endif
 }
 
@@ -89,7 +101,21 @@ void leon3mp::Update( uint32 inRst,
                       uint32 inIa,
                       uint32 inQa,
                       uint32 inIb,
-                      uint32 inQb
+                      uint32 inQb,
+                      // Gyroscope SPI interface
+                      uint32 inGyroSDI,
+                      uint32 inGyroInt1, // interrupt 1
+                      uint32 inGyroInt2, // interrupt 2
+                      uint32 &outGyroSDO,
+                      uint32 &outGyroCSn,
+                      uint32 &outGyroSPC,
+                      // Accelerometer SPI interface
+                      uint32 inAccelerSDI,
+                      uint32 inAccelerInt1, // interrupt 1
+                      uint32 inAccelerInt2, // interrupt 2
+                      uint32 &outAccelerSDO,
+                      uint32 &outAccelerCSn,
+                      uint32 &outAccelerSPC
                     )
 {
 
@@ -187,5 +213,20 @@ void leon3mp::Update( uint32 inRst,
                       inLD, outSCLK, outSDATA, outCSn,
                       inExtAntStat, inExtAntDetect, outExtAntEna );
 #endif
+
+  // 3-axis Gyroscope with SPI interface
+#ifdef USE_GNSSLTD_GYROSCOPE
+    pclGyroscope->Update(wNRst, inClk, apbi, apbo.arr[APB_GYROSCOPE],
+                         inGyroInt1, inGyroInt2, inGyroSDI,
+                         outGyroSPC, outGyroSDO, outGyroCSn);
+#endif
+
+  // 3-axis Accelerometer with SPI interface
+#ifdef USE_GNSSLTD_ACCELEROMETER
+    pclAccelerometer->Update(wNRst, inClk, apbi, apbo.arr[APB_ACCELEROMETER],
+                             inAccelerInt1, inAccelerInt2, inAccelerSDI,
+                             outAccelerSPC, outAccelerSDO, outAccelerCSn);
+#endif
+
 }
 

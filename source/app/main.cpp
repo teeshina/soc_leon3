@@ -23,6 +23,8 @@ ElfFile         *pclElfFile;
 ClockGenerator  *pclkSys;
 jtag_port       *portJTAG;
 uart_port       *portUART1;
+StGyroscopeSim  clGyroSim;
+StAccelerometerSim  clAccelSim;
 dbg             clDbg;
 
 //*******************************************************************
@@ -64,6 +66,26 @@ int _tmain(int argc, _TCHAR* argv[])
                         ioSoC.uart1.RTS,
                         ioSoC.uart1.RD,
                         ioSoC.uart1.CTS );
+    }
+    
+    if(clSettings.IsGyroEna())
+    {
+      clGyroSim.Update(ioSoC.gyro.nCS,
+                       ioSoC.gyro.SPC,
+                       ioSoC.gyro.SDI,
+                       ioSoC.gyro.SDO,
+                       ioSoC.gyro.Int1,
+                       ioSoC.gyro.Int2 );
+    }
+
+    if(clSettings.IsAccelerEna())
+    {
+      clAccelSim.Update(ioSoC.acceler.nCS,
+                        ioSoC.acceler.SPC,
+                        ioSoC.acceler.SDI,
+                        ioSoC.acceler.SDO,
+                        ioSoC.acceler.Int1,
+                        ioSoC.acceler.Int2 );
     }
 
     LibLeonUpdate(ioSoC);

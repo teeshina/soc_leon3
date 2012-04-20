@@ -575,6 +575,14 @@
 					Name="gnss"
 					>
 					<File
+						RelativePath="..\..\source\lib\leon3_ml605\gnss\accelspi.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\source\lib\leon3_ml605\gnss\accelspi.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\source\lib\leon3_ml605\gnss\buses.h"
 						>
 					</File>
@@ -584,6 +592,14 @@
 					</File>
 					<File
 						RelativePath="..\..\source\lib\leon3_ml605\gnss\gnssengine.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\source\lib\leon3_ml605\gnss\gyrospi.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\source\lib\leon3_ml605\gnss\gyrospi.h"
 						>
 					</File>
 					<File
@@ -672,6 +688,10 @@
 				Name="dbg_tb"
 				>
 				<File
+					RelativePath="..\..\source\lib\dbg_tb\accelspi_tb.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\source\lib\dbg_tb\ahbctrl_tb.cpp"
 					>
 				</File>
@@ -717,6 +737,10 @@
 				</File>
 				<File
 					RelativePath="..\..\source\lib\dbg_tb\gptimer_tb.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\source\lib\dbg_tb\gyrospi_tb.cpp"
 					>
 				</File>
 				<File

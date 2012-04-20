@@ -21,6 +21,9 @@ UART Enable=1
 UART Baud scale=4
 JTAG Enable=0
 JtagClock Freq.,[Hz]=20000000.0
+RF Front-end Enable=1
+Gyroscope Enable=1
+Accelerometer Enable=1
 
 // Enable/disable pattern file generation for the certain VHDL testbench file:
 TB_jtagcom=0
@@ -54,5 +57,7 @@ TB_gptimer=0
 TB_finderr=0
 TB_soc_leon3=0
 TB_rfctrl=0
+TB_gyrospi=0
+TB_accelspi=0
 TB_GnssEngine=0
 Print VHDL assignment=0

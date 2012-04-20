@@ -4,6 +4,8 @@
 #ifdef USE_GNSSLTD_MODULES
   //#define USE_GNSSLTD_AHBCTRL
   #define USE_GNSSLTD_RFCONTROL
+  #define USE_GNSSLTD_GYROSCOPE
+  #define USE_GNSSLTD_ACCELEROMETER
   #define USE_GNSSLTD_GNSSENGINE
 #endif
 
@@ -55,6 +57,12 @@ class leon3mp
 #ifdef USE_GNSSLTD_RFCONTROL
     RfControl *pclRfControl;
 #endif
+#ifdef USE_GNSSLTD_GYROSCOPE
+    gyrospi *pclGyroscope;
+#endif
+#ifdef USE_GNSSLTD_ACCELEROMETER
+    accelspi *pclAccelerometer;
+#endif
 #ifdef USE_GNSSLTD_GNSSENGINE
     GnssEngine *pclGnssEngine;
 #endif
@@ -99,7 +107,21 @@ class leon3mp
       uint32 inIa,
       uint32 inQa,
       uint32 inIb,
-      uint32 inQb
+      uint32 inQb,
+      // Gyroscope SPI interface
+      uint32 inGyroSDI,
+      uint32 inGyroInt1, // interrupt 1
+      uint32 inGyroInt2, // interrupt 2
+      uint32 &outGyroSDO,
+      uint32 &outGyroCSn,
+      uint32 &outGyroSPC,
+      // Accelerometer SPI interface
+      uint32 inAccelerSDI,
+      uint32 inAccelerInt1, // interrupt 1
+      uint32 inAccelerInt2, // interrupt 2
+      uint32 &outAccelerSDO,
+      uint32 &outAccelerCSn,
+      uint32 &outAccelerSPC
      );
     
     void ClkUpdate()
@@ -119,6 +141,12 @@ class leon3mp
 #ifdef USE_GNSSLTD_RFCONTROL
       pclRfControl->ClkUpdate();
 #endif      
+#ifdef USE_GNSSLTD_GYROSCOPE
+      pclGyroscope->ClkUpdate();
+#endif
+#ifdef USE_GNSSLTD_ACCELEROMETER
+      pclAccelerometer->ClkUpdate();
+#endif
 #ifdef USE_GNSSLTD_GNSSENGINE
       pclGnssEngine->ClkUpdate();
 #endif
