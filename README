@@ -14,6 +14,7 @@ proprietary GNSS navigation module. This software allows:
     simulation as reference or use them to compute switching 
     activity.
   - JTAG and UART signals generators are also included.
+  - Intertial sensors simulators implemented as SPI slave devices
 
 
 Project structure:

@@ -100,7 +100,7 @@ package gnssmodule is
   constant CFG_GNSS_CHANNELS_TOTAL :  integer := 32;
   constant CFG_GNSS_MEMORY_SIZE64  :  integer := 8*CFG_GNSS_CHANNELS_TOTAL+8;
   constant CFG_GNSS_ADDR_WIDTH     :  integer := log2x(CFG_GNSS_MEMORY_SIZE64/8)+6;
-
+  
   component gnssengine is
   generic
   (
@@ -122,6 +122,17 @@ package gnssmodule is
     inGloQ   : in  std_logic_vector(1 downto 0)
   );
   end component;
+
+  -- GNNS module Internal data interface
+  type GnssMuxBus is record
+    wRdEna         : std_ulogic;
+    wbRdModuleSel  : std_logic_vector(CFG_GNSS_ADDR_WIDTH-1 downto 0);
+    wbRdFieldSel   : std_logic_vector(2 downto 0);
+    wWrEna         : std_ulogic;
+    wbWrModuleSel  : std_logic_vector(CFG_GNSS_ADDR_WIDTH-1 downto 0);
+    wbWrFieldSel   : std_logic_vector(3 downto 0);
+    wbWrData       : std_ulogic;
+  end record;
 
 
 end;
