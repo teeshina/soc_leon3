@@ -135,10 +135,6 @@ struct SystemOnChipIO
     uint32 RTS; // Request To Send
     uint32 CTS; // Clear To Send
   } uart1;
-  // DDR2/3 interface (ML605 = 512 MB)
-  struct SDDR
-  {
-  } ddr;
 
   //GNSS inputs:
   static const int32 TOTAL_MAXIM2769 = 2;
