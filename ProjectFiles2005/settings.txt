@@ -24,7 +24,7 @@ JtagClock Freq.,[Hz]=20000000.0
 RF Front-end Enable=1
 Gyroscope Enable=1
 Accelerometer Enable=1
-GNSS Engine Enable=0
+GNSS Engine Enable=1
 
 // Enable/disable pattern file generation for the certain VHDL testbench file:
 TB_jtagcom=0
