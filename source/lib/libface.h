@@ -50,11 +50,11 @@ enum ETestBenchName
   TB_irqmp,
   TB_gptimer,
   TB_finderr,
-  TB_soc_leon3,
   TB_rfctrl,
   TB_gyrospi,
   TB_accelspi,
   TB_GnssEngine,
+  TB_soc_leon3,
   
   TB_TOTAL
 };
@@ -90,11 +90,11 @@ const char chBenchFile[TB_TOTAL][64]=
   "irqmp_tb.txt",
   "gptimer_tb.txt",
   "finderr1_tb.txt",
-  "soc_leon3_tb.txt",
   "rfctrl_tb.txt",
   "gyrospi_tb.txt",
   "accelspi_tb.txt",
-  "gnssengine_tb.txt"
+  "gnssengine_tb.txt",
+  "soc_leon3_tb.txt",
 };
 
 //****************************************************************************

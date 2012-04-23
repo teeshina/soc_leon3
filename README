@@ -21,6 +21,7 @@ Project structure:
   +-- source:- lib: Is a cycle truth C++ system simulator, which includes
   |       |         CPU Leon3 + DSU3; MMU with caches; Internal SRAM; JTAG;
   |       |         APB bridge; APB UART; IRQ controller and Timer Unit.
+  |       |         RF front-end and inertial sensors controllers.
   |       |         GNSS module (only by request)
   |       |
   |       +--- app: This is a Control application which includes: 
@@ -33,6 +34,7 @@ Project structure:
   |       |           3. UART signals: TX, RX, CTS, RTS
   |       |           4. SPI modules for the MAX2769 RF chip
   |       |           5. GNSS signals: AdcClk, I, Q;
+  |       |           6. SPI interfaces of the MEMS (gyroscope and accelerometer)
   |       |
   |       +--- firmware: Firmware source code and makefiles to
   |       |         generate *.elf file.

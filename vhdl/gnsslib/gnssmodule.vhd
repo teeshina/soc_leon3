@@ -15,11 +15,11 @@ use ieee.numeric_std.all;
 
 library grlib;
 use grlib.amba.all;
+use grlib.stdlib.all;
 library techmap;
 use techmap.gencomp.all;
 
 package gnssmodule is
-
 
 ------------------------------------------------------------------------------
 -- RF front-end controller module
@@ -93,8 +93,13 @@ package gnssmodule is
   end component; 
 
 
-------------------------------------------------------------------------------
--- GNSS Engine, top level
+  ------------------------------------------------------------------------------
+  -- GNSS Engine, top level
+
+
+  constant CFG_GNSS_CHANNELS_TOTAL :  integer := 32;
+  constant CFG_GNSS_MEMORY_SIZE64  :  integer := 8*CFG_GNSS_CHANNELS_TOTAL+8;
+  constant CFG_GNSS_ADDR_WIDTH     :  integer := log2x(CFG_GNSS_MEMORY_SIZE64/8)+6;
 
   component gnssengine is
   generic
@@ -111,10 +116,10 @@ package gnssmodule is
     ahbso    : out ahb_slv_out_type;
     -- Inputs from RF
     inAdcClk : in  std_ulogic;
-    inGpsI   : in  std_logic_vector(9 downto 0);
-    inGpsQ   : in  std_logic_vector(9 downto 0);
-    inGloI   : in  std_logic_vector(9 downto 0);
-    inGloQ   : in  std_logic_vector(9 downto 0)
+    inGpsI   : in  std_logic_vector(1 downto 0);
+    inGpsQ   : in  std_logic_vector(1 downto 0);
+    inGloI   : in  std_logic_vector(1 downto 0);
+    inGloQ   : in  std_logic_vector(1 downto 0)
   );
   end component;
 

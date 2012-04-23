@@ -1,8 +1,8 @@
 //****************************************************************************
 // Property:    GNSS Sensor Limited
-// Author:      Khabarov Sergey
+// Author:      GNSS Sensor Limited
 // License:     GPL
-// Contact:     sergey.khabarov@gnss-sensor.com
+// Contact:     alex.kosin@gnss-sensor.com
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 // WARNING:     DUMMY version of the GNSS top level: interrupt generator

@@ -59,12 +59,12 @@ void ApbUart::Print(char *str, int32 len)
 {
   char *tmp = str;
 
-  iBufCnt += len;
-  if(iBufCnt>BUF_LENGTH) iBufCnt = BUF_LENGTH;   // Overflow buffer
   for (int32 i=0; i<len; ++i)
   {
     *pchBuf = *(pchBuf-BUF_LENGTH) = str[i];
     if((++pchBuf)>=&chBuf[2*BUF_LENGTH]) pchBuf = &chBuf[BUF_LENGTH];
+    if((++iBufCnt)>BUF_LENGTH) iBufCnt = BUF_LENGTH;   // Overflow buffer
+
   }
   if(iBufCnt) uart->control |= UART_CTRL_TSEMPTY_IRQEN;
   Send();

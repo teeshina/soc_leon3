@@ -36,7 +36,7 @@
 //#define DBG_RfControl
 //#define DBG_gyrospi
 //#define DBG_accelspi
-//#define DBG_GnssEngine
+#define DBG_GnssEngine
 
 extern leon3mp topLeon3mp;
 

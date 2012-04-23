@@ -1,8 +1,8 @@
 //****************************************************************************
 // Property:    GNSS Sensor Limited
-// Author:      Khabarov Sergey
+// Author:      GNSS Sensor Limited
 // License:     GPL
-// Contact:     sergey.khabarov@gnss-sensor.com
+// Contact:     alex.kosin@gnss-sensor.com
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
@@ -26,11 +26,13 @@ void GnssControl::Update(uint32 inNRst,
                           uint32 inMsReady,
                           uint32 &outIrqEna )
 {
-  if(inRdEna)
-  {
-    if(BIT32(inRdAdr,2) == 0) v.RdMemVal = (uint32)BITS64(dpMEM[BITS32(inRdAdr, CFG_GNSS_ADDR_WIDTH-1, 3)], 31, 0);
-    else                      v.RdMemVal = (uint32)BITS64(dpMEM[BITS32(inRdAdr, CFG_GNSS_ADDR_WIDTH-1, 3)], 63, 32);
-  }
+  v = r.Q;
+  
+  if(inRdEna) 
+    v.RdAdr = inRdAdr; 
+  
+  if(BIT32(r.Q.RdAdr,2) == 0) hrdata = (uint32)BITS64(dpMEM[BITS32(r.Q.RdAdr, CFG_GNSS_ADDR_WIDTH-1, 3)], 31, 0);
+  else                        hrdata = (uint32)BITS64(dpMEM[BITS32(r.Q.RdAdr, CFG_GNSS_ADDR_WIDTH-1, 3)], 63, 32);
   
   v.WrMemEna = inWrEna;
   v.WrMemAdr = BITS32(inWrAdr, CFG_GNSS_ADDR_WIDTH-1, 0);
@@ -57,7 +59,7 @@ void GnssControl::Update(uint32 inNRst,
     v.SnapCnt = 0;
   }
 
-  outRdData    = r.Q.RdMemVal;
+  outRdData    = hrdata;
 
   outMuxBus.wWrEna        = r.Q.WrMemEna;
   outMuxBus.wbWrModuleSel = BITS32(r.Q.WrMemAdr, CFG_GNSS_ADDR_WIDTH-1, 6);

@@ -82,6 +82,7 @@ void Settings::ParseLine(char *src, EStringName name)
     case STR_RF_FRONTEND_ENA: iRfFrontEndEna = GetFieldInt(src, length); break;
     case STR_GYRO_ENA:        iGyroEna = GetFieldInt(src, length); break;
     case STR_ACCELER_ENA:     iAccelerEna = GetFieldInt(src, length); break;
+    case STR_GNSSENGINE_ENA:  iGnssEngineEna = GetFieldInt(src, length); break;
     case STR_CLK_DURATION:    iClkSimTotal = GetFieldInt(src, length);  break;
     case STR_PRINT_VHDLDATA:  sLibInitData.iPrintVhdlData = GetFieldInt(src, length); break;
     default:;
@@ -220,6 +221,9 @@ void Settings::SaveToFile()
   osSettings << chLine;
 
   sprintf_s(chLine, "%s%i\n",AllStrings[STR_ACCELER_ENA].name, iAccelerEna);
+  osSettings << chLine;
+
+  sprintf_s(chLine, "%s%i\n",AllStrings[STR_GNSSENGINE_ENA].name, iGnssEngineEna);
   osSettings << chLine;
 
   osSettings << "\n";
