@@ -8,7 +8,7 @@
 #include "headers.h"
 
 #define SETTINGS_FILENAME "settings.txt"
-#define DEFAULT_ELF_FILE "..\\source\\firmware\\HelloWorld\\target_VIRTEX_ML605\\elf\\HelloWorld.elf"
+#define DEFAULT_ELF_FILE "..\\source\\firmware\\HelloWorld\\target_PC_SIMULATION\\elf\\HelloWorld.elf"
 #define DEFAULT_OUT_PATH "e:\\"
 
 #define DEFAULT_CLK_DURATION 30000
@@ -80,6 +80,7 @@ void Settings::ParseLine(char *src, EStringName name)
     case STR_JTAG_ENA:        iJtagEna = GetFieldInt(src, length); break;
     case STR_JTAGCLK_HZ:      dJtagClockHz = GetFieldDouble(src, length);  break;
     case STR_RF_FRONTEND_ENA: iRfFrontEndEna = GetFieldInt(src, length); break;
+    case STR_RF_ADC_CLKHZ:    dAdcClkHz = GetFieldDouble(src, length);  break;
     case STR_GYRO_ENA:        iGyroEna = GetFieldInt(src, length); break;
     case STR_ACCELER_ENA:     iAccelerEna = GetFieldInt(src, length); break;
     case STR_GNSSENGINE_ENA:  iGnssEngineEna = GetFieldInt(src, length); break;
@@ -160,6 +161,10 @@ void Settings::GenerateDefaultSettings()
   uiUartClkScale = 4; // at SysClk=66MHz: 4=1 650 000 baud; 71=114583 baud.
   iJtagEna       = 0;
   dJtagClockHz   = 20000000.0;
+  iRfFrontEndEna = 1;
+  dAdcClkHz      = dSysClockHz;
+  iGyroEna       = 1;
+  iAccelerEna    = 1;
 
   
   for (int32 i=0; i<TB_TOTAL; i++)
@@ -215,6 +220,9 @@ void Settings::SaveToFile()
   osSettings << chLine;
 
   sprintf_s(chLine, "%s%i\n",AllStrings[STR_RF_FRONTEND_ENA].name, iRfFrontEndEna);
+  osSettings << chLine;
+
+  sprintf_s(chLine, "%s%.1f\n",AllStrings[STR_RF_ADC_CLKHZ].name, dAdcClkHz);
   osSettings << chLine;
 
   sprintf_s(chLine, "%s%i\n",AllStrings[STR_GYRO_ENA].name, iGyroEna);

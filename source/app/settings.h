@@ -20,6 +20,7 @@ enum EStringName
   STR_JTAG_ENA,
   STR_JTAGCLK_HZ,
   STR_RF_FRONTEND_ENA,
+  STR_RF_ADC_CLKHZ,
   STR_GYRO_ENA,
   STR_ACCELER_ENA,
   STR_GNSSENGINE_ENA,
@@ -91,6 +92,7 @@ const StringData AllStrings[] =
   {STR_JTAG_ENA,        "JTAG Enable=",STRTYPE_INTEGER},
   {STR_JTAGCLK_HZ,      "JtagClock Freq.,[Hz]=",STRTYPE_DOUBLE},
   {STR_RF_FRONTEND_ENA, "RF Front-end Enable=",STRTYPE_INTEGER},
+  {STR_RF_ADC_CLKHZ,    "ADC sample Freq.,[Hz]=",STRTYPE_DOUBLE},
   {STR_GYRO_ENA,        "Gyroscope Enable=",STRTYPE_INTEGER},
   {STR_ACCELER_ENA,     "Accelerometer Enable=",STRTYPE_INTEGER},
   {STR_GNSSENGINE_ENA,  "GNSS Engine Enable=",STRTYPE_INTEGER},
@@ -159,6 +161,7 @@ class Settings
     int32 iJtagEna;
     double dJtagClockHz;
     int32 iRfFrontEndEna;
+    double dAdcClkHz;
     int32 iGyroEna;
     int32 iAccelerEna;
     int32 iGnssEngineEna;

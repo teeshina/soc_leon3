@@ -183,7 +183,7 @@ void leon3mp::Update( uint32 inRst,
   // Internal RAM:
   pclAhbRAM->Update( wNRst, inClk, stCtrl2Slv, stSlv2Ctrl.arr[AHB_SLAVE_RAM] );
 
-#ifdef xUSE_GNSSLTD_GNSSENGINE
+#ifdef USE_GNSSLTD_GNSSENGINE
   pclGnssEngine->Update(wNRst, inClk, stCtrl2Slv, stSlv2Ctrl.arr[AHB_SLAVE_GNSSENGINE],
                         inAdcClk, inIa, inQa, inIb, inQb);
 #endif

@@ -32,6 +32,7 @@
 #include "jtagport.h"
 #include "uartport.h"
 #include "stm_sim.h"
+#include "rf_sim.h"
 #include "settings.h"
 
 #include "elfloader\elfloader.h"

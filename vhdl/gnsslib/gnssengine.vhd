@@ -1,9 +1,7 @@
 ------------------------------------------------------------------------------
 --  INFORMATION:  http://www.GNSS-sensor.com
 --  PROPERTY:     GNSS Sensor Ltd
---
---  E-MAIL:       gnss.sensor@gmail.com
---
+--  E-MAIL:       alex.kosin@gnss-sensor.com
 --  DESCRIPTION:  This file contains GNSS Engine top level description
 ------------------------------------------------------------------------------
 --  WARNING:      
@@ -22,6 +20,8 @@ library techmap;
 use techmap.gencomp.all;
 library gnsslib;
 use gnsslib.gnssmodule.all;
+use gnsslib.dummies.all;  -- This is an open source implementation
+--use gnsslib.products.all; -- This is an GNSS Sensor Ltd proprietary implementation
 
 ------------------------------------------------------------------------------
 entity gnssengine is
@@ -62,40 +62,53 @@ architecture rtl of gnssengine is
     others => zero32
   );
   
+  signal wbAdr           : std_logic_vector(CFG_GNSS_ADDR_WIDTH-1 downto 0);
+  signal wRdEna          : std_ulogic;
+  signal wWrEna          : std_ulogic;
+  signal wGnssOutIrqPulse: std_ulogic;
+  signal wbGnssOutRdData : std_logic_vector (AHBDW-1 downto 0);
  
 begin
 
-  comb : process(rst, clk)
+  wRdEna <= ahbsi.hready and (not ahbsi.hwrite) and ahbsi.hsel(hindex) and ahbsi.htrans(1);
+  wWrEna <= ahbsi.hready and      ahbsi.hwrite  and ahbsi.hsel(hindex) and ahbsi.htrans(1);
+  wbAdr  <= ahbsi.haddr(CFG_GNSS_ADDR_WIDTH-1 downto 0);
+
+  comb : process(rst, wGnssOutIrqPulse)
     variable hirq : std_logic_vector(NAHBIRQ-1 downto 0);
-    variable wbAdr           : std_logic_vector(CFG_GNSS_ADDR_WIDTH-1 downto 0);
-    variable wRdEna          : std_ulogic ;
-    variable wWrEna          : std_ulogic ;
-    variable wGnssOutIrqPulse: std_ulogic := '0';
-    variable wbGnssOutRdData : std_logic_vector (AHBDW-1 downto 0);
   begin
-
     hirq := (others => '0');
-    
-    wRdEna := ahbsi.hready and (not ahbsi.hwrite) and ahbsi.hsel(hindex) and ahbsi.htrans(1);
-    wWrEna := ahbsi.hready and      ahbsi.hwrite  and ahbsi.hsel(hindex) and ahbsi.htrans(1);
-    wbAdr  := ahbsi.haddr(CFG_GNSS_ADDR_WIDTH-1 downto 0);
-
-
     hirq(irqind) := wGnssOutIrqPulse;
-
-    ahbso.hrdata  <= wbGnssOutRdData;
     ahbso.hirq    <= hirq;
-    ahbso.hready  <= '1';
-    ahbso.hresp   <= HRESP_OKAY; 
-    ahbso.hsplit  <= (others => '0'); 
-    ahbso.hcache  <= '1';
-    ahbso.hindex  <= hindex;
-    
-
   end process;
 
-  ahbso.hconfig <= hconfig;
+  clGnssTop : gnsstop port map
+  (
+    rst,
+    clk,
+    wbAdr,
+    wRdEna,
+    wbGnssOutRdData,
+    wbAdr,
+    wWrEna,
+    ahbsi.hwdata,
+    wGnssOutIrqPulse,
+    -- Inputs from RF
+    inAdcClk,
+    inGpsI,
+    inGpsQ,
+    inGloI,
+    inGloQ
+  );
 
+
+  ahbso.hconfig <= hconfig;
+  ahbso.hrdata  <= wbGnssOutRdData;
+  ahbso.hready  <= '1';
+  ahbso.hresp   <= HRESP_OKAY; 
+  ahbso.hsplit  <= (others => '0'); 
+  ahbso.hcache  <= '1';
+  ahbso.hindex  <= hindex;
 
 end;
 

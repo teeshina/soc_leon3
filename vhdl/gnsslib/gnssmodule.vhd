@@ -1,9 +1,7 @@
 ------------------------------------------------------------------------------
 --  INFORMATION:  http://www.GNSS-sensor.com
 --  PROPERTY:     GNSS Sensor Ltd
---
---  E-MAIL:       gnss.sensor@gmail.com
---
+--  E-MAIL:       alex.kosin@gnss-sensor.com
 --  DESCRIPTION:  This file contains GNSS DSP module description
 ------------------------------------------------------------------------------
 --  WARNING:      
@@ -97,16 +95,29 @@ package gnssmodule is
   -- GNSS Engine, top level
 
 
-  constant CFG_GNSS_CHANNELS_TOTAL :  integer := 32;
-  constant CFG_GNSS_MEMORY_SIZE64  :  integer := 8*CFG_GNSS_CHANNELS_TOTAL+8;
-  constant CFG_GNSS_ADDR_WIDTH     :  integer := log2x(CFG_GNSS_MEMORY_SIZE64/8)+6;
+  constant CFG_GNSS_GPS_L1CA_NUM     : integer := 12;
+  constant CFG_GNSS_SBAS_L1_NUM      : integer := 2; 
+  constant CFG_GNSS_GALILEO_E1_NUM   : integer := 6;
+  constant CFG_GNSS_GLONASS_L1_NUM   : integer := 12;
+  constant CFG_GNSS_CHANNELS_TOTAL   : integer := (CFG_GNSS_GPS_L1CA_NUM+CFG_GNSS_SBAS_L1_NUM+CFG_GNSS_GALILEO_E1_NUM+CFG_GNSS_GLONASS_L1_NUM);
+
+  constant CFG_GNSS_TIMERS_TOTAL     : integer := 1;
+  constant MODULE_ID_GLB_TIMER       : integer := 0+CFG_GNSS_CHANNELS_TOTAL;
+
+  constant CFG_GNSS_MODULES_TOTAL    : integer := CFG_GNSS_CHANNELS_TOTAL+CFG_GNSS_TIMERS_TOTAL;
+  constant CFG_GNSS_DWORD_PER_MODULE : integer := 8;
+  constant CFG_GNSS_MEMORY_SIZE64    : integer := CFG_GNSS_DWORD_PER_MODULE*CFG_GNSS_MODULES_TOTAL;
+  constant CFG_GNSS_ADDR_WIDTH       : integer := log2x(CFG_GNSS_MEMORY_SIZE64/8)+6;
+  
+
   
   component gnssengine is
   generic
   (
     hindex : integer := 0;
     haddr  : integer := 0;
-    hmask  : integer := 16#FFF#  
+    hmask  : integer := 16#FFF#;
+    irqind : integer := 0
   );
   port
   (
@@ -122,17 +133,5 @@ package gnssmodule is
     inGloQ   : in  std_logic_vector(1 downto 0)
   );
   end component;
-
-  -- GNNS module Internal data interface
-  type GnssMuxBus is record
-    wRdEna         : std_ulogic;
-    wbRdModuleSel  : std_logic_vector(CFG_GNSS_ADDR_WIDTH-1 downto 0);
-    wbRdFieldSel   : std_logic_vector(2 downto 0);
-    wWrEna         : std_ulogic;
-    wbWrModuleSel  : std_logic_vector(CFG_GNSS_ADDR_WIDTH-1 downto 0);
-    wbWrFieldSel   : std_logic_vector(3 downto 0);
-    wbWrData       : std_ulogic;
-  end record;
-
 
 end;

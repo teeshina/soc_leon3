@@ -104,13 +104,15 @@
 #include "leon3_ml605\gnss\accelspi.h"
 #include "leon3_ml605\gnss\buses.h"
 #ifdef USE_GNSSLTD_DUMMIES
-  #include "leon3_ml605\gnss\dummies\reclock.h"
+  #include "leon3_ml605\gnss\dummies\dp_ram.h"
+  #include "leon3_ml605\gnss\dummies\wrfifo.h"
   #include "leon3_ml605\gnss\dummies\glbtimer.h"
   #include "leon3_ml605\gnss\dummies\gnssctrl.h"
+  #include "leon3_ml605\gnss\dummies\dumchan.h"
   #include "leon3_ml605\gnss\dummies\chnpack.h"
   #include "leon3_ml605\gnss\dummies\gnsstop.h"
 #else
-  #include "leon3_ml605\gnss\products\reclock.h"
+  #include "leon3_ml605\gnss\products\wrfifo.h"
   #include "leon3_ml605\gnss\products\glbtimer.h"
   #include "leon3_ml605\gnss\products\acc.h"
   #include "leon3_ml605\gnss\products\prngen.h"

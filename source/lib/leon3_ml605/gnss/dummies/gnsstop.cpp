@@ -12,10 +12,21 @@
 #include "lheaders.h"
 
 
+//****************************************************************************
+GnssTop::GnssTop()
+{
+  pDpRam = new dp_ram(CFG_GNSS_ADDR_WIDTH);
+}
+
+//****************************************************************************
+GnssTop::~GnssTop()
+{
+  free(pDpRam);
+}
 
 //****************************************************************************
 void GnssTop::Update( uint32 inNRst,
-                      SClock inClk,
+                      SClock inBusClk,
                       uint32 inRdAdr,
                       uint32 inRdEna,
                       uint32 &outRdData,
@@ -30,25 +41,43 @@ void GnssTop::Update( uint32 inNRst,
                       uint32 inGloQ )
 {
   // multiplexer:
-  wbSelData = wbChnOutData | wbGlbTimerOutData;
   
-  clReclock.Update( inNRst, inClk, inAdcClk,
-                    stCtrlOutMuxBus,
-                    stReclkOutMuxBus, 
-                    wGlbTmrOutMsReady, wReclkOutMsReady,
-                    wbSelData, wbReclkOutSelData, wReclkOutSelDataRdy );
+  clFifo.Update( inNRst, inBusClk, inAdcClk,
+                 inWrEna, inWrAdr, inWrData, FifoOutDataRdy, FifoOutAdr, FifoOutData );
 
-  clGnssControl.Update(inNRst, inClk, inRdAdr, inRdEna, outRdData, inWrAdr, inWrEna, inWrData,
-                       stCtrlOutMuxBus,
-                       wbReclkOutSelData, wReclkOutSelDataRdy,
-                       wReclkOutMsReady, outIrqPulse);
+  clGnssControl.Update(inNRst,inAdcClk, FifoOutAdr, FifoOutDataRdy, FifoOutData,
+                       m2c, c2m,
+                       GlbTmrOutMsReady, CtrlOutIrqPulse,
+                       CtrlOutMemWrEna, CtrlOutMemWrAdr, CtrlOutMemWrData);
 
   clGlobalTimer.Update( inNRst,
                         inAdcClk,
-                        stReclkOutMuxBus,
-                        wbGlbTimerOutData,
-                        wGlbTmrOutMsReady );
+                        c2m,
+                        m2c.arr[MODULE_ID_GLB_TIMER],
+                        GlbTmrOutMsReady );
                         
   clChannelsPack.Update(inNRst, inAdcClk, inGpsI, inGpsQ, inGloI, inGloQ,
-                        wGlbTmrOutMsReady, stReclkOutMuxBus, wbChnOutData);
+                        GlbTmrOutMsReady, c2m, &m2c.arr[0]);
+
+  // output reading interface via dual-port RAM
+  pDpRam->Update(inAdcClk, CtrlOutMemWrEna, CtrlOutMemWrAdr, CtrlOutMemWrData,
+                 inBusClk, inRdEna, (inRdAdr>>3), rd_val);
+
+  if(inRdEna) 
+    bv.word_sel = BIT32(inRdAdr,2);
+
+  if(br.Q.word_sel==0) outRdData = (uint32)rd_val;
+  else                 outRdData = (uint32)(rd_val>>32);
+
+  
+  // IRQ pulse clock transition:
+  bv.IrqPulse1 = CtrlOutIrqPulse;
+  bv.IrqPulse2 = br.Q.IrqPulse1;
+  bv.IrqPulse3 = br.Q.IrqPulse2;
+
+  outIrqPulse  = br.Q.IrqPulse3 & !br.Q.IrqPulse2;
+
+  // registers:
+  br.CLK = inBusClk;
+  br.D = bv;
 }

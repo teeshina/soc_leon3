@@ -8,70 +8,86 @@
 
 #include "lheaders.h"
 
-
+#define last_module (CFG_GNSS_MODULES_TOTAL-1)
+#define last_field (CFG_GNSS_DWORD_PER_MODULE-1)
 
 //****************************************************************************
 void GnssControl::Update(uint32 inNRst,
-                          SClock inBusClk,
-                          uint32 inRdAdr,
-                          uint32 inRdEna,
-                          uint32 &outRdData,
+                          SClock inAdcClk,
+                          // AMBA to GNSS via FIFO
                           uint32 inWrAdr,
                           uint32 inWrEna,
                           uint32 inWrData,
-                          GnssMuxBus &outMuxBus,
-                          uint64 inRdData,
-                          uint32 inRdDataRdy,
+                          // Control signals:
+                          m2c_tot &m2c,
+                          Ctrl2Module &c2m,
                           // snaper run:
                           uint32 inMsReady,
-                          uint32 &outIrqEna )
+                          uint32 &outIrqPulse,
+                          // DP memory interface
+                          uint32 &outMemWrEna,
+                          uint32 &outMemWrAdr,
+                          uint64 &outMemWrData
+                         )
 {
   v = r.Q;
   
-  if(inRdEna) 
-    v.RdAdr = inRdAdr; 
+  if(inWrEna) v.wr_ena = 1;
+  else        v.wr_ena = 0;
   
-  if(BIT32(r.Q.RdAdr,2) == 0) hrdata = (uint32)BITS64(dpMEM[BITS32(r.Q.RdAdr, CFG_GNSS_ADDR_WIDTH-1, 3)], 31, 0);
-  else                        hrdata = (uint32)BITS64(dpMEM[BITS32(r.Q.RdAdr, CFG_GNSS_ADDR_WIDTH-1, 3)], 63, 32);
+  if(inWrEna) v.wr_module_sel = BITS32(inWrAdr, CFG_GNSS_ADDR_WIDTH-1, 6);
+  if(inWrEna) v.wr_field_sel  = BITS32(inWrAdr, 5, 2);
+  if(inWrEna) v.wr_data       = inWrData;
   
-  v.WrMemEna = inWrEna;
-  v.WrMemAdr = BITS32(inWrAdr, CFG_GNSS_ADDR_WIDTH-1, 0);
-  v.WrMemVal = inWrData;
   
-  if(inMsReady)                                     v.SnapEna = 1;
-  else if(r.Q.SnapCnt==(CFG_GNSS_MEMORY_SIZE64-1))  v.SnapEna = 0;
+  snap_end = 0;
+  if((r.Q.SnapFieldCnt==last_field)&&(r.Q.SnapModuleCnt==last_module)) snap_end = 1;
   
-  if(inMsReady)                      v.SnapCnt = 0;
-  else if(r.Q.SnapEna & inRdDataRdy) v.SnapCnt = r.Q.SnapCnt + 1;
+  // Reading is fully synchronous with all modules:
+  if(inMsReady)      v.SnapEna = 1;
+  else if(snap_end)  v.SnapEna = 0;
+  v.SnapEna_z = r.Q.SnapEna;
 
-  if(r.Q.SnapCnt==(CFG_GNSS_MEMORY_SIZE64-1) && inRdDataRdy) v.IrqEna = 1;
-  else                                                       v.IrqEna = 0;
+  if(inMsReady | !r.Q.SnapEna | snap_end | (r.Q.SnapFieldCnt==last_field)) v.SnapFieldCnt = 0;
+  else if(r.Q.SnapEna)                    v.SnapFieldCnt = r.Q.SnapFieldCnt + 1;
+  v.SnapFieldCnt_z = r.Q.SnapFieldCnt;
 
-  if((inBusClk.eClock==SClock::CLK_POSEDGE) && inRdDataRdy)
-  {
-    dpMEM[r.Q.SnapCnt] = inRdData;
-  }
+  if(inMsReady| !r.Q.SnapEna | snap_end)              v.SnapModuleCnt = 0;
+  else if(r.Q.SnapEna &&(r.Q.SnapFieldCnt==last_field)) v.SnapModuleCnt = r.Q.SnapModuleCnt+1;
+  v.SnapModuleCnt_z = r.Q.SnapModuleCnt;
+
+ 
+  // mux data for DP writting:  
+  v_m2c = m2c.arr[r.Q.SnapModuleCnt_z];
+
 
   // reset:
   if(!inNRst)
   {
     v.SnapEna = 0;
-    v.SnapCnt = 0;
+    v.SnapFieldCnt = 0;
+    v.SnapModuleCnt = 0;
+    v.SnapEna_z = 0;
+    v.SnapFieldCnt_z = 0;
+    v.SnapModuleCnt_z = 0;
+    v.wr_ena = 0;
   }
 
-  outRdData    = hrdata;
+  outMemWrEna = r.Q.SnapEna_z;
+  outMemWrAdr = (r.Q.SnapModuleCnt<<(log2x[CFG_GNSS_DWORD_PER_MODULE])) | r.Q.SnapFieldCnt_z;
+  outMemWrData = v_m2c.rdata;
 
-  outMuxBus.wWrEna        = r.Q.WrMemEna;
-  outMuxBus.wbWrModuleSel = BITS32(r.Q.WrMemAdr, CFG_GNSS_ADDR_WIDTH-1, 6);
-  outMuxBus.wbWrFieldSel  = BITS32(r.Q.WrMemAdr, 5, 2);  // 8 x 64 bits words
-  outMuxBus.wbWrData      = r.Q.WrMemVal;
+  c2m.wr_ena        = r.Q.wr_ena;
+  c2m.wr_module_sel = r.Q.wr_module_sel;
+  c2m.wr_field_sel  = r.Q.wr_field_sel;
+  c2m.wr_data       = r.Q.wr_data;
+
+  c2m.rd_ena        = r.Q.SnapEna;
+  c2m.rd_module_sel = r.Q.SnapModuleCnt;
+  c2m.rd_field_sel  = r.Q.SnapFieldCnt;
   
-  outMuxBus.wRdEna        = r.Q.SnapEna;
-  outMuxBus.wbRdModuleSel = BITS32(r.Q.SnapCnt, CFG_GNSS_ADDR_WIDTH-1, 3);
-  outMuxBus.wbRdFieldSel  = BITS32(r.Q.SnapCnt, 2, 0);
+  outIrqPulse = r.Q.SnapEna_z & !r.Q.SnapEna;
   
-  outIrqEna = r.Q.IrqEna;
-  
-  r.CLK = inBusClk;
+  r.CLK = inAdcClk;
   r.D   = v;
 }

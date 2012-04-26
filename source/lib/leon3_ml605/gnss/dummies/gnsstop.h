@@ -12,29 +12,37 @@ class GnssTop
 {
   friend class dbg;
   private:
-    uint64 dpMEM[CFG_GNSS_MEMORY_SIZE64];
+    //TDpRam<uint64> *pDpRam;
+    dp_ram *pDpRam;
+    uint64 rd_val; 
     
-    struct regs
+    struct BusRegs
     {
-      uint32 MsLength;
-      uint32 MsCnt;
-      uint32 irq_ena : 1;
+      uint32 word_sel : 1;
+      uint32 IrqPulse1 : 1;
+      uint32 IrqPulse2 : 1;
+      uint32 IrqPulse3 : 1;
     };
     
-    regs v;
-    TDFF<regs> r;//
+    BusRegs bv;
+    TDFF<BusRegs> br;//
 
-    uint64 wbReclkOutSelData;
-    uint32 wReclkOutSelDataRdy;
-    uint32 wReclkOutMsReady;
-    GnssMuxBus stReclkOutMuxBus;
-    Reclock clReclock;
+    uint32 FifoOutDataRdy;
+    uint32 FifoOutAdr;
+    uint32 FifoOutData;
+    WrFifo clFifo;
 
-    GnssMuxBus stCtrlOutMuxBus;
+
+    m2c_tot m2c;
+    Ctrl2Module c2m;
+    uint32 CtrlOutIrqPulse;
+    uint32 CtrlOutMemWrEna;
+    uint32 CtrlOutMemWrAdr;
+    uint64 CtrlOutMemWrData;
+
     GnssControl clGnssControl;
 
-    uint64 wbGlbTimerOutData;
-    uint32 wGlbTmrOutMsReady;
+    uint32 GlbTmrOutMsReady;
     GlobalTimer clGlobalTimer;
     
     uint64 wbChnOutData;
@@ -44,6 +52,8 @@ class GnssTop
     uint64 wbSelData; // multiplexer on top level
     
   public:
+    GnssTop();
+    ~GnssTop();
     
     void Update(uint32 inNRst,
                 SClock inClk,
@@ -63,8 +73,9 @@ class GnssTop
     
     void ClkUpdate()
     {
-      r.ClkUpdate();
-      clReclock.ClkUpdate();
+      br.ClkUpdate();
+      pDpRam->ClkUpdate();
+      clFifo.ClkUpdate();
       clGnssControl.ClkUpdate();
       clGlobalTimer.ClkUpdate();
       clChannelsPack.ClkUpdate();

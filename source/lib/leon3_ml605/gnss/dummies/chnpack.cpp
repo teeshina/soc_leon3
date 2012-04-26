@@ -8,8 +8,20 @@
 
 #include "lheaders.h"
 
-#define DUMMY_CHAN_NUM 16
+//****************************************************************************
+ChannelsPack::ChannelsPack()
+{
+  for (uint32 i=0; i<CFG_GNSS_CHANNELS_TOTAL; i++)
+    pDummyChn[i] = new DummyChannel(i);
+}
 
+ChannelsPack::~ChannelsPack()
+{
+  for (uint32 i=0; i<CFG_GNSS_CHANNELS_TOTAL; i++)
+    free(pDummyChn[i]);
+}
+
+//****************************************************************************
 void ChannelsPack::Update( uint32 inNRst,
                            SClock inAdcClk,
                            uint32 inGpsI,
@@ -17,65 +29,28 @@ void ChannelsPack::Update( uint32 inNRst,
                            uint32 inGloI,
                            uint32 inGloQ,
                            uint32 inMsPulse,
-                           GnssMuxBus &inMuxBus,
-                           uint64 &outRdData )
+                           Ctrl2Module &c2m,
+                           Module2Ctrl *m2c )
 {
-  // write control registers:
-  if((inMuxBus.wbWrModuleSel==DUMMY_CHAN_NUM)&&inMuxBus.wWrEna)
-  {
-    switch(inMuxBus.wbWrFieldSel)
-    {
-      case 0:
-        v.dbgIncr = inMuxBus.wbWrData;
-      break;
-      default:;
-    }
-  }
+  uint32 shft;
   
-  // read data:
-  if((inMuxBus.wbRdModuleSel==DUMMY_CHAN_NUM)&&inMuxBus.wRdEna)
-  {
-    switch(inMuxBus.wbRdFieldSel)
-    {
-      case 0: rdata = uint64(r.Q.dbgIncr); break;
-      case 1: rdata = (uint64(r.Q.latchQ1)<<32) | uint64(r.Q.latchI1); break;
-      case 2: rdata = (uint64(r.Q.latchQ2)<<32) | uint64(r.Q.latchI2); break;
-      default: rdata = 0;
-    }
-  }
+  // GPS L1-CA pack:
+  shft=0;
+  for(uint32 i=shft; i<(shft+CFG_GNSS_GPS_L1CA_NUM); i++)
+    pDummyChn[i]->Update(inNRst, inAdcClk, inGpsI, inGpsQ, inMsPulse, c2m, m2c[i]);
+
+  // SBAS L1 pack:
+  shft = CFG_GNSS_GPS_L1CA_NUM;
+  for(uint32 i=shft; i<(shft+CFG_GNSS_SBAS_L1_NUM); i++)
+    pDummyChn[i]->Update(inNRst, inAdcClk, inGpsI, inGpsQ, inMsPulse, c2m, m2c[i]);
   
-  if(inMsPulse) v.accI1 = r.Q.dbgIncr;
-  else          v.accI1 = r.Q.accI1 + inGpsI;
-
-  if(inMsPulse) v.accQ1 = ~r.Q.dbgIncr;
-  else          v.accQ1 = r.Q.accQ1 - inGpsQ;
-
-  if(inMsPulse) v.accI2 = ~r.Q.dbgIncr;
-  else          v.accI2 = r.Q.accI2 - inGloI;
-
-  if(inMsPulse) v.accQ2 = r.Q.dbgIncr;
-  else          v.accQ2 = r.Q.accQ2 + inGloQ;
-
-
-  if(inMsPulse)
-  {
-    v.latchI1 = r.Q.accI1;
-    v.latchQ1 = r.Q.accQ1;
-    v.latchI2 = r.Q.accI2;
-    v.latchQ2 = r.Q.accQ2;
-  }
+  // GALILEO E1 pack
+  shft = CFG_GNSS_GPS_L1CA_NUM+CFG_GNSS_SBAS_L1_NUM;
+  for(uint32 i=shft; i<(shft+CFG_GNSS_GALILEO_E1_NUM); i++)
+    pDummyChn[i]->Update(inNRst, inAdcClk, inGpsI, inGpsQ, inMsPulse, c2m, m2c[i]);
   
-  if(!inNRst)
-  {
-    v.accI1 = 0;
-    v.accQ1 = 0;
-    v.accI2 = 0;
-    v.accQ2 = 0;
-    v.latchI1 = 0;
-    v.latchQ1 = 0;
-    v.latchI2 = 0;
-    v.latchQ2 = 0;
-  }
-  
-  outRdData = rdata;
+  // GLONASS L1-CA pack
+  shft = CFG_GNSS_GPS_L1CA_NUM+CFG_GNSS_SBAS_L1_NUM+CFG_GNSS_GALILEO_E1_NUM;
+  for(uint32 i=shft; i<(shft+CFG_GNSS_GLONASS_L1_NUM); i++)
+    pDummyChn[i]->Update(inNRst, inAdcClk, inGloI, inGloQ, inMsPulse, c2m, m2c[i]);
 }

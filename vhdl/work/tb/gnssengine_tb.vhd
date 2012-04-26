@@ -115,14 +115,34 @@ begin
   ch_ahbso.hconfig(7) <= S(488 downto 457);
   ch_ahbso.hindex <= conv_integer(S(492 downto 489));
 
+  tt : gnssengine generic map
+  (
+    hindex => AHB_SLAVE_GNSSENGINE,
+    haddr  => 16#D00#,
+    hmask  => 16#FFF#,
+    irqind => IRQ_GNSS_ENGINE
+  ) port map
+  (
+    inNRst,
+    inClk,
+    in_ahbsi,
+    ahbso,
+    -- Inputs from RF
+    inClk,
+    in_GpsI,
+    in_GpsQ,
+    in_GloI,
+    in_GloQ
+  );
 
 
 procCheck : process (inClk,ch_ahbso)
 begin
   if(rising_edge(inClk)and(iClkCnt>2)) then
-    --if((apbo.prdata(0)/='U')and(apbo.prdata(0)/='X')) then
-    --  if(ch_apbo/=apbo) then print("Err: apbo: prdata=" & tost(apbo.prdata));  iErrCnt:=iErrCnt+1; end if;
-    --end if;
+    if(ch_ahbso.hirq/=ahbso.hirq) then print("Err: ahbso.hirq=" & tost(ahbso.hirq));  iErrCnt:=iErrCnt+1; end if;
+    if((ahbso.hrdata(0)/='U')and(ahbso.hrdata(0)/='X')) then
+      if(ch_ahbso/=ahbso) then print("Err: ahbso: hrdata=" & tost(ahbso.hrdata));  iErrCnt:=iErrCnt+1; end if;
+    end if;
   end if;
 end process procCheck;
 

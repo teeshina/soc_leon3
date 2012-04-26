@@ -477,6 +477,27 @@ begin
     write
   );
 
+  ------------------------------------
+  -- GPS/GLONASS/Galileo/SBAS Navigation engine:
+  clGnssEngine : GnssEngine generic map 
+  (
+    hindex => AHB_SLAVE_GNSSENGINE,
+    haddr  => 16#D00#, 
+    hmask  => 16#FFF#,
+    irqind => IRQ_GNSS_ENGINE
+  )port map 
+  (
+    wNRst,
+    wClkBus,
+    slvi,
+    slvo(AHB_SLAVE_GNSSENGINE),
+    inAdcClk,
+    inIa,
+    inQa,
+    inIb,
+    inQb
+  );
+
 
 
   outClkBus <= wClkBus;
@@ -485,15 +506,5 @@ begin
   outLED(2) <= dsuo.active;
   outLED(3) <= inDsuBreak;
 
-  -- REMOVE IT:
-  regs : process(inAdcClk)
-  begin 
-    if rising_edge(inAdcClk) then 
-      outLED(7) <= (inIa(1) xor inIa(0)) and (inQa(1) xor inQa(0));
-      outLED(6) <= (inIb(1) xor inIb(0)) and (inQb(1) xor inQb(0));
-    end if; 
-  end process;
-  -- END OF REMOVE
-  
 end rtl;
 

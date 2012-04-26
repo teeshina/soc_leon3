@@ -11,6 +11,9 @@ void SysControl::Init()
   // Timer initialization:
   clTimer.Init();
 
+  // GNSS Engine init:
+  clGnssEngine.Init();
+
   // Interrupt controller:
   clIrqControl.Init();
 }

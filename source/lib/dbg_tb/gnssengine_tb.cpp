@@ -14,7 +14,40 @@ STst stst[] =
 {
   {40,  1, 0xD0000000+(32<<6), 0x1000}, // ms length
   {42,  0, 0xD0000000, 0xffffffff},
+  {50,  1, 0xD0000000, 0xf00ff000},// set dbgIncr of channel 0
+  {51,  1, 0xD0000000+((1*16)<<2), 0xf00ff001},// set dbgIncr of channel 1
+  {52,  1, 0xD0000000+((2*16)<<2), 0xf00ff002},// set dbgIncr of channel 2
+  {53,  1, 0xD0000000+((3*16)<<2), 0xf00ff003},// set dbgIncr of channel 2
+  {54,  1, 0xD0000000+((4*16)<<2), 0xf00ff004},// set dbgIncr of channel 2
+  {55,  1, 0xD0000000+((5*16)<<2), 0xf00ff005},// set dbgIncr of channel 2
+  {56,  1, 0xD0000000+((6*16)<<2), 0xf00ff006},// set dbgIncr of channel 2
+  {57,  1, 0xD0000000+((7*16)<<2), 0xf00ff007},// set dbgIncr of channel 2
+  {58,  1, 0xD0000000+((8*16)<<2), 0xf00ff008},// set dbgIncr of channel 2
+  {59,  1, 0xD0000000+((9*16)<<2), 0xf00ff009},// set dbgIncr of channel 2
+  {60,  1, 0xD0000000+((10*16)<<2), 0xf00ff010},// set dbgIncr of channel 2
+  {61,  1, 0xD0000000+((11*16)<<2), 0xf00ff011},// set dbgIncr of channel 2
+  {62,  1, 0xD0000000+((12*16)<<2), 0xf00ff012},// set dbgIncr of channel 2
+  {63,  1, 0xD0000000+((13*16)<<2), 0xf00ff013},// set dbgIncr of channel 2
+  {64,  1, 0xD0000000+((14*16)<<2), 0xf00ff014},// set dbgIncr of channel 2
+  {65,  1, 0xD0000000+((15*16)<<2), 0xf00ff015},// set dbgIncr of channel 2
+  {66,  1, 0xD0000000+((16*16)<<2), 0xf00ff016},// set dbgIncr of channel 2
+  {67,  1, 0xD0000000+((17*16)<<2), 0xf00ff017},// set dbgIncr of channel 2
+  {68,  1, 0xD0000000+((18*16)<<2), 0xf00ff018},// set dbgIncr of channel 2
+  {69,  1, 0xD0000000+((19*16)<<2), 0xf00ff019},// set dbgIncr of channel 2
+  {70,  1, 0xD0000000+((20*16)<<2), 0xf00ff020},// set dbgIncr of channel 2
+  {71,  1, 0xD0000000+((21*16)<<2), 0xf00ff021},// set dbgIncr of channel 2
+  {72,  1, 0xD0000000+((22*16)<<2), 0xf00ff022},// set dbgIncr of channel 2
+  {73,  1, 0xD0000000+((23*16)<<2), 0xf00ff023},// set dbgIncr of channel 2
+  {74,  1, 0xD0000000+((24*16)<<2), 0xf00ff024},// set dbgIncr of channel 2
+  {75,  1, 0xD0000000+((25*16)<<2), 0xf00ff025},// set dbgIncr of channel 2
+  {76,  1, 0xD0000000+((26*16)<<2), 0xf00ff026},// set dbgIncr of channel 2
+  {77,  1, 0xD0000000+((27*16)<<2), 0xf00ff027},// set dbgIncr of channel 2
+  {78,  1, 0xD0000000+((28*16)<<2), 0xf00ff028},// set dbgIncr of channel 2
+  {79,  1, 0xD0000000+((29*16)<<2), 0xf00ff029},// set dbgIncr of channel 2
+  {80,  1, 0xD0000000+((30*16)<<2), 0xf00ff030},// set dbgIncr of channel 2
+  {81,  1, 0xD0000000+((31*16)<<2), 0xf00ff031},// set dbgIncr of channel 31
   {4500,  0, 0xD0000000+(32<<6), 0x0},
+  {4501,  0, 0xD0000000+(32<<6)+0x4, 0x0},
 };
 #endif
 

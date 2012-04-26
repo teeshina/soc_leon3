@@ -209,6 +209,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\source\app\rf_sim.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\source\app\rf_sim.h"
+				>
+			</File>
+			<File
 				RelativePath="..\source\app\settings.cpp"
 				>
 			</File>

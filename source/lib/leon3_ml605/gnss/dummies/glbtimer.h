@@ -17,19 +17,20 @@ class GlobalTimer
       uint32 MsLength;
       uint32 SubMsCnt;
       uint32 MsCnt;
+      uint64 rdata;
+      uint32 rdata_rdy;
     };
     
     regs v;
     TDFF<regs> r;
     
     uint32 MsPulse : 1;
-    uint64 rdata;
     
   public:
     void Update(uint32 inNRst,
                 SClock inAdcClk,
-                GnssMuxBus &inMuxBus,
-                uint64 &outRdData,
+                Ctrl2Module &in_c2m,
+                Module2Ctrl &out_m2c,
                 uint32 &outMsPulse );
     
     void ClkUpdate()

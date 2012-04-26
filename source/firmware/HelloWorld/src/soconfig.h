@@ -7,6 +7,8 @@ static const uint32 ADR_APBUART_BASE = 0x80000100;
 static const uint32 ADR_IRQMP_BASE   = 0x80000200;
 static const uint32 ADR_GPTIMER_BASE = 0x80000300;
 
+static const uint32 ADR_GNSS_ENGINE_BASE = 0xD0000000;
+
 
 static const int32 TIMERS_TOTAL    = 2;
 

@@ -12,26 +12,12 @@ class ChannelsPack
 {
   friend class dbg;
   private:
-    struct regs
-    {
-      uint32 dbgIncr;
-
-      uint32 accI1;
-      uint32 accQ1;
-      uint32 accI2;
-      uint32 accQ2;
-
-      uint32 latchI1;
-      uint32 latchQ1;
-      uint32 latchI2;
-      uint32 latchQ2;
-    };
+    DummyChannel *pDummyChn[CFG_GNSS_CHANNELS_TOTAL];
     
-    regs v;
-    TDFF<regs> r;
-    
-    uint64 rdata;
   public:
+  
+    ChannelsPack();
+    ~ChannelsPack();
   
     void Update(uint32 inNRst,
                 SClock inAdcClk,
@@ -40,11 +26,12 @@ class ChannelsPack
                 uint32 inGloI,
                 uint32 inGloQ,
                 uint32 inMsPulse,
-                GnssMuxBus &inMuxBus,
-                uint64 &outRdData );
+                Ctrl2Module &c2m,
+                Module2Ctrl *m2c );
   
     void ClkUpdate()
     {
-      r.ClkUpdate();
+      for (int32 i=0; i<CFG_GNSS_CHANNELS_TOTAL; i++)
+        pDummyChn[i]->ClkUpdate();
     }
 };

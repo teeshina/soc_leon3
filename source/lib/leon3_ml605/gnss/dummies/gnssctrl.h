@@ -12,42 +12,45 @@ class GnssControl
 {
   friend class dbg;
   private:
-    uint64 dpMEM[CFG_GNSS_MEMORY_SIZE64];
     
     struct regs
     {
-      uint32 RdAdr;//(CFG_GNSS_ADDR_WIDTH-1 downto 0)
-      uint32 WrMemEna;
-      uint32 WrMemAdr;
-      uint32 WrMemVal;
-      
+      uint32 wr_ena         : 1;
+      uint32 wr_module_sel; // : CFG_GNSS_ADDR_WIDTH-1
+      uint32 wr_field_sel   : 4;
+      uint32 wr_data;
       uint32 SnapEna : 1;
-      uint32 SnapCnt;
-      uint32 IrqEna  : 1;
+      uint32 SnapFieldCnt;
+      uint32 SnapModuleCnt;
+      uint32 SnapEna_z : 1;
+      uint32 SnapFieldCnt_z;
+      uint32 SnapModuleCnt_z;
     };
     
     regs v;
     TDFF<regs> r;//
+    Module2Ctrl v_m2c;
 
-    uint32 hrdata;
-
+    uint32 snap_end : 1;
     
   public:
     
     void Update(uint32 inNRst,
-                SClock inBusClk,
-                uint32 inRdAdr,
-                uint32 inRdEna,
-                uint32 &outRdData,
+                SClock inAdcClk,
+                // AMBA to GNSS via FIFO
                 uint32 inWrAdr,
                 uint32 inWrEna,
                 uint32 inWrData,
-                GnssMuxBus &outMuxBus,
-                uint64 inRdData,
-                uint32 inRdDataRdy,
+                // Control signals:
+                m2c_tot &m2c,
+                Ctrl2Module &c2m,
                 // snaper run:
                 uint32 inMsReady,
-                uint32 &outIrqEna );
+                uint32 &outIrqPulse,
+                // DP memory interface
+                uint32 &outMemWrEna,
+                uint32 &outMemWrAdr,
+                uint64 &outMemWrData );
 
     void ClkUpdate()
     {

@@ -4,6 +4,7 @@ SOURCES = uart.cpp \
 	timer.cpp \
 	tickhandler.cpp \
 	irqctrl.cpp \
+	gnssengine.cpp \
 	sysctrl.cpp \
 	main.cpp
 OBJECTS = $(SOURCES:.cpp=.o)

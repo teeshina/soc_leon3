@@ -4,6 +4,7 @@
 #include "stdtypes.h"
 #include "irqctrl.h"
 #include "timer.h"
+#include "gnssengine.h"
 
 
 class SysControl
@@ -12,6 +13,7 @@ class SysControl
   private:
    IrqControl clIrqControl;
    Timer      clTimer;
+   GnssEngine clGnssEngine;
 
   public:
     void Init();

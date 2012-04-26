@@ -10,31 +10,34 @@
 
 void GlobalTimer::Update( uint32 inNRst,
                           SClock inAdcClk,
-                          GnssMuxBus &inMuxBus,
-                          uint64 &outRdData,
+                          Ctrl2Module &in_c2m,
+                          Module2Ctrl &out_m2c,
                           uint32 &outMsPulse )
 {
   // write control registers:
-  if((inMuxBus.wbWrModuleSel==CFG_GNSS_CHANNELS_TOTAL)&&inMuxBus.wWrEna)
+  if((in_c2m.wr_module_sel==MODULE_ID_GLB_TIMER)&&in_c2m.wr_ena)
   {
-    switch(inMuxBus.wbWrFieldSel)
+    switch(in_c2m.wr_field_sel)
     {
       case 0:
-        v.MsLength = inMuxBus.wbWrData;
+        v.MsLength = in_c2m.wr_data;
       break;
       default:;
     }
   }
   
   // read data:
-  if((inMuxBus.wbRdModuleSel==CFG_GNSS_CHANNELS_TOTAL)&&inMuxBus.wRdEna)
+  v.rdata_rdy = 0;
+  v.rdata = 0;
+  if((in_c2m.rd_module_sel==MODULE_ID_GLB_TIMER)&&in_c2m.rd_ena)
   {
-    switch(inMuxBus.wbRdFieldSel)
+    v.rdata_rdy = 1;
+    switch(in_c2m.rd_field_sel)
     {
       case 0:
-        rdata = (uint64(r.Q.MsCnt)<<32)|uint64(r.Q.MsLength);
+        v.rdata = (uint64(r.Q.MsCnt)<<32)|uint64(r.Q.MsLength);
       break;
-      default: rdata = 0;
+      default:;
     }
   }
   
@@ -57,7 +60,9 @@ void GlobalTimer::Update( uint32 inNRst,
   }
   
   outMsPulse = MsPulse;
-  outRdData  = rdata;
+  
+  out_m2c.rdata_rdy = r.Q.rdata_rdy;
+  out_m2c.rdata     = r.Q.rdata;
   
   r.CLK = inAdcClk;
   r.D = v;

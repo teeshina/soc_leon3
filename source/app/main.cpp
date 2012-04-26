@@ -23,6 +23,7 @@ ElfFile         *pclElfFile;
 ClockGenerator  *pclkSys;
 jtag_port       *portJTAG;
 uart_port       *portUART1;
+GnssRfSim       *pGnssRfSim;
 StGyroscopeSim  clGyroSim;
 StAccelerometerSim  clAccelSim;
 dbg             clDbg;
@@ -37,6 +38,7 @@ int _tmain(int argc, _TCHAR* argv[])
   pclkSys = new ClockGenerator( clSettings.GetSysClockHz(), clSettings.GetTimescale() );
   portJTAG = new jtag_port( clSettings.GetJtagClockHz(), clSettings.GetTimescale() );
   portUART1 = new uart_port( clSettings.GetUartClkScale() );
+  pGnssRfSim = new GnssRfSim( clSettings.GetSysClockHz(), clSettings.GetTimescale() );
   
 
   LibInit(clSettings.GetpLibInitData());  // Library init procedure:
@@ -87,6 +89,18 @@ int _tmain(int argc, _TCHAR* argv[])
                         ioSoC.acceler.Int1,
                         ioSoC.acceler.Int2 );
     }
+    
+    if(clSettings.IsRfFrontEndEna())
+    {
+      pGnssRfSim->Update(ioSoC.antctrl.ExtAntEna,
+                         ioSoC.antctrl.ExtAntStat,
+                         ioSoC.antctrl.ExtAntDetect,
+                         ioSoC.gnss.adc_clk,
+                         ioSoC.gnss.I[0],
+                         ioSoC.gnss.Q[0],
+                         ioSoC.gnss.I[1],
+                         ioSoC.gnss.Q[1] );
+    }
 
     LibLeonUpdate(ioSoC);
     
@@ -102,6 +116,7 @@ int _tmain(int argc, _TCHAR* argv[])
   free(portJTAG);
   free(pclkSys);
   free(pclElfFile);
+  free(pGnssRfSim);
   LibClose();
 	return 0;
 }

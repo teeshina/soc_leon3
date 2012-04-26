@@ -622,6 +622,22 @@
 							>
 						</File>
 						<File
+							RelativePath="..\..\source\lib\leon3_ml605\gnss\dummies\dp_ram.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\source\lib\leon3_ml605\gnss\dummies\dp_ram.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\source\lib\leon3_ml605\gnss\dummies\dumchan.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\source\lib\leon3_ml605\gnss\dummies\dumchan.h"
+							>
+						</File>
+						<File
 							RelativePath="..\..\source\lib\leon3_ml605\gnss\dummies\glbtimer.cpp"
 							>
 						</File>
@@ -646,11 +662,11 @@
 							>
 						</File>
 						<File
-							RelativePath="..\..\source\lib\leon3_ml605\gnss\dummies\reclock.cpp"
+							RelativePath="..\..\source\lib\leon3_ml605\gnss\dummies\wrfifo.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\source\lib\leon3_ml605\gnss\dummies\reclock.h"
+							RelativePath="..\..\source\lib\leon3_ml605\gnss\dummies\wrfifo.h"
 							>
 						</File>
 					</Filter>
