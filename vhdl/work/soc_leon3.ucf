@@ -6,7 +6,7 @@ NET  "inSysClk_p"   LOC = "J9";
 NET  "inSysClk_n"   LOC = "H9";
 
 # ADC samples:
-NET "inAdcClk" LOC = "E32";
+NET "inAdcClk" LOC = "A10";
 NET "inIa[1]" LOC = "P32";
 NET "inIa[0]" LOC = "N34";
 NET "inQa[1]" LOC = "P30";

@@ -66,9 +66,9 @@ entity soc_noram is Port
   inAccelerSDI   : in std_logic;
   inAccelerInt1  : in std_logic; -- interrupt 1
   inAccelerInt2  : in std_logic; -- interrupt 2
-  inAccelerSDO  : out std_logic;
-  inAccelerCSn  : out std_logic;
-  inAccelerSPC  : out std_logic;
+  outAccelerSDO  : out std_logic;
+  outAccelerCSn  : out std_logic;
+  outAccelerSPC  : out std_logic;
 
   -- User pins
   inDIP   : in std_ulogic_vector(7 downto 0);
@@ -431,9 +431,9 @@ begin
     inAccelerInt1,
     inAccelerInt2,
     inAccelerSDI,
-    inAccelerSPC,
-    inAccelerSDO,
-    inAccelerCSn
+    outAccelerSPC,
+    outAccelerSDO,
+    outAccelerCSn
   );
   
 

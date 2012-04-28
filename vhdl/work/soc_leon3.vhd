@@ -65,9 +65,9 @@ entity soc_leon3 is Port
   inAccelerSDI   : in std_logic;
   inAccelerInt1  : in std_logic; -- interrupt 1
   inAccelerInt2  : in std_logic; -- interrupt 2
-  inAccelerSDO  : out std_logic;
-  inAccelerCSn  : out std_logic;
-  inAccelerSPC  : out std_logic;
+  outAccelerSDO  : out std_logic;
+  outAccelerCSn  : out std_logic;
+  outAccelerSPC  : out std_logic;
   -- User pins
   inDIP   : in std_ulogic_vector(7 downto 0);
   outLED  : out std_ulogic_vector(7 downto 0)
@@ -120,9 +120,9 @@ architecture Behavioral of soc_leon3 is
     inAccelerSDI   : in std_logic;
     inAccelerInt1  : in std_logic; -- interrupt 1
     inAccelerInt2  : in std_logic; -- interrupt 2
-    inAccelerSDO  : out std_logic;
-    inAccelerCSn  : out std_logic;
-    inAccelerSPC  : out std_logic;
+    outAccelerSDO  : out std_logic;
+    outAccelerCSn  : out std_logic;
+    outAccelerSPC  : out std_logic;
     -- User pins
     inDIP   : in std_ulogic_vector(7 downto 0);
     outLED  : out std_ulogic_vector(7 downto 0);
@@ -188,9 +188,9 @@ begin
     inAccelerSDI,
     inAccelerInt1,
     inAccelerInt2,
-    inAccelerSDO,
-    inAccelerCSn,
-    inAccelerSPC,
+    outAccelerSDO,
+    outAccelerCSn,
+    outAccelerSPC,
     -- User pins
     inDIP,
     outLED,
