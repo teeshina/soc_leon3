@@ -37,9 +37,9 @@ void GnssEngine::Update(uint32 rst,
   ((ahb_device_reg*)(&ahbso.hconfig.arr[0]))->interrupt = IRQ_GNSS_ENGINE;
   ((ahb_membar_type*)(&ahbso.hconfig.arr[4]))->memaddr  = haddr;
   ((ahb_membar_type*)(&ahbso.hconfig.arr[4]))->addrmask = hmask;
-  ((ahb_membar_type*)(&ahbso.hconfig.arr[4]))->area_id  = CFGAREA_TYPE_AHB_MEM;
-  ((ahb_membar_type*)(&ahbso.hconfig.arr[4]))->prefetch = 1;
-  ((ahb_membar_type*)(&ahbso.hconfig.arr[4]))->cache    = 1;
+  ((ahb_membar_type*)(&ahbso.hconfig.arr[4]))->area_id  = CFGAREA_TYPE_AHB_IO;
+  ((ahb_membar_type*)(&ahbso.hconfig.arr[4]))->prefetch = 0;
+  ((ahb_membar_type*)(&ahbso.hconfig.arr[4]))->cache    = 0;
 
 
   wRdEna = ahbsi.hready & !ahbsi.hwrite & BIT32(ahbsi.hsel,hindex) & BIT32(ahbsi.htrans,1);

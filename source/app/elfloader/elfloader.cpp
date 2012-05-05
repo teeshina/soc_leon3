@@ -253,6 +253,9 @@ void ElfFile::ReadSectionHeader()
 
     LibBackDoorLoadRAM(image.arr[i].adr, image.arr[i].val);
   }
+
+  // WARNING!! DEBUG purpose only
+  CreateVhdlRomImage();
   
 #if 0
   std::ofstream osMemInit("e:\\meminit0.txt");
@@ -417,6 +420,114 @@ int32 ElfFile::S_STRING(char*s, const char *_format, ... )
   iRet = vsprintf_s( s, PUT_STRING_SIZE, _format, arg );
   va_end( arg );
   return iRet;
+}
+
+//****************************************************************************
+void ElfFile::CreateVhdlRomImage()
+{
+  char chRomFile[1024];
+  strcpy_s(chRomFile, FILE_NAME_STRING_MAX,chElfFile);
+  chRomFile[strlen(chRomFile)-4]='\0';
+  strcat_s(chRomFile,FILE_NAME_STRING_MAX,".vhd");
+
+  std::ofstream *posRomVhdl = new std::ofstream(chRomFile,std::ios::out);
+
+  sprintf_s(chRomFile,"%s","\
+----------------------------------------------------------------------------\n\
+--  INFORMATION:  http://www.GNSS-sensor.com\n\
+--  PROPERTY:     GNSS Sensor Ltd\n\
+--  E-MAIL:       alex.kosin@gnss-sensor.com\n\
+--  DESCRIPTION:  This file contains copy of firmware image\n\
+------------------------------------------------------------------------------\n\
+--  WARNING:      \n\
+------------------------------------------------------------------------------\n\
+library ieee;\n\
+use ieee.std_logic_1164.all;\n\
+library grlib;\n\
+use grlib.amba.all;\n\
+use grlib.stdlib.all;\n\
+--use grlib.devices.all;\n\n");
+
+  *posRomVhdl << chRomFile;
+
+
+
+sprintf_s(chRomFile,"%s","\
+entity FwRomImage is\n\
+  generic (\n\
+    hindex  : integer := 0;\n\
+    haddr   : integer := 0;\n\
+    hmask   : integer := 16#fff#);\n\
+  port (\n\
+    rst     : in  std_ulogic;\n\
+    clk     : in  std_ulogic;\n\
+    ahbsi   : in  ahb_slv_in_type;\n\
+    ahbso   : out ahb_slv_out_type\n\
+  );\n\
+end;\n\
+\n\
+architecture rtl of FwRomImage is\n\n");
+
+  *posRomVhdl << chRomFile;
+
+  sprintf_s(chRomFile,"%s","\
+constant VENDOR_GNSSSENSOR     : integer := 16#F1#; -- TODO: move to devices.vhd\n\
+constant GNSSSENSOR_ROM_IMAGE  : integer := 16#07B#;\n\
+constant REVISION              : integer := 1;\n\
+\n\
+constant hconfig : ahb_config_type := (\n\
+  0 => ahb_device_reg ( VENDOR_GNSSSENSOR, GNSSSENSOR_ROM_IMAGE, 0, REVISION, 0),\n\
+  4 => ahb_membar(haddr, '1', '1', hmask), others => zero32);\n\
+\n\
+signal romdata : std_logic_vector(31 downto 0);\n\
+signal addr : std_logic_vector(15 downto 0);\n\
+signal hsel, hready : std_ulogic;\n\
+\n\
+begin\n\n");
+
+  *posRomVhdl << chRomFile;
+
+  sprintf_s(chRomFile,"%s","\
+  ahbso.hresp   <= \"00\";\n\
+  ahbso.hsplit  <= (others => '0');\n\
+  ahbso.hirq    <= (others => '0');\n\
+  ahbso.hcache  <= '1';\n\
+  ahbso.hconfig <= hconfig;\n\
+  ahbso.hindex  <= hindex;\n\
+  \n\
+  reg : process (clk) begin\n\
+    if rising_edge(clk) then addr <= ahbsi.haddr(17 downto 2); end if;\n\
+  end process;\n\
+  \n\
+  ahbso.hrdata  <= romdata;\n\
+  ahbso.hready  <= '1';\n\
+  \n\
+  comb : process (addr)\n\
+  begin\n\
+    case conv_integer(addr) is\n");
+
+  *posRomVhdl << chRomFile;
+  
+  for(int32 i=0; i<ELF_IMAGE_MAXSIZE; i++)
+  {
+    if(image.arr[i].val!=0)
+    {
+      sprintf_s(chRomFile,"    when 16#%04X# => romdata <= X\"%08X\";\n",i,image.arr[i].val);
+      *posRomVhdl << chRomFile;
+    }
+  }
+    sprintf_s(chRomFile,"%s","\
+    when others => romdata <= (others => '0');\n\
+    end case;\n\
+  end process;\n\
+end;\n");
+
+
+  *posRomVhdl << chRomFile;
+
+  posRomVhdl->close();
+  free(posRomVhdl);
+
 }
 
 

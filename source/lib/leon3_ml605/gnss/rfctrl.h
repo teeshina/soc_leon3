@@ -39,6 +39,7 @@ class RfControl
       uint32 WordSelector : 9;
       uint32 SendWord;
       uint32 ExtAntEna    : 1;
+      uint32 BootID;
     };
 
     regs v;

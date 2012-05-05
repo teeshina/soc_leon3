@@ -52,8 +52,7 @@ begin
     -- write control registers:
     if((conv_integer(c2m.wr_module_sel)=MODULE_ID_GLB_TIMER) and (c2m.wr_ena='1')) then
       case(conv_integer(c2m.wr_field_sel)) is
-        when 0 =>
-          v.MsLength := c2m.wr_data;
+        when 0 =>  v.MsLength := c2m.wr_data;
         when others =>
       end case;
     end if;

@@ -75,6 +75,7 @@ type registers is record
   WordSelector : std_logic_vector(8 downto 0);
   SendWord     : std_logic_vector(31 downto 0);
   ExtAntEna    : std_ulogic;
+  BootID       : std_logic_vector(31 downto 0);
 end record;
 
 signal r, rin : registers;
@@ -107,6 +108,7 @@ begin
       when "001010" => readdata  := r.scale;
       when "001011" => readdata(9 downto 0)  := conv_std_logic_vector(r.BitCnt,6) & '0' & r.loading & inLD;
       when "001111" => readdata(5 downto 0)  := inExtAntStat & inExtAntDetect & "000" & r.ExtAntEna;
+      when "111111" => readdata := r.BootID;
       when others =>
     end case;
 
@@ -135,6 +137,7 @@ begin
           elsif(apbi.pwdata=conv_std_logic_vector(1,32)) then v.select_spi := "10";
           else v.select_spi := "00"; end if;
         when "001111" => v.ExtAntEna := apbi.pwdata(0);
+        when "111111" => v.BootID := apbi.pwdata;
         when others => 
       end case;
     end if;

@@ -58,7 +58,7 @@ architecture rtl of gnssengine is
   constant hconfig : ahb_config_type := 
   (
     0 => ahb_device_reg ( VENDOR_GNSSSENSOR, GNSSSENSOR_ENGINE, 0, GNSS_ENGINE_VERSION, irqind),
-    4 => ahb_membar(haddr, '1', '1', hmask),
+    4 => ahb_membar(haddr, '0', '0', hmask),
     others => zero32
   );
   

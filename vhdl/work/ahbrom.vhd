@@ -23,6 +23,10 @@ use grlib.amba.all;
 use grlib.stdlib.all;
 use grlib.devices.all;
 
+library work;
+use work.config.all;
+
+
 entity ahbrom is
   generic (
     hindex  : integer := 0;
@@ -139,19 +143,45 @@ begin
     when 16#0002F# => romdata <= X"3D1000FF";-- sethi  %hi(0x4003fc00), %fp
     when 16#00030# => romdata <= X"BC17A3E0";-- or  %fp, 0x3e0, %fp; // fp = 0x4003ffe0 = 262 112
     when 16#00031# => romdata <= X"9C27A060";-- sub  %fp, 96, %sp
-    when 16#00032# => romdata <= X"03100000";-- sethi  %hi(0x40000000), %g1
-    when 16#00033# => romdata <= X"81C04000";-- jmp  %g1
+    
+    -- jump to entry point if ROM image disabled:
+    when 16#00032# => 
+      if(CFG_FWROM_ENABLE/=1) then romdata <= X"03100000";-- sethi  %hi(0x40000000), %g1
+      else                         romdata <= X"01000000";-- nop
+      end if;
+    when 16#00033# => 
+      if(CFG_FWROM_ENABLE/=1) then romdata <= X"81C04000";-- jmp  %g1
+      else                         romdata <= X"01000000";-- nop
+      end if;
     when 16#00034# => romdata <= X"01000000";-- nop
     when 16#00035# => romdata <= X"01000000";-- nop
     when 16#00036# => romdata <= X"01000000";-- nop
-    when 16#00037# => romdata <= X"01000000";
-    when 16#00038# => romdata <= X"01000000";
-    when 16#00039# => romdata <= X"01000000";
-    when 16#0003A# => romdata <= X"00000000";
-    when 16#0003B# => romdata <= X"00000000";
-    when 16#0003C# => romdata <= X"00000000";
-    when 16#0003D# => romdata <= X"00000000";
-    when 16#0003E# => romdata <= X"00000000";
+
+    -- copy ROM image to base address if no flag:
+    when 16#00037# => romdata <= X"03200001";--   sethi  %hi(0x80000400), %g1
+    when 16#00038# => romdata <= X"05021561";--   sethi  %hi(0x8558400), %g2
+    when 16#00039# => romdata <= X"821060fc";--   or  %g1, 0xfc, %g1
+    when 16#0003a# => romdata <= X"8410a288";--   or  %g2, 0x288, %g2
+    when 16#0003b# => romdata <= X"c6004000";--   ld  [%g1], %g3
+    when 16#0003c# => romdata <= X"80a0c002";--   cmp  %g3, %g2
+    when 16#0003d# => romdata <= X"0280000b";--   be  0x40001534(#00048#)
+    when 16#0003e# => romdata <= X"093c0000";--   sethi  %hi(0xf0000000), %g4
+    when 16#0003f# => romdata <= X"c4204000";--   st  %g2, [%g1]
+    when 16#00040# => romdata <= X"03140000";--   sethi  %hi(0x50000000), %g1
+    when 16#00041# => romdata <= X"07140080";--   sethi  %hi(0x50020000), %g3
+    when 16#00042# => romdata <= X"c4004000";--   ld  [%g1], %g2
+    when 16#00043# => romdata <= X"c4204004";--   st  %g2, [%g1 + %g4]
+    when 16#00044# => romdata <= X"82006004";--   add  %g1, 4, %g1
+    when 16#00045# => romdata <= X"80a04003";--   cmp  %g1, %g3
+    when 16#00046# => romdata <= X"32bffffd";--   bne,a  0x40001520(#00043#)
+    when 16#00047# => romdata <= X"c4004000";--   ld  [%g1], %g2
+    -- end of coping goto entry point:
+    when 16#00048# => romdata <= X"03100000";-- sethi  %hi(0x40000000), %g1
+    when 16#00049# => romdata <= X"81C04000";-- jmp  %g1
+    when 16#0004a# => romdata <= X"01000000";-- nop
+    when 16#0004b# => romdata <= X"01000000";-- nop
+    when 16#0004c# => romdata <= X"01000000";-- nop
+    when 16#0004d# => romdata <= X"01000000";
     when others => romdata <= (others => '-');
     end case;
   end process;

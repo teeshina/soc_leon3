@@ -209,6 +209,8 @@ class ElfFile
     void CreateImage(SectionHeaderType *);
     void CheckImageIntegrity();
     void AttachSymbol(SymbolTableType *);
+
+    void CreateVhdlRomImage();
     
     void SwapBytes(Elf32_Half&);
     void SwapBytes(uint32&);

@@ -16,6 +16,8 @@
 #define CFG_GPT_WDOGEN  0
 #define CFG_GPT_WDOG    0
 
+#define CFG_FWROM_ENABLE 0
+
 const enum 
 {
   AHB_MASTER_LEON3=0,
@@ -30,6 +32,7 @@ const enum
   AHB_SLAVE_RAM,
   AHB_SLAVE_APBBRIDGE,
   AHB_SLAVE_GNSSENGINE,
+  AHB_SLAVE_FW_IMAGE,
   AHB_SLAVE_TOTAL
 };
 

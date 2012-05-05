@@ -143,6 +143,8 @@ package config is
   
   constant CFG_AHBCTRL_IOEN : integer := 1;
 
+  constant CFG_FWROM_ENABLE : integer := 0;
+
   constant LEON3_CORES_NUM  : integer := CFG_NCPU;
   constant AHB_MASTER_LEON3 : integer := 0;
   constant AHB_MASTER_JTAG  : integer := AHB_MASTER_LEON3+LEON3_CORES_NUM;
@@ -154,7 +156,8 @@ package config is
   constant AHB_SLAVE_RAM        : integer := AHB_SLAVE_DSU+1;
   constant AHB_SLAVE_APBBRIDGE  : integer := AHB_SLAVE_RAM+1;
   constant AHB_SLAVE_GNSSENGINE : integer := AHB_SLAVE_APBBRIDGE+1;
-  constant AHB_SLAVE_TOTAL      : integer := AHB_SLAVE_GNSSENGINE+1;
+  constant AHB_SLAVE_FW_IMAGE   : integer := AHB_SLAVE_GNSSENGINE+1;
+  constant AHB_SLAVE_TOTAL      : integer := AHB_SLAVE_FW_IMAGE+1;
 
   constant IRQ_IRQ_CONTROL      : integer := 0;
   constant IRQ_DSU              : integer := IRQ_IRQ_CONTROL+1;

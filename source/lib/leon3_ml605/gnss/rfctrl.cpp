@@ -60,6 +60,7 @@ void RfControl::Update(  uint32 rst,//    : in  std_ulogic;
     case 0x0A: readdata = r.Q.scale; break;
     case 0x0B: readdata = (r.Q.BitCnt<<4)|(r.Q.loading<<2)|(inLD[1]<<1)|inLD[0]; break;  // PLL status of MAX2769
     case 0x0F: readdata = (inExtAntStat<<5)|(inExtAntDetect<<4)|r.Q.ExtAntEna; break;
+    case 0x3F: readdata = r.Q.BootID; break;
     default:   readdata = 0;
   }
 
@@ -92,6 +93,7 @@ void RfControl::Update(  uint32 rst,//    : in  std_ulogic;
       case 0x0F:
         v.ExtAntEna = BIT32(apbi.pwdata,0);
       break;
+      case 0x3F: v.BootID = apbi.pwdata;  break;
       default:;
     }
   }

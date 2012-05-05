@@ -439,7 +439,7 @@ begin
 
   ------------------------------------
   -- AHB ROM:
-  clAhbROM : entity work.ahbrom generic map 
+  clBootROM : entity work.ahbrom generic map 
   (
     hindex => AHB_SLAVE_ROM,
     haddr => 16#000#,
@@ -452,6 +452,23 @@ begin
     slvi,
     slvo(AHB_SLAVE_ROM)
   );
+
+  ------------------------------------
+  -- ROM image with "Hello World" firmware:
+  romimg_gen : if(CFG_FWROM_ENABLE=1) generate
+    clFwRomImage : entity FwRomImage generic map
+    (
+      hindex  => AHB_SLAVE_FW_IMAGE,
+      haddr   => 16#500#,
+      hmask   => 16#fff#
+    )port map
+    (
+      wNRst,
+      wClkBus,
+      slvi,
+      slvo(AHB_SLAVE_FW_IMAGE)
+    );
+  end generate;
 
 
   ------------------------------------
@@ -491,7 +508,8 @@ begin
     wClkBus,
     slvi,
     slvo(AHB_SLAVE_GNSSENGINE),
-    inAdcClk,
+    --inAdcClk,-- <== RIGHT
+    wClkBus,-- <== WRONG: debug purpose only!!!
     inIa,
     inQa,
     inIb,

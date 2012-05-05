@@ -130,7 +130,7 @@ begin
   outIrqPulse <= rbIrqPulse(2) and (not rbIrqPulse(1));
   
   -- Reading Data multiplexer
-  mux : process(inRdAdr(2), rd_val) 
+  mux : process(inRdAdr(2), word_sel,rd_val) 
     variable rdata : std_logic_vector(31 downto 0);
   begin
     if(word_sel='0') then rdata := rd_val(31 downto 0);
