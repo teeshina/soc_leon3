@@ -12,7 +12,7 @@ void SysControl::Init()
   clTimer.Init();
 
   // GNSS Engine init:
-  clGnssEngine.Init();
+//  clGnssEngine.Init();
 
   // Interrupt controller:
   clIrqControl.Init();

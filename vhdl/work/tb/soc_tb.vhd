@@ -71,9 +71,9 @@ architecture behavior of soc_noram_tb is
     inAccelerSDI   : in std_logic;
     inAccelerInt1  : in std_logic; -- interrupt 1
     inAccelerInt2  : in std_logic; -- interrupt 2
-    inAccelerSDO  : out std_logic;
-    inAccelerCSn  : out std_logic;
-    inAccelerSPC  : out std_logic;
+    outAccelerSDO  : out std_logic;
+    outAccelerCSn  : out std_logic;
+    outAccelerSPC  : out std_logic;
     -- User pins
     inDIP   : in std_ulogic_vector(7 downto 0);
     outLED  : out std_ulogic_vector(7 downto 0);
@@ -563,9 +563,9 @@ begin
     inAccelerSDI => in_AccelerSDI,
     inAccelerInt1 => in_AccelerInt1,
     inAccelerInt2 => in_AccelerInt2,
-    inAccelerSDO => AccelerSDO,
-    inAccelerCSn => AccelerCSn,
-    inAccelerSPC => AccelerSPC,
+    outAccelerSDO => AccelerSDO,
+    outAccelerCSn => AccelerCSn,
+    outAccelerSPC => AccelerSPC,
     -- User pins
     inDIP    => in_DIP,
     outLED  => LED,

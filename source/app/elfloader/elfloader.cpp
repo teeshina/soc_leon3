@@ -257,29 +257,6 @@ void ElfFile::ReadSectionHeader()
   // WARNING!! DEBUG purpose only
   CreateVhdlRomImage();
   
-#if 0
-  std::ofstream osMemInit("e:\\meminit0.txt");
-  char chX[32];
-  int32 i;
-  
-  for (int32 byte=0; byte<4; byte++)
-  {
-    sprintf_s(chX,"constant ram%02i : ram_type := (\n", byte);
-    osMemInit << chX;
-    i=0;
-    while(i<image.iSizeWords)
-    {
-      for (int32 k=0; k<8; k++)
-      {
-        sprintf_s(chX,"  X\"%02X\",", (image.arr[i].val>>(8*byte))&0xFF);
-        osMemInit << chX;
-        i++;
-      }
-      osMemInit << "\n";
-    }
-    osMemInit << "  others => X\"00\" );\n\n\n";
-  }
-#endif
 }
 
 //****************************************************************************
