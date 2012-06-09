@@ -12,7 +12,10 @@ svn_cli/
 # All proprietary modules placed in folders */products/
 #
 vhdl/gnsslib/products/
+vhdl/work/tb/products/
 source/lib/leon3_ml605/gnss/products/
+source/lib/dbg_tb/product/
+source/lib/dbg_tb/products/
 source/firmware/products/
 #
 # Compilation output files

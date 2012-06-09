@@ -49,6 +49,11 @@ void GnssTop::Update( uint32 inNRst,
                        m2c, c2m,
                        GlbTmrOutMsReady, CtrlOutIrqPulse,
                        CtrlOutMemWrEna, CtrlOutMemWrAdr, CtrlOutMemWrData);
+                       
+  clGnssMisc.Update( inNRst,
+                     inAdcClk,
+                     c2m,
+                     m2c.arr[MODULE_ID_MISC]);
 
   clGlobalTimer.Update( inNRst,
                         inAdcClk,
@@ -58,6 +63,12 @@ void GnssTop::Update( uint32 inNRst,
                         
   clChannelsPack.Update(inNRst, inAdcClk, inGpsI, inGpsQ, inGloI, inGloQ,
                         GlbTmrOutMsReady, c2m, &m2c.arr[0]);
+
+  clNoise.Update( inNRst,
+                  inAdcClk,
+                  c2m,
+                  m2c.arr[MODULE_ID_NOISE]);
+                        
 
   // output reading interface via dual-port RAM
   pDpRam->Update(inAdcClk, CtrlOutMemWrEna, CtrlOutMemWrAdr, CtrlOutMemWrData,

@@ -107,7 +107,7 @@ package config is
   constant CFG_GRETH1G : integer := 0;
   constant CFG_ETH_FIFO : integer := 16;
 -- UART 1
-  constant CFG_UART1_FIFO : integer := 8;
+  constant CFG_UART1_FIFO : integer := 16;
 -- Modular timer
   constant CFG_GPT_ENABLE : integer := 1;
   constant CFG_GPT_NTIM : integer := (2);

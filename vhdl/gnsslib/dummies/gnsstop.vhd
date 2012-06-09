@@ -98,6 +98,22 @@ begin
     GlbTmrOutMsReady
   );
 
+  clMisc : GnssMisc port map
+  (
+    inNRst,
+    inAdcClk,
+    c2m,
+    m2c(MODULE_ID_MISC)
+  );
+
+  clNoise : Noise port map
+  (
+    inNRst,
+    inAdcClk,
+    c2m,
+    m2c(MODULE_ID_NOISE)
+  );
+
   -- output reading interface via dual-port RAM
   clSnapRam : dp_snapram port map
   (

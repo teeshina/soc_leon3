@@ -37,6 +37,9 @@ dbg::dbg()
 #ifdef DBG_gptimer
   ptst_gptimer = new gptimer(APB_TIMER, 0x3, 0xfff);
 #endif
+#ifdef DBG_ChannelTop
+  ptst_ChannelTop = new ChannelTop(0,0);
+#endif
 }
 
 dbg::~dbg()
@@ -61,6 +64,9 @@ dbg::~dbg()
 #endif
 #ifdef DBG_gptimer
   free(ptst_gptimer);
+#endif
+#ifdef DBG_ChannelTop
+  free(ptst_ChannelTop);
 #endif
 }
 
@@ -97,6 +103,8 @@ void dbg::Close()
   }
 }
 
+#define HIST_SIZE 64
+uint32 hist_adr[HIST_SIZE]={};
 //****************************************************************************
 void dbg::Update(SystemOnChipIO &io)
 {
@@ -167,9 +175,51 @@ void dbg::Update(SystemOnChipIO &io)
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_accelspi]) accelspi_tb(io);
   
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_GnssEngine]) GnssEngine_tb(io);
+  
+#if!defined(USE_GNSSLTD_DUMMIES)
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_CarrNcoIF]) CarrNcoIF_tb(io);
+    
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_PrnGenerator]) PrnGenerator_tb(io);
+  
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_ChannelTop]) ChannelTop_tb(io);
+#endif
 
   if(io.inClk.eClock==SClock::CLK_POSEDGE)
+  {
     iClkCnt++;
+#if 0
+    #define adr_chBuf       0x4000bca0
+    #define adr_pchBuf      0x4000bea0
+    #define adr_iBufCnt     0x4000bea4
+    #define adr_tmpUartStr  0x4000bea8
+    #define adr_iIrqCnt     0x4000bfa8
+    
+    #define adr_TickHandler 0x400013c0
+    #define adr_HandlerIrq  0x40009754
+    #define adr_call_initcalls 0x40009cd8
+
+    if(topLeon3mp.apbo.arr[APB_TIMER].pirq)
+    bool st = true;
+    
+    //if(topLeon3mp.stCtrl2Slv.haddr==adr_TickHandler)
+    if(topLeon3mp.stCtrl2Slv.haddr==0x400012f4)
+    {
+      uint32 adr = 0xbfd0>>2;
+      uint32 mm = topLeon3mp.pclAhbRAM->ppSyncram[0]->memarr[adr];
+      mm |= (topLeon3mp.pclAhbRAM->ppSyncram[1]->memarr[adr]<<8);
+      mm |= (topLeon3mp.pclAhbRAM->ppSyncram[2]->memarr[adr]<<16);
+      mm |= (topLeon3mp.pclAhbRAM->ppSyncram[3]->memarr[adr]<<24);
+      bool st = true;
+    }
+    
+    if(topLeon3mp.stCtrl2Slv.hsel==0x4)
+    {
+      for(int32 i=(HIST_SIZE-1); i>0; i--)
+        hist_adr[i] = hist_adr[i-1];
+      hist_adr[0] = topLeon3mp.stCtrl2Slv.haddr;
+    }
+#endif
+  }
 }
 
 //****************************************************************************

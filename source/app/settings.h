@@ -58,6 +58,9 @@ enum EStringName
   STR_TB_gyrospi,
   STR_TB_accelspi,
   STR_TB_GnssEngine,
+  STR_TB_CarrNcoIF,
+  STR_TB_PrnGenerator,
+  STR_TB_ChannelTop,
   STR_TB_soc_leon3,
 
   STR_PRINT_VHDLDATA,
@@ -130,6 +133,9 @@ const StringData AllStrings[] =
   {STR_TB_gyrospi,      "TB_gyrospi=", STRTYPE_INTEGER},
   {STR_TB_accelspi,     "TB_accelspi=", STRTYPE_INTEGER},
   {STR_TB_GnssEngine,   "TB_GnssEngine=", STRTYPE_INTEGER},
+  {STR_TB_CarrNcoIF,    "TB_CarrNcoIF=", STRTYPE_INTEGER},
+  {STR_TB_PrnGenerator, "TB_PrnGenerator=", STRTYPE_INTEGER},
+  {STR_TB_ChannelTop,   "TB_ChannelTop=", STRTYPE_INTEGER},
   {STR_TB_soc_leon3,    "TB_soc_leon3=",STRTYPE_INTEGER},
   
   {STR_PRINT_VHDLDATA,  "Print VHDL assignment=",STRTYPE_INTEGER},

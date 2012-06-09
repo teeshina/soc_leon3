@@ -108,7 +108,7 @@ package config is
   constant CFG_GRETH1G : integer := 0;
   constant CFG_ETH_FIFO : integer := 16;
 -- UART 1
-  constant CFG_UART1_FIFO : integer := 8;
+  constant CFG_UART1_FIFO : integer := 16;
 -- LEON3 interrupt controller
   constant CFG_IRQ3_ENABLE : integer := 1;
   constant CFG_IRQ3_NSEC : integer := 0;

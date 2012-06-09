@@ -37,6 +37,11 @@
 //#define DBG_gyrospi
 //#define DBG_accelspi
 //#define DBG_GnssEngine
+#if!defined(USE_GNSSLTD_DUMMIES)
+  //#define DBG_NCOCarrIF
+  //#define DBG_PrnGenerator
+  #define DBG_ChannelTop
+#endif
 
 extern leon3mp topLeon3mp;
 
@@ -97,6 +102,10 @@ class dbg
     void gyrospi_tb(SystemOnChipIO &io);
     void accelspi_tb(SystemOnChipIO &io);
     void GnssEngine_tb(SystemOnChipIO &io);
+    
+    void CarrNcoIF_tb(SystemOnChipIO &io);
+    void PrnGenerator_tb(SystemOnChipIO &io);
+    void ChannelTop_tb(SystemOnChipIO &io);
     
     char *PrintAllRegIU(char *pStr, registers *pr);
     
@@ -429,6 +438,40 @@ class dbg
   uint32 inGloI;
   uint32 inGloQ;
   GnssEngine tst_GnssEngine;
+#endif
+#ifdef DBG_NCOCarrIF
+  uint32 inNRst,
+  SClock inAdcClk,
+  uint32 inAdcRe,
+  uint32 inAdcIm,
+  uint32 inCarrNco,
+  uint32 inCarrNcoTh,
+  uint32 outReady,
+  uint32 outRe,
+  uint32 outIm
+  NCOCarrIF tst_NCOCarrIF;
+#endif
+#ifdef DBG_PrnGenerator
+  uint32 in_Ena;
+  uint32 in_PrnInitG2;
+  uint32 in_Latch;
+  uint32 in_CodeNcoTh;
+  uint32 in_CodeNco;
+  uint32 in_CodeNcoShift;
+  uint64 ch_MeasCodeAcc;
+  uint32 ch_CorEpoch;
+  uint32 ch_CorEpochStr;
+  uint32 ch_CorEpochCnt;
+  uint32 ch_RefBit;
+  PrnGenerator tst_PrnGenerator;
+#endif
+#ifdef DBG_ChannelTop
+  uint32 in_I;
+  uint32 in_Q;
+  uint32 in_MsPulse;
+  Ctrl2Module in_c2m;
+  Module2Ctrl ch_m2c;
+  ChannelTop *ptst_ChannelTop;
 #endif
 };
 

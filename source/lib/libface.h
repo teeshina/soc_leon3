@@ -54,6 +54,9 @@ enum ETestBenchName
   TB_gyrospi,
   TB_accelspi,
   TB_GnssEngine,
+  TB_CarrNcoIF,
+  TB_PrnGenerator,
+  TB_ChannelTop,
   TB_soc_leon3,
   
   TB_TOTAL
@@ -94,6 +97,9 @@ const char chBenchFile[TB_TOTAL][64]=
   "gyrospi_tb.txt",
   "accelspi_tb.txt",
   "gnssengine_tb.txt",
+  "carncoif_tb.txt",
+  "prngen_tb.txt",
+  "chantop_tb.txt",
   "soc_leon3_tb.txt",
 };
 

@@ -94,21 +94,26 @@ package gnssmodule is
   ------------------------------------------------------------------------------
   -- GNSS Engine, top level
 
+  -- Maximal input bus width per complex component
+  constant ADC_BIT_WIDTH             : integer := 2;
 
   constant CFG_GNSS_GPS_L1CA_NUM     : integer := 12;
   constant CFG_GNSS_SBAS_L1_NUM      : integer := 2; 
   constant CFG_GNSS_GALILEO_E1_NUM   : integer := 6;
   constant CFG_GNSS_GLONASS_L1_NUM   : integer := 12;
   constant CFG_GNSS_CHANNELS_TOTAL   : integer := (CFG_GNSS_GPS_L1CA_NUM+CFG_GNSS_SBAS_L1_NUM+CFG_GNSS_GALILEO_E1_NUM+CFG_GNSS_GLONASS_L1_NUM);
-
   constant CFG_GNSS_TIMERS_TOTAL     : integer := 1;
-  constant MODULE_ID_GLB_TIMER       : integer := 0+CFG_GNSS_CHANNELS_TOTAL;
+  constant CFG_GNSS_NOISE            : integer := 1;
+  constant CFG_GNSS_MISC             : integer := 1;
 
-  constant CFG_GNSS_MODULES_TOTAL    : integer := CFG_GNSS_CHANNELS_TOTAL+CFG_GNSS_TIMERS_TOTAL;
+  constant CFG_GNSS_MODULES_TOTAL    : integer := CFG_GNSS_CHANNELS_TOTAL+CFG_GNSS_TIMERS_TOTAL+CFG_GNSS_NOISE+CFG_GNSS_MISC;
   constant CFG_GNSS_DWORD_PER_MODULE : integer := 8;
   constant CFG_GNSS_MEMORY_SIZE64    : integer := CFG_GNSS_DWORD_PER_MODULE*CFG_GNSS_MODULES_TOTAL;
   constant CFG_GNSS_ADDR_WIDTH       : integer := log2x(CFG_GNSS_MEMORY_SIZE64/8)+6;
-  
+
+  constant MODULE_ID_GLB_TIMER       : integer := 0+CFG_GNSS_CHANNELS_TOTAL; 
+  constant MODULE_ID_NOISE           : integer := MODULE_ID_GLB_TIMER+1;
+  constant MODULE_ID_MISC            : integer := MODULE_ID_NOISE+1;
 
   
   component gnssengine is

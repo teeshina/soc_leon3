@@ -164,6 +164,27 @@ package dummies is
   );
   end component;
 
+  ------------------------------------------------------------------------------
+  component Noise is
+  port
+  (
+    inNRst      : in std_ulogic;
+    inAdcClk    : in std_ulogic;
+    c2m         : in Ctrl2Module;
+    m2c         : out Module2Ctrl
+   );
+   end component;
+
+  ------------------------------------------------------------------------------
+  component GnssMisc is
+  port
+  (
+    inNRst      : in std_ulogic;
+    inAdcClk    : in std_ulogic;
+    c2m         : in Ctrl2Module;
+    m2c         : out Module2Ctrl
+   );
+  end component;
 
 
 end;

@@ -48,6 +48,9 @@ class GnssTop
     uint64 wbChnOutData;
     ChannelsPack clChannelsPack;
 
+    GnssMisc clGnssMisc;
+    
+    Noise    clNoise;
 
     uint64 wbSelData; // multiplexer on top level
     
@@ -79,5 +82,7 @@ class GnssTop
       clGnssControl.ClkUpdate();
       clGlobalTimer.ClkUpdate();
       clChannelsPack.ClkUpdate();
+      clGnssMisc.ClkUpdate();
+      clNoise.ClkUpdate();
     }
 };

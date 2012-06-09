@@ -20,8 +20,8 @@ library techmap;
 use techmap.gencomp.all;
 library gnsslib;
 use gnsslib.gnssmodule.all;
-use gnsslib.dummies.all;  -- This is an open source implementation
---use gnsslib.products.all; -- This is an GNSS Sensor Ltd proprietary implementation
+--use gnsslib.dummies.all;  -- This is an open source implementation
+use gnsslib.products.all; -- This is an GNSS Sensor Ltd proprietary implementation
 
 ------------------------------------------------------------------------------
 entity gnssengine is
