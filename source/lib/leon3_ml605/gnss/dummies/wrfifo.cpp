@@ -6,7 +6,7 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#include "wrfifo.h"
 
 void WrFifo::Update( uint32 inNRst,
                       SClock inBusClk,

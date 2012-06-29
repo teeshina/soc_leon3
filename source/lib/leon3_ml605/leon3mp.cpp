@@ -5,7 +5,7 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#include "leon3mp.h"
 
 
 //****************************************************************************
@@ -88,7 +88,7 @@ void leon3mp::Update( uint32 inRst,
                       uint32 &outRTS,// If this uart can't recieve data RX, then rise this to "1"
                       uint32 &outTX,
                       // SPI MAX2769 GPS L1/GLO L1
-                      uint32 inLD[SystemOnChipIO::TOTAL_MAXIM2769],
+                      uint32 inLD[2],
                       uint32 &outSCLK,
                       uint32 &outSDATA,
                       uint32 *outCSn,
@@ -96,6 +96,7 @@ void leon3mp::Update( uint32 inRst,
                       uint32 inExtAntStat,
                       uint32 inExtAntDetect,
                       uint32 &outExtAntEna,
+                      uint32 &outIntAntContr,
                       // GNSS RF inputs:
                       SClock inAdcClk,
                       uint32 inIa,
@@ -211,7 +212,7 @@ void leon3mp::Update( uint32 inRst,
 #ifdef USE_GNSSLTD_RFCONTROL
   pclRfControl->Update(wNRst, inClk, apbi, apbo.arr[APB_RF_CONTROL],
                       inLD, outSCLK, outSDATA, outCSn,
-                      inExtAntStat, inExtAntDetect, outExtAntEna );
+                      inExtAntStat, inExtAntDetect, outExtAntEna, outIntAntContr );
 #endif
 
   // 3-axis Gyroscope with SPI interface

@@ -6,7 +6,24 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_accelspi
+
+#ifdef DBG_accelspi
+  apb_slv_in_type  in_apbi;//   : in  apb_slv_in_type;
+  apb_slv_out_type ch_apbo;//   : out apb_slv_out_type;
+  uint32 in_Int1;
+  uint32 in_Int2;
+  uint32 in_SDI;
+  uint32 ch_SPC;
+  uint32 ch_SDO;
+  uint32 ch_CSn;
+  accelspi tst_accelspi;
+#endif
+
 
 #ifdef DBG_accelspi
 class AccelerEmu

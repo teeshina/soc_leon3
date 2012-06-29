@@ -6,7 +6,20 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_ahbctrl
+
+#ifdef DBG_ahbctrl
+  ahb_mst_out_vector in_msto;//   : in ahb_mst_out_vector;
+  uint32 in_split;// : in std_logic_vector(0 to nahbmx-1);
+  uint32 ch_mast;//   : out integer range 0 to nahbmx-1;
+  uint32 ch_defmst;// : out std_ulogic;
+  ahbctrl tst_ahbctrl;
+#endif
+
 
 //****************************************************************************
 void dbg::ahbctrl_tb(SystemOnChipIO &io)
@@ -18,6 +31,7 @@ void dbg::ahbctrl_tb(SystemOnChipIO &io)
   ahb_slv_out_vector *pstSlv2Ctrl = &topLeon3mp.stSlv2Ctrl;
 
 #ifdef DBG_ahbctrl
+  ahbctrl::reg_type  r;//      : in reg_type;
   if(io.inClk.eClock_z==SClock::CLK_POSEDGE)
   {
     for(int32 i=0; i<AHB_MASTER_TOTAL; i++)

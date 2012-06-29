@@ -1,6 +1,10 @@
 //-- Description: This unit implements the instruction cache controller.
 
-#include "lheaders.h"
+#include "const.h"
+#include "leon3_ml605\stdlib\stdlib.h"
+
+#include "mmu_icache.h"
+
 
 //#define icen      : integer range 0 to 1  := 0;
 //#define irepl     CFG_IREPL//: integer range 0 to 3  := 0;
@@ -194,10 +198,6 @@ void mmu_icache::Update(uint32 rst,// : in  std_logic;
 
   v.trans_op  = r.Q.trans_op & (!mmuico.grant);
   mmuici_trans_op = r.Q.trans_op;
-#if 1
-if(iClkCnt>=3407)
-bool st=true;
-#endif
   
   mmuici_su = ici.su;
               
@@ -355,12 +355,6 @@ bool st=true;
                v.setrepl = BITS32(ici.fpc,OFFSET_HIGH+SETBITS,OFFSET_HIGH+1);
             break;
             case lru:
-#if 1
-if(iClkCnt>=3405)
-{
-  bool st=true;
-}
-#endif
               v.setrepl =  lru_set(rl.Q.arr[BITS32(ici.fpc,OFFSET_HIGH,OFFSET_LOW)], lock);
             break;
             case lrr:

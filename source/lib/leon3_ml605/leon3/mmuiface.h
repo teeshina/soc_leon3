@@ -1,5 +1,10 @@
 #pragma once
 
+#include <memory>
+
+#include "stdtypes.h"
+#include "leon3_ml605\leon3\mmuconfig.h"
+
 struct mmutlbcam_in_type
 {
   mmctrl_type1 mmctrl;//   : mmctrl_type1;

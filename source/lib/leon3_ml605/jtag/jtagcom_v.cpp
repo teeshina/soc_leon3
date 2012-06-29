@@ -5,7 +5,8 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#include "leon3_ml605\amba\amba.h"
+#include "jtagcom_v.h"
 
 //****************************************************************************
 void jtagcom::Update( uint32            inNRst,//  : in std_ulogic;

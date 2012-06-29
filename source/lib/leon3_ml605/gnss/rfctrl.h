@@ -6,6 +6,11 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
+#include "stdtypes.h"
+#include "dff.h"
+#include "leon3_ml605\config.h"
+#include "leon3_ml605\amba\amba.h"
+
 class RfControl
 {
   friend class dbg;
@@ -39,6 +44,7 @@ class RfControl
       uint32 WordSelector : 9;
       uint32 SendWord;
       uint32 ExtAntEna    : 1;
+      uint32 IntAntContr  : 1;
       uint32 BootID;
     };
 
@@ -56,14 +62,15 @@ class RfControl
                   SClock clk,//    : in  std_ulogic;
                   apb_slv_in_type &in_apbi,//   : in  apb_slv_in_type;
                   apb_slv_out_type &out_apbo,//   : out apb_slv_out_type;
-                  uint32 inLD[SystemOnChipIO::TOTAL_MAXIM2769],
+                  uint32 inLD[2],
                   uint32 &outSCLK,
                   uint32 &outSDATA,
                   uint32 *outCSn,
                   // Antenna control:
                   uint32 inExtAntStat,
                   uint32 inExtAntDetect,
-                  uint32 &outExtAntEna );
+                  uint32 &outExtAntEna,
+                  uint32 &outIntAntContr );
 
     void ClkUpdate()
     {

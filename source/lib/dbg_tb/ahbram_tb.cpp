@@ -1,4 +1,16 @@
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_ahbram
+
+#ifdef DBG_ahbram
+  ahb_slv_in_type in_ahbsi;//   : in  ahb_slv_in_type;
+  ahb_slv_out_type ch_ahbso;//   : out ahb_slv_out_type
+
+  ahbram tst_ahbram(AHB_SLAVE_RAM, 0x300, 0xfff);
+#endif
+
 
 //****************************************************************************
 void dbg::ahbram_tb(SystemOnChipIO &io)
@@ -33,14 +45,14 @@ void dbg::ahbram_tb(SystemOnChipIO &io)
 
 
   
-  ptst_ahbram->Update(topLeon3mp.wNRst,//    : in  std_ulogic;
+  tst_ahbram.Update(topLeon3mp.wNRst,//    : in  std_ulogic;
                       io.inClk,//   : in  std_ulogic;
                       in_ahbsi,//  : in  ahb_slv_in_type;
                       ch_ahbso );
 
   pin_ahbsi = &in_ahbsi;//  : in  ahb_slv_in_type;
   pch_ahbso = &ch_ahbso;//  : out ahb_slv_out_type;
-  p_ahbram  = ptst_ahbram;
+  p_ahbram  = &tst_ahbram;
 #endif
 
 
@@ -102,7 +114,7 @@ void dbg::ahbram_tb(SystemOnChipIO &io)
 
 #ifdef DBG_ahbram
   // Clock update:
-  ptst_ahbram->ClkUpdate();
+  tst_ahbram.ClkUpdate();
 #endif
   
 }

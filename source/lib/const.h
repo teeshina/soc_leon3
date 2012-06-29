@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include "stdtypes.h"
+
 const uint32 HTRANS_IDLE   = 0;//   (1 downto 0) := "00";
 const uint32 HTRANS_BUSY   = 1;//   (1 downto 0) := "01";
 const uint32 HTRANS_NONSEQ = 2;// (1 downto 0) := "10";

@@ -1,4 +1,5 @@
-#include "lheaders.h"
+#include "id.h"
+#include "jtagpad.h"
 
 void JTagPad::Update( uint32 nTRST,
                       SClock TCK,

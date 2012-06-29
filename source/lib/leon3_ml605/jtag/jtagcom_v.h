@@ -1,5 +1,8 @@
 #pragma once
 
+#include "stdtypes.h"
+#include "dff.h"
+
 
 #define NEW_JTAGCOM
 //****************************************************************************

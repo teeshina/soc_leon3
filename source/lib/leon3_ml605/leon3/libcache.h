@@ -1,5 +1,8 @@
 #pragma once
 
+#include "stdtypes.h"
+#include "leon3_ml605\leon3\libiu.h"
+
 const uint32 TAG_HIGH     = 31;//: integer := 31;
 const uint32 CTAG_LRRPOS  = 9;//: integer := 9;
 const uint32 CTAG_LOCKPOS = 8;//: integer := 8;

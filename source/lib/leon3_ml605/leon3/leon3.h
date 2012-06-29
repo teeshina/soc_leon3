@@ -1,5 +1,8 @@
 #pragma once
 
+#include "stdtypes.h"
+#include "leon3_ml605\config.h"
+
 struct dsu_in_type
 {
   uint32 enable : 1;//  : std_ulogic;

@@ -1,7 +1,8 @@
 //-----------------------------------------------------------------------------
 //-- Description: MMU LRU logic
 //------------------------------------------------------------------------------
-#include "lheaders.h"
+#include "const.h"
+#include "mmulrue.h"
 
 //#define position : integer;
 //#define entries  : integer := 8 );

@@ -9,6 +9,10 @@
 //****************************************************************************
 #pragma once
 
+#include "stdtypes.h"
+#include "dff.h"
+#include "leon3_ml605\amba\amba.h"
+
 class AhbControl
 {
   friend class dbg;

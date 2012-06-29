@@ -1,4 +1,7 @@
-#include "lheaders.h"
+
+#include "sparc.h"
+#include "iu3.h"
+#include "leon3_ml605\stdlib\stdlib.h"
 
 // Modificatoins:
 //    1. Add reset:

@@ -10,7 +10,8 @@
 //              Such behavior doesn't according to real situation.
 //****************************************************************************
 
-#include "lheaders.h"
+#include "id.h"
+#include "gptimer.h"
 
 //pirq     IRQ_TIMER//: integer = 0;
 //#define sepirq   CFG_GPT_SEPIRQ//: integer = 0;	-- use separate interrupts for each timer

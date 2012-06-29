@@ -8,6 +8,12 @@
 
 #pragma once
 
+#include "stdtypes.h"
+#include "dff.h"
+#include "leon3_ml605\config.h"
+#include "leon3_ml605\gnss\buses.h"
+#include "leon3_ml605\gnss\dummies\dumchan.h"
+
 class ChannelsPack
 {
   friend class dbg;

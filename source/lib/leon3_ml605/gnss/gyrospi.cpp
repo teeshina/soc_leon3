@@ -6,8 +6,8 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
-
+#include "id.h"
+#include "gyrospi.h"
 
 //****************************************************************************
 gyrospi::gyrospi(uint32 pindex_, uint32 paddr_, uint32 pmask_)

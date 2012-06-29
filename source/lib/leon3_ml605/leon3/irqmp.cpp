@@ -8,7 +8,9 @@
 // WARNING!     This module was verified only for eirq=0
 //****************************************************************************
 
-#include "lheaders.h"
+#include "id.h"
+#include "leon3_ml605\stdlib\stdlib.h"
+#include "irqmp.h"
 
 //pindex  : integer := 0;
 //paddr   : integer := 0;

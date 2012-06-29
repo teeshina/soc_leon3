@@ -6,6 +6,12 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
+#include "stdtypes.h"
+#include "dff.h"
+#include "leon3_ml605\config.h"
+#include "leon3_ml605\amba\amba.h"
+#include "leon3_ml605\uart\uart.h"
+
 class apbuart
 {
   friend class dbg;

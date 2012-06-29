@@ -60,6 +60,7 @@ enum EStringName
   STR_TB_GnssEngine,
   STR_TB_CarrNcoIF,
   STR_TB_PrnGenerator,
+  STR_TB_SymbSync,
   STR_TB_ChannelTop,
   STR_TB_soc_leon3,
 
@@ -135,6 +136,7 @@ const StringData AllStrings[] =
   {STR_TB_GnssEngine,   "TB_GnssEngine=", STRTYPE_INTEGER},
   {STR_TB_CarrNcoIF,    "TB_CarrNcoIF=", STRTYPE_INTEGER},
   {STR_TB_PrnGenerator, "TB_PrnGenerator=", STRTYPE_INTEGER},
+  {STR_TB_SymbSync,     "TB_SymbSync=", STRTYPE_INTEGER},
   {STR_TB_ChannelTop,   "TB_ChannelTop=", STRTYPE_INTEGER},
   {STR_TB_soc_leon3,    "TB_soc_leon3=",STRTYPE_INTEGER},
   

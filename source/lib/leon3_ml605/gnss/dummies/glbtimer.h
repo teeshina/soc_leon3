@@ -8,6 +8,10 @@
 
 #pragma once
 
+#include "stdtypes.h"
+#include "dff.h"
+#include "leon3_ml605\gnss\buses.h"
+
 class GlobalTimer
 {
   friend class dbg;

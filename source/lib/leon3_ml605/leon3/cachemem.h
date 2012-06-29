@@ -1,5 +1,12 @@
 #pragma once
 
+#include "stdtypes.h"
+#include "dff.h"
+#include "leon3_ml605\config.h"
+#include "leon3_ml605\leon3\libcache.h"
+#include "leon3_ml605\leon3\mem_unisim.h"
+
+
 class cachemem
 {
   friend class dbg;

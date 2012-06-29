@@ -1,5 +1,19 @@
 #pragma once
 
+#include "stdtypes.h"
+#include "dff.h"
+#include "leon3_ml605\config.h"
+
+#include "leon3_ml605\leon3\libiu.h"
+#include "leon3_ml605\leon3\libcache.h"
+#include "leon3_ml605\leon3\mmuiface.h"
+#include "leon3_ml605\amba\amba.h"
+
+#include "leon3_ml605\leon3\mmu_icache.h"
+#include "leon3_ml605\leon3\mmu_dcache.h"
+#include "leon3_ml605\leon3\mmu_acache.h"
+#include "leon3_ml605\leon3\mmu.h"
+
 class mmu_cache
 {
   friend class dbg;

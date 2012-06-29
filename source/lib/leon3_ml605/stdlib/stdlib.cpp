@@ -1,4 +1,4 @@
-#include "lheaders.h"
+#include "stdlib.h"
 
 uint32 orv(uint32 d) { return (d?1:0);}
 

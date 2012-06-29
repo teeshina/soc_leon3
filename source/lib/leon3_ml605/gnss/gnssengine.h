@@ -8,6 +8,15 @@
 
 #pragma once
 
+#include "stdtypes.h"
+#include "leon3_ml605\config.h"
+#include "leon3_ml605\amba\amba.h"
+#ifdef USE_GNSSLTD_DUMMIES
+  #include "leon3_ml605\gnss\dummies\gnsstop.h"
+#else
+  #include "leon3_ml605\gnss\products\gnsstop.h"
+#endif
+
 
 class GnssEngine
 {

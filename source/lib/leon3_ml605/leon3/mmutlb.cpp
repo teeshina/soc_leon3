@@ -1,8 +1,13 @@
 //-- Description: MMU TLB logic
 //------------------------------------------------------------------------------
 
-#include "lheaders.h"
+#include "const.h"
+#include "leon3_ml605\config.h"
+#include "leon3_ml605\leon3\libmmu.h"
+#include "leon3_ml605\stdlib\stdlib.h"
+#include "mmutlb.h"
 
+extern uint32 iClkCnt;
 
 //#define tech     0//: integer range 0 to NTECH := 0;
 //#define entries  8//: integer range 2 to 32 := 8;

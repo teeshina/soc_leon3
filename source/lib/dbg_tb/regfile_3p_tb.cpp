@@ -1,4 +1,24 @@
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_regfile_3p
+
+#ifdef DBG_regfile_3p
+  uint32 in_waddr;//  : in  std_logic_vector((abits -1) downto 0);
+  uint32 in_wdata;//  : in  std_logic_vector((dbits -1) downto 0);
+  uint32 in_we;//     : in  std_ulogic;
+  uint32 in_raddr1;// : in  std_logic_vector((abits -1) downto 0);
+  uint32 in_re1;//    : in  std_ulogic;
+  uint32 ch_rdata1;// : out std_logic_vector((dbits -1) downto 0);
+  uint32 in_raddr2;// : in  std_logic_vector((abits -1) downto 0);
+  uint32 in_re2;//    : in  std_ulogic;
+  uint32 ch_rdata2;// : out std_logic_vector((dbits -1) downto 0);
+  uint32 in_testin;//   : in std_logic_vector(3 downto 0) := "0000");
+
+  regfile_3p tst_regfile_3p;
+#endif
+
 
 //****************************************************************************
 void dbg::regfile_3p_tb(SystemOnChipIO &io)

@@ -1,5 +1,9 @@
 #pragma once
 
+#include <memory>
+#include "stdtypes.h"
+#include "dff.h"
+
 //******************************************************************
 class ram16_sx_sx
 {

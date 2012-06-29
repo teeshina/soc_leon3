@@ -1,5 +1,32 @@
 #pragma once
 
+#include "stdtypes.h"
+#include "dff.h"
+#include "leon3_ml605\config.h"
+#include "leon3_ml605\amba\amba.h"
+
+#include "leon3_ml605\leon3\leon3.h"
+#include "leon3_ml605\uart\uart.h"
+#include "leon3_ml605\amba\gptimer.h"
+
+#include "leon3_ml605\amba\ahbctrl.h"
+#include "leon3_ml605\amba\ahbctrl_v.h"
+#include "leon3_ml605\amba\apbctrl.h"
+#include "leon3_ml605\amba\gptimer.h"
+#include "leon3_ml605\jtag\ahbjtag.h"
+#include "leon3_ml605\mem\ahbram.h"
+#include "leon3_ml605\mem\ahbmem_v.h"
+#include "leon3_ml605\mem\ahbrom.h"
+#include "leon3_ml605\uart\apbuart.h"
+#include "leon3_ml605\leon3\leon3s.h"
+#include "leon3_ml605\leon3\dsu3x.h"
+#include "leon3_ml605\leon3\irqmp.h"
+
+#include "leon3_ml605\gnss\rfctrl.h"
+#include "leon3_ml605\gnss\gyrospi.h"
+#include "leon3_ml605\gnss\accelspi.h"
+#include "leon3_ml605\gnss\gnssengine.h"
+
 #define USE_GNSSLTD_MODULES
 #ifdef USE_GNSSLTD_MODULES
   //#define USE_GNSSLTD_AHBCTRL
@@ -94,7 +121,7 @@ class leon3mp
       uint32 &outRTS,// If this uart can't recieve data RX, then rise this to "1"
       uint32 &outTX,
       // SPI MAX2769 GPS L1/GLO L1
-      uint32 inLD[SystemOnChipIO::TOTAL_MAXIM2769],
+      uint32 inLD[2],
       uint32 &outSCLK,
       uint32 &outSDATA,
       uint32 *outCSn,
@@ -102,6 +129,7 @@ class leon3mp
       uint32 inExtAntStat,
       uint32 inExtAntDetect,
       uint32 &outExtAntEna,
+      uint32 &outIntAntContr,
       // GNSS RF inputs:
       SClock inAdcClk,
       uint32 inIa,

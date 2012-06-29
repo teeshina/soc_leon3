@@ -1,5 +1,9 @@
 #pragma once
 
+#include "stdtypes.h"
+#include "dff.h"
+#include "leon3_ml605\leon3\mem_unisim.h"
+
 
 class regfile_3p
 {

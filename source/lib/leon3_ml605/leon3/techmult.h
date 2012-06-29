@@ -1,5 +1,10 @@
 #pragma once
 
+#include "stdtypes.h"
+#include "dff.h"
+#include "leon3_ml605\config.h"
+
+
 //******************************************************************
 class gen_mult_pipe
 {

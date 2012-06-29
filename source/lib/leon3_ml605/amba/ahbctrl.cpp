@@ -1,4 +1,7 @@
-#include "lheaders.h"
+#include "id.h"
+#include "const.h"
+#include "leon3_ml605\stdlib\stdlib.h"
+#include "ahbctrl.h"
 
 #define nahbm   AHB_MASTER_TOTAL
 #define nahbs   AHB_SLAVE_TOTAL

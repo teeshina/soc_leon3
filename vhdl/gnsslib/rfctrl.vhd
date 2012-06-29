@@ -36,7 +36,8 @@ entity rfctrl is
     -- Antenna control:
     inExtAntStat   : in std_ulogic;
     inExtAntDetect : in std_ulogic;
-    outExtAntEna   : out std_ulogic
+    outExtAntEna   : out std_ulogic;
+    outIntAntContr   : out std_ulogic
   );
 end; 
  
@@ -75,6 +76,7 @@ type registers is record
   WordSelector : std_logic_vector(8 downto 0);
   SendWord     : std_logic_vector(31 downto 0);
   ExtAntEna    : std_ulogic;
+  IntAntContr  : std_ulogic;
   BootID       : std_logic_vector(31 downto 0);
 end record;
 
@@ -107,7 +109,7 @@ begin
       when "001001" => readdata  := "0000" & r.test2(31 downto 4);
       when "001010" => readdata  := r.scale;
       when "001011" => readdata(9 downto 0)  := conv_std_logic_vector(r.BitCnt,6) & '0' & r.loading & inLD;
-      when "001111" => readdata(5 downto 0)  := inExtAntStat & inExtAntDetect & "000" & r.ExtAntEna;
+      when "001111" => readdata(5 downto 0)  := inExtAntStat & inExtAntDetect & "00"& r.IntAntContr & r.ExtAntEna;
       when "111111" => readdata := r.BootID;
       when others =>
     end case;
@@ -136,7 +138,9 @@ begin
           if(apbi.pwdata=zero32) then v.select_spi := "01";
           elsif(apbi.pwdata=conv_std_logic_vector(1,32)) then v.select_spi := "10";
           else v.select_spi := "00"; end if;
-        when "001111" => v.ExtAntEna := apbi.pwdata(0);
+        when "001111" => 
+          v.ExtAntEna   := apbi.pwdata(0);
+          v.IntAntContr := apbi.pwdata(1);
         when "111111" => v.BootID := apbi.pwdata;
         when others => 
       end case;
@@ -228,6 +232,7 @@ begin
   outSDATA  <= r.SendWord(31);
 
   outExtAntEna <= r.ExtAntEna;
+  outIntAntContr <= r.IntAntContr;
 
 
   -- registers:

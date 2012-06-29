@@ -1,4 +1,4 @@
-#include "lheaders.h"
+#include "mem_unisim.h"
 
 //****************************************************************************
 void syncram64::Update( SClock clk,//     : in  std_ulogic;

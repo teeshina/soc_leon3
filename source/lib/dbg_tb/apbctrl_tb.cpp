@@ -6,7 +6,21 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_apbctrl
+
+#ifdef DBG_apbctrl
+  ahb_slv_in_type    in_ahbsi;//    : in  ahb_slv_in_type;
+  ahb_slv_out_type   ch_ahbso;//    : out ahb_slv_out_type;
+  apb_slv_in_type    ch_apbi;//    : out apb_slv_in_type;
+  apb_slv_out_vector in_apbo;//    : in  apb_slv_out_vector
+  
+  apbctrl tst_apbctrl(AHB_SLAVE_APBBRIDGE, 0x800, 0xfff);
+#endif
+
 
 //****************************************************************************
 void dbg::apbctrl_tb(SystemOnChipIO &io)
@@ -57,7 +71,7 @@ void dbg::apbctrl_tb(SystemOnChipIO &io)
     in_apbo.arr[APB_UART_CFG].pindex = APB_UART_CFG;//[0:15]      : integer range 0 to APB_SLAVES_MAX -1;  -- diag use only
   }
   
-  ptst_apbctrl->Update(io.inNRst,
+  tst_apbctrl.Update(io.inNRst,
                        io.inClk,
                        in_ahbsi,
                        ch_ahbso,
@@ -150,7 +164,7 @@ void dbg::apbctrl_tb(SystemOnChipIO &io)
   }
 
 #ifdef DBG_apbctrl
-  ptst_apbctrl->ClkUpdate();
+  tst_apbctrl.ClkUpdate();
 #endif
 }
 

@@ -1,5 +1,15 @@
 #pragma once
 
+#include "stdtypes.h"
+#include "dff.h"
+#include "leon3_ml605\leon3\mmuconfig.h"
+#include "leon3_ml605\leon3\mmuiface.h"
+#include "leon3_ml605\leon3\mmulru.h"
+#include "leon3_ml605\leon3\mmutlbcam.h"
+
+#include "leon3_ml605\leon3\mem_unisim.h"
+
+
 class mmutlb
 {
   friend class dbg;

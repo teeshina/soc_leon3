@@ -6,7 +6,19 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_mmutlbcam
+
+#ifdef DBG_mmutlbcam
+  mmutlbcam_in_type tlbcami;
+  mmutlbcam_out_type tlbcamo;
+  
+  mmutlbcam tst_mmutlbcam;
+#endif
+
 
 //****************************************************************************
 void dbg::mmutlbcam_tb(SystemOnChipIO &io)

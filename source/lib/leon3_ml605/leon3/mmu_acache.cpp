@@ -1,7 +1,9 @@
 //-----------------------------------------------------------------------------   
 //-- Description: Interface module between I/D cache controllers and Amba AHB
 //------------------------------------------------------------------------------  
-#include "lheaders.h"
+#include "id.h"
+#include "leon3_ml605\stdlib\stdlib.h"
+#include "mmu_acache.h"
 
 //#define hindex    AHB_MASTER_LEON3: integer range 0 to NAHBMST-1  := 0;
 //#define ilinesize CFG_ILINE//: integer range 4 to 8 := 4;

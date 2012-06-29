@@ -6,7 +6,22 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_GnssEngine
+
+#ifdef DBG_GnssEngine
+  ahb_slv_in_type in_ahbsi;
+  ahb_slv_out_type ch_ahbso;
+  uint32 inGpsI;
+  uint32 inGpsQ;
+  uint32 inGloI;
+  uint32 inGloQ;
+  GnssEngine tst_GnssEngine;
+#endif
+
 
 #ifdef DBG_GnssEngine
 struct STst{ uint32 iClkNum; uint32 wr; uint32 adr; uint32 val; };

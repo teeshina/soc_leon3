@@ -7,14 +7,12 @@
 
 #pragma once
 
-#if !defined(DECLSPEC_TYPE)
-  #error Not defined IMPORT/EXPORT
-#endif
+#include "stdtypes.h"
+#include "dff.h"
 
 #define PRINT_TESTBENCH_ENABLE  1
 #define PRINT_TESTBENCH_DISABLE 0
 
-#define DIG ""
 
 static const int32 PATH_LENGTH_MAX = 1024;
 
@@ -54,8 +52,9 @@ enum ETestBenchName
   TB_gyrospi,
   TB_accelspi,
   TB_GnssEngine,
-  TB_CarrNcoIF,
+  TB_NCOCarrIF,
   TB_PrnGenerator,
+  TB_SymbSync,
   TB_ChannelTop,
   TB_soc_leon3,
   
@@ -97,8 +96,9 @@ const char chBenchFile[TB_TOTAL][64]=
   "gyrospi_tb.txt",
   "accelspi_tb.txt",
   "gnssengine_tb.txt",
-  "carncoif_tb.txt",
+  "ncocarrif_tb.txt",
   "prngen_tb.txt",
+  "symbsync_tb.txt",
   "chantop_tb.txt",
   "soc_leon3_tb.txt",
 };
@@ -110,12 +110,6 @@ struct LibInitData
   uint32 uiBenchEna[TB_TOTAL];    // print data patterns
   int32  iPrintVhdlData;          // print VHDL variables assignemt for fast insertion
 };
-
-//****************************************************************************
-// Virtex6 compatible: see page 179 of ug350.pdf document
-const uint32 JTAG_INSTRUCTION_WIDTH = 10;
-const uint32 JTAG_INSTRUCTION_USER1 = 0x3C2;  // instruction to accept address (35 bits)
-const uint32 JTAG_INSTRUCTION_USER2 = 0x3C3;  // instruction to accept data (33 bits)
 
 //****************************************************************************
 
@@ -160,9 +154,10 @@ struct SystemOnChipIO
   }spimax2769;
   struct SAntennaControl
   {
-    uint32 ExtAntStat;  // in:
-    uint32 ExtAntDetect;// in:
-    uint32 ExtAntEna;   // out:
+    uint32 ExtAntStat;  // in: external antenna power ON/OFF status
+    uint32 ExtAntDetect;// in: external antenna current consumption detected
+    uint32 ExtAntEna;   // out: power ON for the active antenna
+    uint32 IntAntContr; // out: power ON for the active antenna
   }antctrl;
   struct SGyroscope
   {
@@ -183,13 +178,5 @@ struct SystemOnChipIO
     uint32 Int2; // accelerometer output -> SoC input
   }acceler;
 };
-
-
-//****************************************************************************
-extern "C" DECLSPEC_TYPE void __stdcall LibInit(LibInitData *);
-extern "C" DECLSPEC_TYPE void __stdcall LibClose(void);
-extern "C" DECLSPEC_TYPE void __stdcall LibLeonUpdate(SystemOnChipIO &ioData);
-extern "C" DECLSPEC_TYPE void __stdcall LibLeonClkUpdate(void);
-extern "C" DECLSPEC_TYPE void __stdcall LibBackDoorLoadRAM(uint32 adr, uint32 v);
 
 

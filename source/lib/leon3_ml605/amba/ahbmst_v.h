@@ -9,6 +9,11 @@
 
 #pragma once
 
+#include "stdtypes.h"
+#include "dff.h"
+#include "id.h"
+#include "leon3_ml605\amba\amba.h"
+
 class AhbMaster
 {
   friend class dbg;
@@ -17,7 +22,7 @@ class AhbMaster
     uint32 IRQ_BIT_INDEX;
     uint32 VENDOR_ID;
     uint32 DEVICE_ID;
-    uint32 VERSION;
+    uint32 Version;
     uint32 PROTECT_BITS;
     uint32 ADDR_INC;
 
@@ -53,7 +58,7 @@ class AhbMaster
       VENDOR_ID      = vendor;
       DEVICE_ID      = device;
       HMST_INDEX     = mstindex;
-      VERSION        = version;
+      Version        = version;
       IRQ_BIT_INDEX  = irqindex;
       ADDR_INC       = adrinc;
       PROTECT_BITS   = protect;
@@ -61,7 +66,7 @@ class AhbMaster
       memset((void*)&hconfig, 0, sizeof(ahb_config_type));
       ((ahb_device_reg*)(&hconfig.arr[0]))->vendor  = VENDOR_ID;
       ((ahb_device_reg*)(&hconfig.arr[0]))->device  = DEVICE_ID;
-      ((ahb_device_reg*)(&hconfig.arr[0]))->version = VERSION;
+      ((ahb_device_reg*)(&hconfig.arr[0]))->version = Version;
     }
   
     void Update(

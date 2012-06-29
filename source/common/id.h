@@ -1,5 +1,13 @@
 #pragma once
 
+#include "stdtypes.h"
+
+//****************************************************************************
+// Virtex6 compatible: see page 179 of ug350.pdf document
+const uint32 JTAG_INSTRUCTION_WIDTH = 10;
+const uint32 JTAG_INSTRUCTION_USER1 = 0x3C2;  // instruction to accept address (35 bits)
+const uint32 JTAG_INSTRUCTION_USER2 = 0x3C3;  // instruction to accept data (33 bits)
+
 
 // Vendor codes: amba_vendor_type[15:0]
 static const uint32 VENDOR_GAISLER    = 0x01;

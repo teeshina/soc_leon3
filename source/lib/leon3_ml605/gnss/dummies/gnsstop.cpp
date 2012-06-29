@@ -9,8 +9,8 @@
 //              and simple accumulators.
 //****************************************************************************
 
-#include "lheaders.h"
-
+#include "leon3_ml605\config.h"
+#include "gnsstop.h"
 
 //****************************************************************************
 GnssTop::GnssTop()

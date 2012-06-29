@@ -60,6 +60,7 @@ architecture behavior of soc_noram_tb is
     inExtAntStat   : in std_ulogic;
     inExtAntDetect : in std_ulogic;
     outExtAntEna   : out std_ulogic;
+    outIntAntContr : out std_ulogic;
     -- Gyroscope SPI interface
     inGyroSDI   : in std_logic;
     inGyroInt1  : in std_logic; -- interrupt 1
@@ -123,6 +124,7 @@ architecture behavior of soc_noram_tb is
   signal in_ExtAntDetect  : std_logic;
   signal ch_ExtAntEna  : std_logic;
   signal ExtAntEna  : std_logic;
+  signal IntAntContr : std_logic;
   -- STM gyroscope controller:
   signal in_GyroSDI  : std_logic;
   signal in_GyroInt1  : std_logic;
@@ -552,6 +554,7 @@ begin
     inExtAntStat => in_ExtAntStat,
     inExtAntDetect => in_ExtAntDetect,
     outExtAntEna  => ExtAntEna,
+    outIntAntContr => IntAntContr,
     -- Gyroscope SPI interface
     inGyroSDI  => in_GyroSDI,
     inGyroInt1 => in_GyroInt1,

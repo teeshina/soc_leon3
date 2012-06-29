@@ -24,6 +24,7 @@
 #define DECLSPEC_TYPE __declspec(dllimport) 
 #pragma comment(lib, "libleon.lib")
 #include "..\lib\libface.h"
+#include "..\lib\libcall.h"
 
 #include "tests.h"
 #include "converter.h"

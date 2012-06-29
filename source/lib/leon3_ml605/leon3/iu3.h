@@ -1,5 +1,11 @@
 #pragma once
 
+#include "stdtypes.h"
+#include "dff.h"
+#include "leon3_ml605\config.h"
+#include "leon3_ml605\leon3\arith.h"
+#include "leon3_ml605\leon3\leon3.h"
+#include "leon3_ml605\leon3\libiu.h"
 
 typedef uint32 word;// is std_logic_vector(31 downto 0);
 typedef uint32 pctype;// is std_logic_vector(31 downto PCLOW);

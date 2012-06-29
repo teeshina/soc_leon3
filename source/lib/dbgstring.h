@@ -8,6 +8,13 @@
 
 #pragma once
 
+#include "stdtypes.h"
+#include <fstream>
+
+// Modificator of the string name. This value used to generate several
+// identical data with different settings for the VHDL test bench.
+#define DIG ""
+
 
 class DbgString
 {

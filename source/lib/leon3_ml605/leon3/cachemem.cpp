@@ -1,4 +1,6 @@
-#include "lheaders.h"
+#include "const.h"
+#include "leon3_ml605\leon3\mmuconfig.h"
+#include "cachemem.h"
 
 //#define tech      : integer range 0 to NTECH := 0;
 //#define icen      CFG_ICEN//: integer range 0 to 1 := 0;
@@ -159,17 +161,6 @@ void cachemem::Update(  SClock clk,//   : in  std_ulogic;
     vdtdatain3.arr[i] |= (uint64(BITS32(crami.dcramin.ptag.arr[i], TAG_HIGH, DTAG_LOW))<<(DTAG_BITS-DPTAG_BITS));
   }
 
-#if 1
-  if(iClkCnt>=3)
-  bool stop =true;
-  uint32 x1 = (ITWIDTH - (ILRR_BIT+ICLOCK_BIT+1));
-  uint32 x2 = (ITWIDTH - (ILRR_BIT+ICLOCK_BIT+M_CTX_SZ));
-  uint32 x3 = (ITWIDTH-(ICLOCK_BIT + ILRR_BIT));
-  uint32 x4 = (ITWIDTH-ILRR_BIT);
-  uint32 x5 = ITAG_BITS-1 ;
-  uint32 x6 = TAG_HIGH + CFG_ILINE;
-  uint32 x7 = DTWIDTH;
-#endif
   for (int32 i=0; i<CFG_ISETS; i++)
   {
     vitdatain.arr[i] = 0;
@@ -356,10 +347,6 @@ void cachemem::Update(  SClock clk,//   : in  std_ulogic;
               crami.dcramin.ldramin.write);
 #endif
 
-#if 1
-if(iClkCnt>=3408)
-bool st=true;
-#endif
   for (int32 i=0; i<CFG_ISETS; i++)
   {
     tmpa = (uint32)BITS64(itdataout.arr[i], ITAG_BITS-1, (ITAG_BITS-1) - (TAG_HIGH - ITAG_LOW));

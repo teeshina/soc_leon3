@@ -1,5 +1,10 @@
 #pragma once
 
+#include "stdtypes.h"
+#include "dff.h"
+#include "leon3_ml605\leon3\techmult.h"
+#include "leon3_ml605\leon3\arith.h"
+
 class mul32
 {
   friend class dbg;

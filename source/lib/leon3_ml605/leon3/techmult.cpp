@@ -1,4 +1,4 @@
-#include "lheaders.h"
+#include "techmult.h"
 
 //#define tech;//          : integer := 0;
 //#define arch       CFG_MULARCH//          : integer := 0;

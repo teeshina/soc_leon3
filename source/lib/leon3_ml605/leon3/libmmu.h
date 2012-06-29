@@ -1,5 +1,9 @@
 #pragma once
 
+#include "stdtypes.h"
+#include "leon3_ml605\leon3\mmuconfig.h"
+
+
 void TLB_CheckFault( uint32 ACC,//        : in  std_logic_vector(2 downto 0);
                       mmu_idcache isid,//       : in  mmu_idcache;
                       uint32 su,//         : in  std_logic;

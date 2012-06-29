@@ -1,4 +1,21 @@
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+#define DBG_mmu
+
+
+#ifdef DBG_mmu
+  mmudc_in_type in_mmudci;// : in  mmudc_in_type;
+  mmudc_out_type ch_mmudco;// : out mmudc_out_type;
+  mmuic_in_type in_mmuici;// : in  mmuic_in_type;
+  mmuic_out_type ch_mmuico;// : out mmuic_out_type;
+  memory_mm_out_type in_mcmmo;//  : in  memory_mm_out_type;
+  memory_mm_in_type ch_mcmmi;
+
+  mmu tst_mmu;
+#endif
+
 
 //****************************************************************************
 void dbg::mmu_tb(SystemOnChipIO &io)

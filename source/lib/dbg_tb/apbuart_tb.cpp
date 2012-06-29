@@ -6,7 +6,21 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_apbuart
+
+#ifdef DBG_apbuart
+  apb_slv_in_type in_apbi;//   : in  apb_slv_in_type;
+  apb_slv_out_type ch_apbo;//   : out apb_slv_out_type;
+  uart_in_type in_uarti;//  : in  uart_in_type;
+  uart_out_type ch_uarto;//  : out uart_out_type);
+
+  apbuart tst_apbuart(APB_UART_CFG,0x1,0xfff); // total address 0x800001xx  = 256 bytes
+#endif
+
 
 #define APBUART_ADR_CONTROL 0x80000108
 struct UartControl
@@ -155,7 +169,7 @@ void dbg::apbuart_tb(SystemOnChipIO &io)
     }
   }
   
-  ptst_apbuart->Update(topLeon3mp.wNRst,
+  tst_apbuart.Update(topLeon3mp.wNRst,
                        io.inClk,
                        in_apbi,
                        ch_apbo,
@@ -166,7 +180,7 @@ void dbg::apbuart_tb(SystemOnChipIO &io)
   pch_apbo = &ch_apbo;//    : in  apb_slv_out_vector
   pin_uarti = &in_uarti;
   pch_uarto = &ch_uarto;
-  p_apbuart = ptst_apbuart;
+  p_apbuart = &tst_apbuart;
 #endif
 
   if(io.inClk.eClock==SClock::CLK_POSEDGE)
@@ -220,7 +234,7 @@ void dbg::apbuart_tb(SystemOnChipIO &io)
   }
 
 #ifdef DBG_apbuart
-  ptst_apbuart->ClkUpdate();
+  tst_apbuart.ClkUpdate();
 #endif
 }
 

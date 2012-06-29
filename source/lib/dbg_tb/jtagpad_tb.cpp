@@ -6,7 +6,30 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_jtagpad
+
+#ifdef DBG_jtagpad
+  uint32 in_nTRST;
+  SClock in_TCK;
+  uint32 in_TMS;
+  uint32 in_TDI;
+  uint32 ch_TDO;
+  uint32 ch_SelUser1;  //sel=1 when JTAG instruction register holds USER instruction
+  uint32 ch_SelUser2;
+  uint32 ch_TDI;       //fed through directly from FPGA TDI pin
+  uint32 ch_DRCK;      //DRCK is same as TCK. if interface is not selected it remains high
+  uint32 ch_Capture;   //Active-high pulse indicating Capture_DR state
+  uint32 ch_Shift;     //Active-high. Indicate Shift_DR state
+  uint32 ch_Update;    //Active-high indicating the Update_DR state
+  uint32 ch_Reset;     //=1 reset output
+  uint32 in_tdo1;        //2-nd register doesn't use
+  JTagPad tst_jtagpad;
+#endif
+
 
 //****************************************************************************
 void dbg::jtagpad_tb(SystemOnChipIO &io)

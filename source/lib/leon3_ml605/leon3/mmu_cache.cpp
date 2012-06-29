@@ -1,4 +1,4 @@
-#include "lheaders.h"
+#include "mmu_cache.h"
 
 //#define hindex    : integer              := 0;
 //#define memtech   CFG_MEMTECH//: integer range 0 to NTECH := 0;

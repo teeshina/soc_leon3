@@ -1,7 +1,9 @@
 //------------------------------------------------------------------------------
 //-- Description: MMU table-walk logic
 //------------------------------------------------------------------------------
-#include "lheaders.h"
+#include "leon3_ml605\config.h"
+#include "leon3_ml605\leon3\libmmu.h"
+#include "mmutw.h"
 
 //#define mmupgsz   CFG_MMU_PAGESIZE//: integer range 0 to 5  := 0
 //#ifdef CFG_MMU_PAGESIZE

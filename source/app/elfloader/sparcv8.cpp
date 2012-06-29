@@ -11,12 +11,12 @@
 #include "instr.h"
 #include "sparcv8.h"
 
-#include "..\..\lib\leon3_ml605\mem\romdata.h"
 
 //****************************************************************************
 void SparcV8::Disassemler(SrcImage *pImage, std::ofstream *pFile)
 {
 #if 0
+  #include "..\..\lib\leon3_ml605\mem\romdata.h"
   for (int32 i=0; i<=190; i++)
   {
     instr.u.v  = RomData[i].data;

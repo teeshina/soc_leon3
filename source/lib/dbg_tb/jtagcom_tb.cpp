@@ -1,4 +1,24 @@
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_jtagcom
+
+#ifdef DBG_jtagcom
+  uint32 inTCK;
+  uint32 inTDI;
+  uint32 inAdrSel;
+  uint32 inDataSel;
+  uint32 inShift;
+  uint32 inUpdate;
+  uint32 inRESET;
+  uint32 chTDO;
+  ahb_dma_out_type in_dmao;// : in  ahb_dma_out_type;    
+  ahb_dma_in_type  ch_dmai;// : out ahb_dma_in_type
+  
+  jtagcom tst_jtagcom;
+#endif
+
 
 //****************************************************************************
 void dbg::jtagcom_tb(SystemOnChipIO &io)

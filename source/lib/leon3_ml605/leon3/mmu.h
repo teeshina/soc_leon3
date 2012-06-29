@@ -1,5 +1,14 @@
 #pragma once
 
+#include "stdtypes.h"
+#include "dff.h"
+
+#include "leon3_ml605\leon3\mmuconfig.h"
+#include "leon3_ml605\leon3\mmuiface.h"
+#include "leon3_ml605\leon3\mmutlb.h"
+#include "leon3_ml605\leon3\mmutw.h"
+
+
 class mmu
 {
   friend class dbg;

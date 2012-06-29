@@ -6,7 +6,8 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#include "id.h"
+#include "rfctrl.h"
 
 
 //****************************************************************************
@@ -23,13 +24,14 @@ void RfControl::Update(  uint32 rst,//    : in  std_ulogic;
                         SClock clk,//    : in  std_ulogic;
                         apb_slv_in_type &apbi,//   : in  apb_slv_in_type;
                         apb_slv_out_type &apbo,//   : out apb_slv_out_type;
-                        uint32 inLD[SystemOnChipIO::TOTAL_MAXIM2769],
+                        uint32 inLD[2],
                         uint32 &outSCLK,
                         uint32 &outSDATA,
                         uint32 *outCSn,
                         uint32 inExtAntStat,
                         uint32 inExtAntDetect,
-                        uint32 &outExtAntEna )
+                        uint32 &outExtAntEna,
+                        uint32 &outIntAntContr )
 {
   ((ahb_device_reg*)(&apbo.pconfig.arr[0]))->vendor  = VENDOR_GNSSSENSOR;
   ((ahb_device_reg*)(&apbo.pconfig.arr[0]))->device  = GNSSSENSOR_RF_CONTROL;
@@ -59,7 +61,7 @@ void RfControl::Update(  uint32 rst,//    : in  std_ulogic;
     case 0x09: readdata = BITS32(r.Q.test2,31,4); break;
     case 0x0A: readdata = r.Q.scale; break;
     case 0x0B: readdata = (r.Q.BitCnt<<4)|(r.Q.loading<<2)|(inLD[1]<<1)|inLD[0]; break;  // PLL status of MAX2769
-    case 0x0F: readdata = (inExtAntStat<<5)|(inExtAntDetect<<4)|r.Q.ExtAntEna; break;
+    case 0x0F: readdata = (inExtAntStat<<5)|(inExtAntDetect<<4)|(r.Q.IntAntContr<<1)|r.Q.ExtAntEna; break;
     case 0x3F: readdata = r.Q.BootID; break;
     default:   readdata = 0;
   }
@@ -91,7 +93,8 @@ void RfControl::Update(  uint32 rst,//    : in  std_ulogic;
         else                    v.select_spi = 0;
       break;
       case 0x0F:
-        v.ExtAntEna = BIT32(apbi.pwdata,0);
+        v.ExtAntEna   = BIT32(apbi.pwdata,0);
+        v.IntAntContr = BIT32(apbi.pwdata,1);
       break;
       case 0x3F: v.BootID = apbi.pwdata;  break;
       default:;
@@ -180,5 +183,6 @@ void RfControl::Update(  uint32 rst,//    : in  std_ulogic;
   outSDATA = BIT32(r.Q.SendWord,31);
   
   outExtAntEna = r.Q.ExtAntEna;
+  outIntAntContr = r.Q.IntAntContr;
 }
 

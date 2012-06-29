@@ -1,5 +1,8 @@
 #pragma once
 
+#include "stdtypes.h"
+#include "dff.h"
+
 class JTagPad
 {
   friend class dbg;

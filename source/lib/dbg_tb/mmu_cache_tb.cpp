@@ -6,7 +6,29 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_mmu_cache
+
+
+#ifdef DBG_mmu_cache
+  icache_in_type in_ici;//   : in  icache_in_type;
+  icache_out_type ch_ico;//   : out icache_out_type;
+  dcache_in_type in_dci;//   : in  dcache_in_type;
+  dcache_out_type ch_dco;//   : out dcache_out_type;
+  ahb_mst_in_type in_ahbi;//  : in  ahb_mst_in_type;
+  ahb_mst_out_type ch_ahbo;//  : out ahb_mst_out_type;
+  ahb_slv_in_type in_ahbsi;// : in  ahb_slv_in_type;
+  ahb_slv_out_vector in_ahbso;//  : in  ahb_slv_out_vector;            
+  cram_in_type ch_crami;// : out cram_in_type;
+  cram_out_type in_cramo;// : in  cram_out_type;
+  uint32 in_fpuholdn;// : in  std_ulogic;
+  uint32 in_hclken;// : in std_ulogic
+  
+  mmu_cache tst_mmu_cache;
+#endif
 
 //****************************************************************************
 void dbg::mmu_cache_tb(SystemOnChipIO &io)

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 //-- Description: MMU component declaration
 //------------------------------------------------------------------------------
-#include "lheaders.h"
+#include "libmmu.h"
 
 void TLB_CheckFault( uint32 ACC,//        : in  std_logic_vector(2 downto 0);
                       mmu_idcache isid,//       : in  mmu_idcache;

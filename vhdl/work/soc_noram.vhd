@@ -55,6 +55,7 @@ entity soc_noram is Port
   inExtAntStat   : in std_ulogic;
   inExtAntDetect : in std_ulogic;
   outExtAntEna   : out std_ulogic;
+  outIntAntContr : out std_ulogic;
   -- Gyroscope SPI interface
   inGyroSDI   : in std_logic;
   inGyroInt1  : in std_logic; -- interrupt 1
@@ -391,7 +392,8 @@ begin
     outCSn,
     inExtAntStat,
     inExtAntDetect,
-    outExtAntEna
+    outExtAntEna,
+    outIntAntContr
   );
 
   ------------------------------------
@@ -524,5 +526,9 @@ begin
   outLED(2) <= dsuo.active;
   outLED(3) <= inDsuBreak;
 
+  outLED(7) <= inExtAntStat;
+  outLED(6) <= inExtAntDetect;
+  outLED(5) <= inLD(1);
+  outLED(4) <= inLD(0);
 end rtl;
 

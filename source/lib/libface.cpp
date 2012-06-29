@@ -5,7 +5,12 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#define DECLSPEC_TYPE __declspec(dllexport) 
+#include "libface.h"
+#include "libcall.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+
 
 leon3mp topLeon3mp;
 dbg     clDbg;
@@ -48,6 +53,7 @@ DECLSPEC_TYPE void __stdcall LibLeonUpdate(SystemOnChipIO &ioData)
     ioData.antctrl.ExtAntStat,
     ioData.antctrl.ExtAntDetect,
     ioData.antctrl.ExtAntEna,
+    ioData.antctrl.IntAntContr,
     ioData.gnss.adc_clk,
     ioData.gnss.I[0],
     ioData.gnss.Q[0],

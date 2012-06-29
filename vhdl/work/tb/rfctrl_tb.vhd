@@ -46,6 +46,7 @@ architecture behavior of rfctrl_tb is
   signal SDATA  : std_logic;
   signal CSn  : std_logic_vector(1 downto 0);
   signal ExtAntEna  : std_logic;
+  signal IntAntContr  : std_logic;
   
   
   signal t_BitCnt  : std_logic_vector(5 downto 0);
@@ -136,7 +137,8 @@ begin
     -- Antenna control:
     in_ExtAntStat,
     in_ExtAntDetect,
-    ExtAntEna
+    ExtAntEna,
+    IntAntContr
   );
 
 

@@ -6,6 +6,11 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
+#include "stdtypes.h"
+#include "dff.h"
+#include "leon3_ml605\config.h"
+#include "leon3_ml605\amba\amba.h"
+
 class gyrospi
 {
   friend class dbg;

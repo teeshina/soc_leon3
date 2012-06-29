@@ -8,6 +8,9 @@
 
 #pragma once
 
+#include "stdtypes.h"
+#include "dff.h"
+
 class WrFifo
 {
   friend class dbg;

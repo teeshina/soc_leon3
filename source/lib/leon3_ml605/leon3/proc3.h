@@ -1,5 +1,18 @@
 #pragma once
 
+#include "stdtypes.h"
+#include "dff.h"
+#include "leon3_ml605\config.h"
+#include "leon3_ml605\amba\amba.h"
+#include "leon3_ml605\leon3\libiu.h"
+#include "leon3_ml605\leon3\iu3.h"
+#include "leon3_ml605\leon3\mul32.h"
+#include "leon3_ml605\leon3\div32.h"
+#include "leon3_ml605\leon3\mmu_cache.h"
+
+#include "leon3_ml605\leon3\libcache.h"
+#include "leon3_ml605\leon3\leon3.h"
+
 class proc3
 {
   friend class dbg;

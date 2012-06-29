@@ -1,4 +1,27 @@
-#include "lheaders.h"
+#include "sparc.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_mmu_dcache
+
+
+#ifdef DBG_mmu_dcache
+  dcache_in_type in_dci;// : in  dcache_in_type;
+  dcache_out_type ch_dco;// : out dcache_out_type;
+  icache_out_type in_ico;// : in  icache_out_type;
+  memory_dc_in_type ch_mcdi;// : out memory_dc_in_type;
+  memory_dc_out_type in_mcdo;// : in  memory_dc_out_type;
+  ahb_slv_in_type in_ahbsi;// : in  ahb_slv_in_type;
+  dcram_in_type ch_dcrami;// : out dcram_in_type;
+  dcram_out_type in_dcramo;// : in  dcram_out_type;
+  uint32 fpuholdn;// : in  std_logic;
+  mmudc_in_type ch_mmudci;// : out mmudc_in_type;
+  mmudc_out_type in_mmudco;// : in mmudc_out_type;
+
+  mmu_dcache tst_mmu_dcache;
+#endif
+
 
 #ifdef DBG_mmu_dcache
   enum EStateDCache {dcache_reset, dcache_init, dcache_other};

@@ -6,8 +6,10 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
-#include "dbgstring.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
 
 uint32 iClkCnt = 0;
 
@@ -16,58 +18,10 @@ using namespace std;
 //****************************************************************************
 dbg::dbg()
 {
-#ifdef DBG_mmulrue
-  tst_mmulrue = new mmulrue(0,CFG_DTLBNUM); // index in a range CFG_ITLBNUM or CFG_DTLBNUM
-#endif
-#ifdef DBG_mmulru
-  tst_mmulru = new mmulru(CFG_ITLBNUM); // index in a range CFG_ITLBNUM or CFG_DTLBNUM
-#endif
-#ifdef DBG_ahbram
-  ptst_ahbram = new ahbram(AHB_SLAVE_RAM, 0x300, 0xfff);
-#endif
-#ifdef DBG_apbctrl
-  ptst_apbctrl = new apbctrl(AHB_SLAVE_APBBRIDGE, 0x800, 0xfff);
-#endif
-#ifdef DBG_apbuart
-  ptst_apbuart = new apbuart(APB_UART_CFG,0x1,0xfff); // total address 0x800001xx  = 256 bytes
-#endif
-#ifdef DBG_irqmp
-  ptst_irqmp = new irqmp(APB_IRQ_CONTROL,0x2,0xfff);
-#endif
-#ifdef DBG_gptimer
-  ptst_gptimer = new gptimer(APB_TIMER, 0x3, 0xfff);
-#endif
-#ifdef DBG_ChannelTop
-  ptst_ChannelTop = new ChannelTop(0,0);
-#endif
 }
 
 dbg::~dbg()
 {
-#ifdef DBG_mmulrue
-  free(tst_mmulrue);
-#endif
-#ifdef DBG_mmulru
-  free(tst_mmulru);
-#endif
-#ifdef DBG_ahbram
-  free(ptst_ahbram);
-#endif
-#ifdef DBG_apbctrl
-  free(ptst_apbctrl);
-#endif
-#ifdef DBG_apbuart
-  free(ptst_apbuart);
-#endif
-#ifdef DBG_irqmp
-  free(ptst_irqmp);
-#endif
-#ifdef DBG_gptimer
-  free(ptst_gptimer);
-#endif
-#ifdef DBG_ChannelTop
-  free(ptst_ChannelTop);
-#endif
 }
 
 //****************************************************************************
@@ -177,9 +131,11 @@ void dbg::Update(SystemOnChipIO &io)
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_GnssEngine]) GnssEngine_tb(io);
   
 #if!defined(USE_GNSSLTD_DUMMIES)
-  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_CarrNcoIF]) CarrNcoIF_tb(io);
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_NCOCarrIF]) NCOCarrIF_tb(io);
     
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_PrnGenerator]) PrnGenerator_tb(io);
+  
+  if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_SymbSync]) SymbSync_tb(io);
   
   if(PRINT_TESTBENCH_ENABLE==sLibInitData.uiBenchEna[TB_ChannelTop]) ChannelTop_tb(io);
 #endif

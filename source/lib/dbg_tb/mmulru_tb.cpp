@@ -1,4 +1,16 @@
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_mmulru
+
+#ifdef DBG_mmulru
+  mmulru_in_type in_lrui;//  : in mmulrue_in_type;
+  mmulru_out_type ch_lruo;//  : out mmulrue_out_type );
+
+  mmulru tst_mmulru(CFG_ITLBNUM); // index in a range CFG_ITLBNUM or CFG_DTLBNUM
+#endif
+
 
 //****************************************************************************
 void dbg::mmulru_tb(SystemOnChipIO &io)
@@ -26,12 +38,12 @@ void dbg::mmulru_tb(SystemOnChipIO &io)
     in_lrui.mmctrl1.bar= rand()&0x3;// : std_logic_vector(1 downto 0);         -- preplace barrier
   }
 
-  tst_mmulru->Update( io.inNRst,//     : in  std_logic;
+  tst_mmulru.Update( io.inNRst,//     : in  std_logic;
                         io.inClk,//     : in  std_logic;
                         in_lrui,//  : in mmulrue_in_type;
                         ch_lruo);//  : out mmulrue_out_type );
                         
-  ptst_mmulru = tst_mmulru;
+  ptst_mmulru = &tst_mmulru;
   pin_lrui = &in_lrui;
   pch_lruo = &ch_lruo;
 #endif
@@ -67,7 +79,7 @@ void dbg::mmulru_tb(SystemOnChipIO &io)
     *posBench[TB_mmulru] << chStr << "\n";
   }
 #ifdef DBG_mmulru
-  ptst_mmulru->ClkUpdate();
+  tst_mmulru.ClkUpdate();
 #endif
 }
 

@@ -1,4 +1,6 @@
-#include "lheaders.h"
+#include "id.h"
+#include "romdata.h"
+#include "ahbrom.h"
 
 
 //****************************************************************************

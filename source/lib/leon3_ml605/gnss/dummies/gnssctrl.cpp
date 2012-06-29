@@ -6,7 +6,8 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#include "leon3_ml605\config.h"
+#include "gnssctrl.h"
 
 #define last_module (CFG_GNSS_MODULES_TOTAL-1)
 #define last_field (CFG_GNSS_DWORD_PER_MODULE-1)

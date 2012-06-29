@@ -1,7 +1,10 @@
 //-----------------------------------------------------------------------------
 //-- Description: MMU TLB logic
 //------------------------------------------------------------------------------
-#include "lheaders.h"
+#include "leon3_ml605\config.h"
+#include "leon3_ml605\stdlib\stdlib.h"
+#include "leon3_ml605\leon3\libmmu.h"
+#include "mmutlbcam.h"
 
 //#define tlb_type  : integer range 0 to 3 := 1;
 //#define mmupgsz   CFG_MMU_PAGESIZE//: integer range 0 to 5  := 0

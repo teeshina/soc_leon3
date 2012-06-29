@@ -8,7 +8,9 @@
 //              match Verilog style
 //****************************************************************************
 
-#include "lheaders.h"
+#include "id.h"
+#include "leon3_ml605\config.h"
+#include "ahbctrl_v.h"
 
 //#define USE_PRIORITY_MASTER_ACCESS  // master with lesser index gets the access first
 
@@ -207,10 +209,6 @@ void AhbControl::Update( uint32 inNRst,
                      : 0;
   outCtrl2Mst.hirq = 0;
 
-  #if 1
-    if(iClkCnt>=19)
-    bool st = true;
-  #endif
 
   outCtrl2Slv.hsel = (wbSlvSel==-1) ? 0: (0x1<<wbSlvSel);
   outCtrl2Slv.hready = wHReady;

@@ -6,7 +6,7 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#include "dumchan.h"
 
 //****************************************************************************
 DummyChannel::DummyChannel(uint32 ind_)

@@ -1,4 +1,6 @@
-#include "lheaders.h"
+#include "id.h"
+#include "const.h"
+#include "dsu3x.h"
 
 //#define hindex AHB_SAVE_DSU// : integer := 0;
 //#define haddr uiMemaddr// : integer := 16#900#;

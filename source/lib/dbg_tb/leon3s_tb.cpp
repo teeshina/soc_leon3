@@ -1,4 +1,22 @@
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_leon3s
+
+#ifdef DBG_leon3s
+  ahb_mst_in_type in_ahbi;//   : in  ahb_mst_in_type;
+  ahb_mst_out_type ch_ahbo;//   : out ahb_mst_out_type;
+  ahb_slv_in_type in_ahbsi;//  : in  ahb_slv_in_type;
+  ahb_slv_out_vector in_ahbso;//  : in  ahb_slv_out_vector;
+  l3_irq_in_type in_irqi;//   : in  l3_irq_in_type;
+  l3_irq_out_type ch_irqo;//   : out l3_irq_out_type;
+  l3_debug_in_type in_dbgi;//   : in  l3_debug_in_type;
+  l3_debug_out_type ch_dbgo;//   : out l3_debug_out_type
+  
+  leon3s tst_leon3s;
+#endif
+
 
 //****************************************************************************
 void dbg::leon3s_tb(SystemOnChipIO &io)

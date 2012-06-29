@@ -6,7 +6,8 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#include "leon3_ml605\config.h"
+#include "gnssmisc.h"
 
 void GnssMisc::Update( uint32 inNRst,
                           SClock inAdcClk,

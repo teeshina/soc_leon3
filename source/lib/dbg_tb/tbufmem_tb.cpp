@@ -1,4 +1,16 @@
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_tbufmem
+
+#ifdef DBG_tbufmem
+  tracebuf_in_type in_tbi;
+  tracebuf_out_type ch_tbo;
+  
+  tbufmem tst_tbufmem;
+#endif
+
 
 //****************************************************************************
 void dbg::tbufmem_tb(SystemOnChipIO &io)

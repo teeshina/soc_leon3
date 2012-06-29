@@ -1,5 +1,8 @@
 #pragma once
 
+#include "stdtypes.h"
+#include "const.h"
+
 const uint32 M_CTX_SZ       = 8;
 const uint32 M_ENT_MAX      = 64;
 const uint32 XM_ENT_MAX_LOG = log2[M_ENT_MAX];

@@ -7,6 +7,9 @@
 
 #pragma once
 
+#include "stdtypes.h"
+#include "const.h"
+
 #define LEON3_CORES_NUM 1
 //-- Modular timer
 #define CFG_GPT_NTIM    2

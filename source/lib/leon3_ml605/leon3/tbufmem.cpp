@@ -1,4 +1,5 @@
-#include "lheaders.h"
+#include "const.h"
+#include "tbufmem.h"
 
 //#define tech   memtech//: integer := 0;
 //#define tbuf   CFG_ITBSZ//: integer := 0; -- trace buf size in kB (0 - no trace buffer)

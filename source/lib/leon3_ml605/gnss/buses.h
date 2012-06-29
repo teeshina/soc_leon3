@@ -8,6 +8,9 @@
 
 #pragma once
 
+#include "stdtypes.h"
+#include "leon3_ml605\config.h"
+
 struct Ctrl2Module
 {
   uint32 rd_ena         : 1;

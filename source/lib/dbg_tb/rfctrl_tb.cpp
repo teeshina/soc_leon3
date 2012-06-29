@@ -6,7 +6,26 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_RfControl
+
+#ifdef DBG_RfControl
+  apb_slv_in_type  in_apbi;//   : in  apb_slv_in_type;
+  apb_slv_out_type ch_apbo;//   : out apb_slv_out_type;
+  uint32 in_LD[SystemOnChipIO::TOTAL_MAXIM2769];
+  uint32 ch_SCLK;
+  uint32 ch_SDATA;
+  uint32 ch_CSn[SystemOnChipIO::TOTAL_MAXIM2769];
+  uint32 in_ExtAntStat;
+  uint32 in_ExtAntDetect;
+  uint32 ch_ExtAntEna;
+  uint32 ch_IntAntContr;
+  RfControl tst_RfControl;
+#endif
+
 
 #ifdef DBG_RfControl
 struct STst{ uint32 iClkNum, adr; uint32 val : 28; };
@@ -54,6 +73,7 @@ void dbg::rfctrl_tb(SystemOnChipIO &io)
   uint32 *pin_ExtAntStat   = &io.antctrl.ExtAntStat;
   uint32 *pin_ExtAntDetect = &io.antctrl.ExtAntDetect;
   uint32 *pch_ExtAntEna    = &io.antctrl.ExtAntEna;
+  uint32 *pch_IntAntContr  = &io.antctrl.IntAntContr;
 
   RfControl        *p_RfControl = topLeon3mp.pclRfControl;
 
@@ -100,7 +120,8 @@ void dbg::rfctrl_tb(SystemOnChipIO &io)
                        ch_CSn,
                        in_ExtAntStat,
                        in_ExtAntDetect,
-                       ch_ExtAntEna );
+                       ch_ExtAntEna,
+                       ch_IntAntContr );
   
   pin_apbi = &in_apbi;//    : out apb_slv_in_type;
   pch_apbo = &ch_apbo;//    : in  apb_slv_out_vector
@@ -111,6 +132,7 @@ void dbg::rfctrl_tb(SystemOnChipIO &io)
   pin_ExtAntStat = &in_ExtAntStat;
   pin_ExtAntDetect = &in_ExtAntDetect;
   pch_ExtAntEna = &ch_ExtAntEna;
+  pch_IntAntContr = &ch_IntAntContr;
   
   p_RfControl = &tst_RfControl;
 #endif

@@ -1,4 +1,16 @@
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_mmulrue
+
+#ifdef DBG_mmulrue
+    mmulrue_in_type in_lruei;//  : in mmulrue_in_type;
+    mmulrue_out_type ch_lrueo;//  : out mmulrue_out_type );
+
+    mmulrue tst_mmulrue(0,CFG_DTLBNUM);
+#endif
+
 
 //****************************************************************************
 void dbg::mmulrue_tb(SystemOnChipIO &io)
@@ -21,12 +33,12 @@ void dbg::mmulrue_tb(SystemOnChipIO &io)
     in_lruei.fromright = rand()&0x1;//    : std_logic;
   }
 
-  tst_mmulrue->Update( io.inNRst,//     : in  std_logic;
+  tst_mmulrue.Update( io.inNRst,//     : in  std_logic;
                         io.inClk,//     : in  std_logic;
                         in_lruei,//  : in mmulrue_in_type;
                         ch_lrueo);//  : out mmulrue_out_type );
   
-  ptst_mmulrue = tst_mmulrue;
+  ptst_mmulrue = &tst_mmulrue;
   pin_lruei = &in_lruei;
   pch_lrueo = &ch_lrueo;
 #endif
@@ -60,7 +72,7 @@ void dbg::mmulrue_tb(SystemOnChipIO &io)
     *posBench[TB_mmulrue] << chStr << "\n";
   }  
 #ifdef DBG_mmulrue
-  ptst_mmulrue->ClkUpdate();
+  tst_mmulrue.ClkUpdate();
 #endif
 }
 

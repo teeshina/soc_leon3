@@ -1,4 +1,17 @@
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_div32
+
+#ifdef DBG_div32
+  uint32 holdnx;//   : in  std_ulogic;
+  div32_in_type divi;//    : in  div32_in_type;
+  div32_out_type divo;//    : out div32_out_type
+
+  div32 tst_div32;
+#endif
+
 
 //****************************************************************************
 void dbg::div32_tb(SystemOnChipIO &io)

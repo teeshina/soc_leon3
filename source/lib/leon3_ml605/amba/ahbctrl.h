@@ -1,5 +1,11 @@
 #pragma once
 
+#include "stdtypes.h"
+#include "dff.h"
+#include "leon3_ml605\config.h"
+#include "leon3_ml605\amba\amba.h"
+
+
 class ahbctrl
 {
   friend class dbg;

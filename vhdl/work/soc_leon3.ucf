@@ -25,18 +25,19 @@ NET "outCSn[0]" LOC = "P34";
 NET "inExtAntStat" LOC = "H32";
 NET "inExtAntDetect" LOC = "K29";
 NET "outExtAntEna" LOC = "G32";
+NET "outIntAntContr" LOC = "P31";
 # Gyroscope SPI interface
-NET "inGyroSDI"  LOC = "A33";
+NET "inGyroSDI"  LOC = "B33";
 NET "inGyroInt1" LOC = "E33"; 
 NET "inGyroInt2" LOC = "D32";
-NET "outGyroSDO" LOC = "B33";
+NET "outGyroSDO" LOC = "A33";
 NET "outGyroCSn" LOC = "D31";
 NET "outGyroSPC" LOC = "C32";
 # Accelerometer SPI interface
-NET "inAccelerSDI"  LOC = "J29";
+NET "inAccelerSDI"  LOC = "K28";
 NET "inAccelerInt1" LOC = "H30"; 
 NET "inAccelerInt2" LOC = "J31";
-NET "outAccelerSDO" LOC = "K28";
+NET "outAccelerSDO" LOC = "J29";
 NET "outAccelerCSn" LOC = "J32";
 NET "outAccelerSPC" LOC = "J30";
 
@@ -72,7 +73,7 @@ NET "outLED[0]" LOC = AC22;
 NET "outLED[1]" LOC = AC24;
 NET "outLED[2]" LOC = AE22;
 NET "outLED[3]" LOC = AE23;
-#NET "outLED[4]" LOC = AB23;
-#NET "outLED[5]" LOC = AG23;
-#NET "outLED[6]" LOC = AE24;
-#NET "outLED[7]" LOC = AD24;
+NET "outLED[4]" LOC = AB23;
+NET "outLED[5]" LOC = AG23;
+NET "outLED[6]" LOC = AE24;
+NET "outLED[7]" LOC = AD24;

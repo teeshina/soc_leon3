@@ -1,5 +1,7 @@
 #pragma once
 
+#include "stdtypes.h"
+
 struct uart_in_type
 {
   uint32 rxd;//   	: std_ulogic;

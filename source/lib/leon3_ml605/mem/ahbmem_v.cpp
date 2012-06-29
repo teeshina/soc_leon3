@@ -1,4 +1,5 @@
-#include "lheaders.h"
+#include "id.h"
+#include "ahbmem_v.h"
 
 //****************************************************************************
 AhbSlaveMem::AhbSlaveMem(uint32 hindex_,

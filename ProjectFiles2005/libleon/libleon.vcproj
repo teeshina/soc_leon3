@@ -192,7 +192,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\source\common\;..\..\source\lib"
+				AdditionalIncludeDirectories="..\..\source\common\;..\..\source\lib\"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBLEON_EXPORTS;DEBUG_SENSOR"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -274,10 +274,6 @@
 			</File>
 			<File
 				RelativePath="..\..\source\lib\ldbg.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\source\lib\lheaders.h"
 				>
 			</File>
 			<File
@@ -1174,42 +1170,6 @@
 							</FileConfiguration>
 						</File>
 						<File
-							RelativePath="..\..\source\lib\leon3_ml605\gnss\products\nco_carr_if.cpp"
-							>
-							<FileConfiguration
-								Name="Debug|Win32"
-								ExcludedFromBuild="true"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-								/>
-							</FileConfiguration>
-						</File>
-						<File
-							RelativePath="..\..\source\lib\leon3_ml605\gnss\products\nco_carr_if.h"
-							>
-							<FileConfiguration
-								Name="Debug|Win32"
-								ExcludedFromBuild="true"
-								>
-								<Tool
-									Name="VCCustomBuildTool"
-								/>
-							</FileConfiguration>
-						</File>
-						<File
-							RelativePath="..\..\source\lib\leon3_ml605\gnss\products\nco_carr_rom.h"
-							>
-							<FileConfiguration
-								Name="Debug|Win32"
-								ExcludedFromBuild="true"
-								>
-								<Tool
-									Name="VCCustomBuildTool"
-								/>
-							</FileConfiguration>
-						</File>
-						<File
 							RelativePath="..\..\source\lib\leon3_ml605\gnss\products\noise.cpp"
 							>
 							<FileConfiguration
@@ -1301,6 +1261,30 @@
 							Name="chan"
 							>
 							<File
+								RelativePath="..\..\source\lib\leon3_ml605\gnss\products\chan\acc.cpp"
+								>
+								<FileConfiguration
+									Name="Debug|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath="..\..\source\lib\leon3_ml605\gnss\products\chan\acc.h"
+								>
+								<FileConfiguration
+									Name="Debug|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCustomBuildTool"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
 								RelativePath="..\..\source\lib\leon3_ml605\gnss\products\chan\chantop.cpp"
 								>
 								<FileConfiguration
@@ -1349,6 +1333,66 @@
 								</FileConfiguration>
 							</File>
 							<File
+								RelativePath="..\..\source\lib\leon3_ml605\gnss\products\chan\corr.cpp"
+								>
+								<FileConfiguration
+									Name="Debug|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath="..\..\source\lib\leon3_ml605\gnss\products\chan\corr.h"
+								>
+								<FileConfiguration
+									Name="Debug|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCustomBuildTool"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath="..\..\source\lib\leon3_ml605\gnss\products\chan\nco_carr_if.cpp"
+								>
+								<FileConfiguration
+									Name="Debug|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath="..\..\source\lib\leon3_ml605\gnss\products\chan\nco_carr_if.h"
+								>
+								<FileConfiguration
+									Name="Debug|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCustomBuildTool"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath="..\..\source\lib\leon3_ml605\gnss\products\chan\nco_carr_rom.h"
+								>
+								<FileConfiguration
+									Name="Debug|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCustomBuildTool"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
 								RelativePath="..\..\source\lib\leon3_ml605\gnss\products\chan\prngen.cpp"
 								>
 								<FileConfiguration
@@ -1362,6 +1406,30 @@
 							</File>
 							<File
 								RelativePath="..\..\source\lib\leon3_ml605\gnss\products\chan\prngen.h"
+								>
+								<FileConfiguration
+									Name="Debug|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCustomBuildTool"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath="..\..\source\lib\leon3_ml605\gnss\products\chan\symbsync.cpp"
+								>
+								<FileConfiguration
+									Name="Debug|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath="..\..\source\lib\leon3_ml605\gnss\products\chan\symbsync.h"
 								>
 								<FileConfiguration
 									Name="Debug|Win32"
@@ -1574,7 +1642,7 @@
 					Name="product"
 					>
 					<File
-						RelativePath="..\..\source\lib\dbg_tb\product\carncoif_tb.cpp"
+						RelativePath="..\..\source\lib\dbg_tb\product\chantop_tb.cpp"
 						>
 						<FileConfiguration
 							Name="Debug|Win32"
@@ -1586,8 +1654,16 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\source\lib\dbg_tb\product\chantop_tb.cpp"
+						RelativePath="..\..\source\lib\dbg_tb\product\ncocarrif_tb.cpp"
 						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\source\lib\dbg_tb\product\prngen_tb.cpp"
@@ -1601,9 +1677,25 @@
 							/>
 						</FileConfiguration>
 					</File>
+					<File
+						RelativePath="..\..\source\lib\dbg_tb\product\symbsync_tb.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+					</File>
 				</Filter>
 			</Filter>
 		</Filter>
+		<File
+			RelativePath="..\..\source\lib\libcall.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

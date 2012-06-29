@@ -8,6 +8,9 @@
 
 #pragma once
 
+#include "stdtypes.h"
+#include "dff.h"
+
 template <class T>class TDpRam
 {
   friend class dbg;

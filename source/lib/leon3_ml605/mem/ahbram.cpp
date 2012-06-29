@@ -8,7 +8,9 @@
 //              interface isn't optimal. So, Ram->Update() temprorary moved up
 //****************************************************************************
 
-#include "lheaders.h"
+#include "id.h"
+#include "const.h"
+#include "ahbram.h"
 
 #define pipe    0
 #define abits   (log2[CFG_AHBRAMSZ] + 8 - AHBDW/64)

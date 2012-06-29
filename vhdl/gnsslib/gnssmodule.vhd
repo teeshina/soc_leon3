@@ -40,7 +40,8 @@ package gnssmodule is
     -- Antenna control:
     inExtAntStat   : in std_ulogic;
     inExtAntDetect : in std_ulogic;
-    outExtAntEna   : out std_ulogic
+    outExtAntEna   : out std_ulogic;
+    outIntAntContr   : out std_ulogic
   );
   end component; 
 

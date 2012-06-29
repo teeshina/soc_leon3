@@ -1,4 +1,4 @@
-#include "lheaders.h"
+#include "proc3.h"
 
 void proc3::Update( SClock clk,//    : in  std_ulogic;
                     uint32 rstn,//   : in  std_ulogic;

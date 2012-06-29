@@ -1,4 +1,6 @@
-#include "lheaders.h"
+#include "const.h"
+#include "leon3_ml605\config.h"
+#include "mmu.h"
 
 //#define tech     0// : integer range 0 to NTECH := 0;
 //#define itlbnum  CFG_ITLBNUM// : integer range 2 to 64 := 8;
@@ -298,10 +300,6 @@ void mmu::Update( uint32 rst,//  : in std_logic;
     v.mmctrl2.fs.fav = 0;
   }
   
-#if 1
-  if(iClkCnt>=41)
-  bool st = true;
-#endif
   if (fault.fault_mexc)
     fs.ft = FS_FT_TRANS;
   else if (fault.fault_trans)
@@ -460,10 +458,6 @@ void mmu::Update( uint32 rst,//  : in std_logic;
 
   r.CLK = clk;
   r.D = c;
-#if 1
-  if(iClkCnt>=41)
-  bool st = true;
-#endif
   
 #if (M_TLB_TYPE == 1)
   //-- i/d tlb

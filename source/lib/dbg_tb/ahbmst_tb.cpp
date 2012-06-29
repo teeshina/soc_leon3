@@ -6,7 +6,10 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
 
 //****************************************************************************
 void dbg::ahbmst_tb(SystemOnChipIO &io)

@@ -6,7 +6,8 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#include <memory>
+#include "dp_ram.h"
 
 //****************************************************************************
 template <class T>TDpRam<T>::TDpRam(uint32 adr_width_)

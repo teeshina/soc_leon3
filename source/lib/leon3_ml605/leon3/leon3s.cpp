@@ -1,4 +1,4 @@
-#include "lheaders.h"
+#include "leon3s.h"
 
 //#define hindex AHB_MASTER_LEON3//0//   : integer               := 0;
 //#define fabtech   CFG_MEMTECH//: integer range 0 to NTECH  := DEFFABTECH;

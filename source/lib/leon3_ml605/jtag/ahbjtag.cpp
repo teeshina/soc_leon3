@@ -1,4 +1,4 @@
-#include "lheaders.h"
+#include "ahbjtag.h"
 
 //****************************************************************************
 void AhbMasterJtag::Update( uint32 inNRst,//         : in  std_ulogic;

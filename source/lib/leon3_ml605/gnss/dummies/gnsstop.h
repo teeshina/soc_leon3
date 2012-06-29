@@ -8,6 +8,17 @@
 
 #pragma once
 
+#include "stdtypes.h"
+#include "dff.h"
+#include "leon3_ml605\gnss\buses.h"
+#include "leon3_ml605\gnss\dummies\dp_ram.h"
+#include "leon3_ml605\gnss\dummies\wrfifo.h"
+#include "leon3_ml605\gnss\dummies\glbtimer.h"
+#include "leon3_ml605\gnss\dummies\gnssctrl.h"
+#include "leon3_ml605\gnss\dummies\chnpack.h"
+#include "leon3_ml605\gnss\dummies\noise.h"
+#include "leon3_ml605\gnss\dummies\gnssmisc.h"
+
 class GnssTop
 {
   friend class dbg;

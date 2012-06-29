@@ -6,6 +6,9 @@
 
 #pragma once
 
+#include "stdtypes.h"
+#include "leon3_ml605\config.h"
+
 //-----------------------------------------------------------------------------
 // AMBA interface type declarations and constant
 //-----------------------------------------------------------------------------

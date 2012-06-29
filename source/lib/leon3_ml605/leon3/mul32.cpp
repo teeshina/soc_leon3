@@ -1,4 +1,4 @@
-#include "lheaders.h"
+#include "mul32.h"
 
 //#define tech    : integer := 0;
 #define multype (CFG_V8/16)//: integer range 0 to 3 := 0;

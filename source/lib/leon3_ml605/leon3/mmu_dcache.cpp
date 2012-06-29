@@ -1,8 +1,13 @@
 //------------------------------------------------------------------------------
 //-- Description: This unit implements the data cache controller with MMU.
 //------------------------------------------------------------------------------  
+#include "sparc.h"
+#include "const.h"
+#include "leon3_ml605\stdlib\stdlib.h"
+#include "leon3_ml605\leon3\libmmu.h"
+#include "mmu_dcache.h"
 
-#include "lheaders.h"
+extern uint32 iClkCnt;
 
 //#define dsu       CFG_DSU//: integer range 0 to 1  := 0;
 //#define dcen      : integer range 0 to 1  := 0;

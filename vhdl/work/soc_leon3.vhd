@@ -54,6 +54,7 @@ entity soc_leon3 is Port
   inExtAntStat   : in std_ulogic;
   inExtAntDetect : in std_ulogic;
   outExtAntEna   : out std_ulogic;
+  outIntAntContr : out std_ulogic;
   -- Gyroscope SPI interface
   inGyroSDI   : in std_logic;
   inGyroInt1  : in std_logic; -- interrupt 1
@@ -109,6 +110,7 @@ architecture Behavioral of soc_leon3 is
     inExtAntStat   : in std_ulogic;
     inExtAntDetect : in std_ulogic;
     outExtAntEna   : out std_ulogic;
+    outIntAntContr : out std_ulogic;
     -- Gyroscope SPI interface
     inGyroSDI   : in std_logic;
     inGyroInt1  : in std_logic; -- interrupt 1
@@ -177,6 +179,7 @@ begin
     inExtAntStat,
     inExtAntDetect,
     outExtAntEna,
+    outIntAntContr,
     -- Gyroscope
     inGyroSDI,
     inGyroInt1,

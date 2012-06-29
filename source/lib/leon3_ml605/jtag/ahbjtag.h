@@ -1,4 +1,12 @@
 #pragma once
+#include "stdtypes.h"
+#include "dff.h"
+#include "leon3_ml605\config.h"
+#include "leon3_ml605\amba\amba.h"
+
+#include "leon3_ml605\jtag\jtagpad.h"
+#include "leon3_ml605\jtag\jtagcom_v.h"
+#include "leon3_ml605\amba\ahbmst_v.h"
 
 class AhbMasterJtag
 {

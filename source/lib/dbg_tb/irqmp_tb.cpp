@@ -6,7 +6,21 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_irqmp
+
+#ifdef DBG_irqmp
+  apb_slv_in_type  in_apbi;//   : in  apb_slv_in_type;
+  apb_slv_out_type ch_apbo;//   : out apb_slv_out_type;
+  irq_out_vector   in_irqi;//   : in  irq_out_vector(0 to ncpu-1);
+  irq_in_vector    ch_irqo;
+  
+  irqmp tst_irqmp(APB_IRQ_CONTROL,0x2,0xfff);
+#endif
+
 
 //****************************************************************************
 void dbg::irqmp_tb(SystemOnChipIO &io)
@@ -45,7 +59,7 @@ void dbg::irqmp_tb(SystemOnChipIO &io)
     }
   }
 
-  ptst_irqmp->Update(topLeon3mp.wNRst,
+  tst_irqmp.Update(topLeon3mp.wNRst,
                        io.inClk,
                        in_apbi,
                        ch_apbo,
@@ -56,7 +70,7 @@ void dbg::irqmp_tb(SystemOnChipIO &io)
   pch_apbo = &ch_apbo;//    : in  apb_slv_out_vector
   pin_irqi = &in_irqi;
   pch_irqo = &ch_irqo;
-  p_irqmp = ptst_irqmp;
+  p_irqmp = &tst_irqmp;
 #endif
 
   if(io.inClk.eClock==SClock::CLK_POSEDGE)
@@ -129,7 +143,7 @@ void dbg::irqmp_tb(SystemOnChipIO &io)
   }
 
 #ifdef DBG_irqmp
-  ptst_irqmp->ClkUpdate();
+  tst_irqmp.ClkUpdate();
 #endif
 }
 

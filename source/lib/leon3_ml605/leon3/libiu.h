@@ -1,5 +1,8 @@
 #pragma once
 
+#include "stdtypes.h"
+#include "leon3_ml605\leon3\leon3.h"
+
 const int32  RDBITS = 32;// : integer := 32;
 const int32  IDBITS = 32;// : integer := 32;
 

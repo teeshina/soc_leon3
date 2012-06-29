@@ -5,8 +5,8 @@
 // Contact:     sergey.khabarov@gnss-sensor.com
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
-
-#include "lheaders.h"
+#include "id.h"
+#include "apbctrl.h"
 
 //#define hindex      : integer := 0;
 //#define haddr       : integer := 0;

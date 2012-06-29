@@ -6,7 +6,22 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_gptimer
+
+#ifdef DBG_gptimer
+  apb_slv_in_type  in_apbi;//   : in  apb_slv_in_type;
+  apb_slv_out_type ch_apbo;//   : out apb_slv_out_type;
+  gptimer_in_type  in_gpti;//   : in  gptimer_in_type;
+  gptimer_out_type ch_gpto;//   : out gptimer_out_type
+  
+  gptimer tst_gptimer(APB_TIMER, 0x3, 0xfff);
+#endif
+
+
 
 //****************************************************************************
 void dbg::gptimer_tb(SystemOnChipIO &io)
@@ -28,14 +43,14 @@ void dbg::gptimer_tb(SystemOnChipIO &io)
     in_apbi.pwrite = 0;
     if(iClkCnt==40)
     {
-      in_apbi.paddr = 0x80000300; // set scaler
-      in_apbi.pwdata = 66;
-      in_apbi.pwrite = 1;
-      in_apbi.penable = 1;
+      //in_apbi.paddr = 0x80000300; // set scaler
+      //in_apbi.pwdata = 0;//66;
+      //in_apbi.pwrite = 1;
+      //in_apbi.penable = 1;
     }else if(iClkCnt==42)
     {
       in_apbi.paddr = 0x80000304; // set reload value
-      in_apbi.pwdata = 66;
+      in_apbi.pwdata = 0;//66;
       in_apbi.pwrite = 1;
       in_apbi.penable = 1;
     }
@@ -43,27 +58,27 @@ void dbg::gptimer_tb(SystemOnChipIO &io)
     uint32 TimerNum=1;    
     if(iClkCnt==100)
     {
-      in_apbi.paddr = 0x80000300 | (TimerNum<<4) | (0<<2); // write value
-      in_apbi.pwdata = 10 + TimerNum;
-      in_apbi.pwrite = 1;
-      in_apbi.penable = 1;
+      //in_apbi.paddr = 0x80000300 | (TimerNum<<4) | (0<<2); // write value
+      //in_apbi.pwdata = 10 + TimerNum;
+      //in_apbi.pwrite = 1;
+      //in_apbi.penable = 1;
     }else if(iClkCnt==102)
     {
       in_apbi.paddr = 0x80000300 | (TimerNum<<4) | (1<<2); // write reload
-      in_apbi.pwdata = 10 + TimerNum;
+      in_apbi.pwdata = 0xffffffff;//10 + TimerNum;
       in_apbi.pwrite = 1;
       in_apbi.penable = 1;
     }else if(iClkCnt==104)
     {
       in_apbi.paddr = 0x80000300 | (TimerNum<<4) | (2<<2); // write control
-      uint32 ena=1,restart=1,load=1,irqen=1,irqpen=0,chain=0;
+      uint32 ena=1,restart=1,load=1,irqen=0,irqpen=0,chain=0;
       in_apbi.pwdata = (chain<<5)|(irqpen<<4)|(irqen<<3)|(load<<2)|(restart<<1)|ena;
       in_apbi.pwrite = 1;
       in_apbi.penable = 1;
     }
 
     TimerNum=2;        
-    if(iClkCnt==100)
+    /*if(iClkCnt==100)
     {
       in_apbi.paddr = 0x80000300 | (TimerNum<<4) | (0<<2); // write value
       in_apbi.pwdata = 10 + TimerNum;
@@ -89,7 +104,7 @@ void dbg::gptimer_tb(SystemOnChipIO &io)
       in_apbi.pwdata = (chain<<5)|(irqpen<<4)|(irqen<<3)|(load<<2)|(restart<<1)|ena;
       in_apbi.pwrite = 1;
       in_apbi.penable = 1;
-    }
+    }*/
     
     if(iClkCnt>15000)
     {
@@ -109,7 +124,7 @@ void dbg::gptimer_tb(SystemOnChipIO &io)
     in_gpti.wdogen = 0;//rand()&0x1;//   : std_ulogic;
   }
 
-  ptst_gptimer->Update(topLeon3mp.wNRst,
+  tst_gptimer.Update(topLeon3mp.wNRst,
                        io.inClk,
                        in_apbi,
                        ch_apbo,
@@ -120,7 +135,7 @@ void dbg::gptimer_tb(SystemOnChipIO &io)
   pch_apbo = &ch_apbo;//    : in  apb_slv_out_vector
   pin_gpti = &in_gpti;
   pch_gpto = &ch_gpto;
-  p_gptimer = ptst_gptimer;
+  p_gptimer = &tst_gptimer;
 #endif
 
   if(io.inClk.eClock==SClock::CLK_POSEDGE)
@@ -172,7 +187,7 @@ void dbg::gptimer_tb(SystemOnChipIO &io)
   }
 
 #ifdef DBG_gptimer
-  ptst_gptimer->ClkUpdate();
+  tst_gptimer.ClkUpdate();
 #endif
 }
 

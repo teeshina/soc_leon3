@@ -1,4 +1,22 @@
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_dsu3x
+
+#ifdef DBG_dsu3x
+  ahb_mst_in_type in_ahbmi;//  : in  ahb_mst_in_type;
+  ahb_slv_in_type in_ahbsi;//  : in  ahb_slv_in_type;
+  ahb_slv_out_type ch_ahbso;//  : out ahb_slv_out_type;
+  l3_debug_out_vector in_dbgi;//   : in l3_debug_out_vector(0 to NCPU-1);
+  l3_debug_in_vector ch_dbgo;//   : out l3_debug_in_vector(0 to NCPU-1);
+  dsu_in_type in_dsui;//   : in dsu_in_type;
+  dsu_out_type ch_dsuo;//   : out dsu_out_type;
+  uint32 in_hclken;// : in std_ulogic
+  
+  dsu3x tst_dsu3x;
+#endif
+
 
 //****************************************************************************
 void dbg::dsu3x_tb(SystemOnChipIO &io)
@@ -76,11 +94,7 @@ void dbg::dsu3x_tb(SystemOnChipIO &io)
     in_dsui.Break  = rand()&0x1;//std_ulogic;
   }
 
-#ifdef DSU_CPU_ENA
-  pin_ahbsi = clDsuCpu.GetpAhsi();
-#else
   pin_ahbsi = &in_ahbsi;//  : in  ahb_slv_in_type;
-#endif
 
   
   tst_dsu3x.Update(topLeon3mp.wNRst,//    : in  std_ulogic;
@@ -98,8 +112,8 @@ void dbg::dsu3x_tb(SystemOnChipIO &io)
 
   pin_ahbmi = &in_ahbmi;//  : in  ahb_mst_in_type;
   pch_ahbso = &ch_ahbso;//  : out ahb_slv_out_type;
-  pin_dbgi = &in_dbgi;//   : in l3_debug_out_vector(0 to NCPU-1);
-  pch_dbgo = &ch_dbgo;//   : out l3_debug_in_vector(0 to NCPU-1);
+  pin_dbgo = &in_dbgi;//   : in l3_debug_out_vector(0 to NCPU-1);
+  pch_dbgi = &ch_dbgo;//   : out l3_debug_in_vector(0 to NCPU-1);
   pin_dsui = &in_dsui;//   : in dsu_in_type;
   pch_dsuo = &ch_dsuo;//   : out dsu_out_type;
   hclken = in_hclken;// : in std_ulogic

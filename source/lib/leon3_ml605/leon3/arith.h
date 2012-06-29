@@ -1,5 +1,7 @@
 #pragma once
 
+#include "stdtypes.h"
+
 struct div32_in_type
 {
   uint64 y;//                : std_logic_vector(32 downto 0); -- Y (MSB divident)

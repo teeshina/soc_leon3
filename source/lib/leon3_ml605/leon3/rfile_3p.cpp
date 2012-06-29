@@ -1,4 +1,5 @@
-#include "lheaders.h"
+#include "leon3_ml605\config.h"
+#include "rfile_3p.h"
 
 //#define tech    memtech//: integer := 0;
 //#define abits   IRFBITS//: integer := 6;

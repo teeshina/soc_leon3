@@ -8,6 +8,10 @@
 
 #pragma once
 
+#include "stdtypes.h"
+#include "dff.h"
+#include "leon3_ml605\gnss\buses.h"
+
 class Noise
 {
   friend class dbg;

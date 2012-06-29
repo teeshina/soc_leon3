@@ -2,11 +2,12 @@
 // Property:    GNSS Sensor Limited
 // Author:      GNSS Sensor Limited
 // License:     GNU2
-// Contact:     alex.kosin@gnss-sensor.com
+// Contact:     sergey.khabarov@gnss-sensor.com
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#include "id.h"
+#include "gnssengine.h"
 
 
 static const uint32 GNSS_ENGINE_VERSION = 1;

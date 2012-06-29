@@ -1,4 +1,16 @@
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_cachemem
+
+#ifdef DBG_cachemem
+  cram_in_type in_crami;// : in  cram_in_type;
+  cram_out_type ch_cramo;// : out cram_out_type;
+
+  cachemem tst_cachemem;
+#endif
+
 
 //****************************************************************************
 void dbg::cachemem_tb(SystemOnChipIO &io)

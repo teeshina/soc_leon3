@@ -1,4 +1,35 @@
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_iu3
+
+#ifdef DBG_iu3
+  uint32 holdnx;
+  icache_in_type      ici;
+  icache_out_type     ico;
+  dcache_in_type      dci;
+  dcache_out_type     dco;
+  iregfile_in_type    rfi;
+  iregfile_out_type   rfo;
+  l3_irq_in_type      irqi;
+  l3_irq_out_type     irqo;
+  l3_debug_in_type    dbgi;
+  l3_debug_out_type   dbgo;
+  mul32_in_type       muli;
+  mul32_out_type      mulo;
+  div32_in_type       divi;
+  div32_out_type      divo;
+  fpc_in_type         fpi;
+  fpc_out_type        fpo;
+  fpc_in_type         cpi;
+  fpc_out_type        cpo;
+  tracebuf_in_type    tbi;
+  tracebuf_out_type   tbo;
+
+  iu3 tst_iu3;
+#endif
+
 
 //****************************************************************************
 void dbg::iu3_tb(SystemOnChipIO &io)
@@ -89,7 +120,7 @@ void dbg::iu3_tb(SystemOnChipIO &io)
     dco.icdiag.pflushaddr = tmp&MSK32(VA_I_U,VA_I_D);//       : std_logic_vector(VA_I_U downto VA_I_D); 
     tmp = rand();
     dco.icdiag.pflushtyp = (tmp>>0)&0x1;//        : std_ulogic;
-    dco.icdiag.ilock = (tmp>>1)&0xf;//            : std_logic_vector(0 to 3); 
+    //dco.icdiag.ilock = (tmp>>1)&0xf;//            : std_logic_vector(0 to 3); 
     dco.icdiag.scanen = 0;//           : std_ulogic;
     dco.cache = (tmp>>5)&0x1;//            : std_ulogic;
     dco.idle = 0;//             : std_ulogic;			-- idle mode

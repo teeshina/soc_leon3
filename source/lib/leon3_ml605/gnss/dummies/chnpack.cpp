@@ -6,7 +6,7 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#include "chnpack.h"
 
 //****************************************************************************
 ChannelsPack::ChannelsPack()

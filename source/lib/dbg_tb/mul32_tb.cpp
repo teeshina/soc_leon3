@@ -1,4 +1,17 @@
-#include "lheaders.h"
+#include "ldbg.h"
+#include "leon3_ml605\leon3mp.h"
+extern leon3mp topLeon3mp;
+
+//#define DBG_mul32
+
+#ifdef DBG_mul32
+  uint32 holdnx;// : std_logic;
+  mul32_in_type muli;//  : mul32_in_type;
+  mul32_out_type mulo;//  : mul32_out_type;
+
+  mul32 tst_mul32;
+#endif
+
 
 //****************************************************************************
 void dbg::mul32_tb(SystemOnChipIO &io)

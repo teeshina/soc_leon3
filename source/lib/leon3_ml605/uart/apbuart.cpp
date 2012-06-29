@@ -6,7 +6,8 @@
 // Repository:  git@github.com:teeshina/soc_leon3.git
 //****************************************************************************
 
-#include "lheaders.h"
+#include "id.h"
+#include "apbuart.h"
 
 //#define pindex   : integer = 0;
 //#define paddr    : integer = 0;

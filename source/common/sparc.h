@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "stdtypes.h"
+
 // op decoding (inst(31 downto 30))
 static const uint32 FMT2     = 0x0;//"00";
 static const uint32 CALL     = 0x1;//"01";  // PC-relative control transfer to address PC+4*disp30
