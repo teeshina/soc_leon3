@@ -9,6 +9,9 @@ typedef unsigned int uint32;
 typedef __int64 int64;
 typedef unsigned __int64 uint64;
 
+typedef float float32;
+typedef double float64;
+
 //
 #define LSBMSK32(x) (0xFFFFFFFF>>(31-(x)))
 #define MSK32(m,l)  (((0xFFFFFFFF>>(31-(m)))>>(l))<<(l))

@@ -1285,6 +1285,54 @@
 								</FileConfiguration>
 							</File>
 							<File
+								RelativePath="..\..\source\lib\leon3_ml605\gnss\products\chan\carncof0.cpp"
+								>
+								<FileConfiguration
+									Name="Debug|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath="..\..\source\lib\leon3_ml605\gnss\products\chan\carncof0.h"
+								>
+								<FileConfiguration
+									Name="Debug|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCustomBuildTool"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath="..\..\source\lib\leon3_ml605\gnss\products\chan\carncofx.cpp"
+								>
+								<FileConfiguration
+									Name="Debug|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath="..\..\source\lib\leon3_ml605\gnss\products\chan\carncofx.h"
+								>
+								<FileConfiguration
+									Name="Debug|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCustomBuildTool"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
 								RelativePath="..\..\source\lib\leon3_ml605\gnss\products\chan\chantop.cpp"
 								>
 								<FileConfiguration

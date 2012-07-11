@@ -26,11 +26,29 @@ class GnssMisc
     regs v;
     TDFF<regs> r;
     
+    int32 wbGpsI;// : 3;
+    int32 wbGpsQ;// : 3;
+    int32 wbGloI;// : 3;
+    int32 wbGloQ;// : 3;
+
+    int32 wbGpsI_IF;
+    int32 wbGpsQ_IF;
+    int32 wbGloI_IF;
+    int32 wbGloQ_IF;
+    
   public:
     void Update(uint32 inNRst,
                 SClock inAdcClk,
                 Ctrl2Module &in_c2m,
-                Module2Ctrl &out_m2c );
+                Module2Ctrl &out_m2c,
+                uint32 inGpsI,
+                uint32 inGpsQ,
+                uint32 inGloI,
+                uint32 inGloQ,
+                int32 &outGpsI,
+                int32 &outGpsQ,
+                int32 &outGloI,
+                int32 &outGloQ );
     
     void ClkUpdate()
     {

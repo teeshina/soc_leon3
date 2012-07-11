@@ -81,18 +81,10 @@ class leon3mp
     gptimer_out_type gpto;
     gptimer *pclTimer;
 
-#ifdef USE_GNSSLTD_RFCONTROL
     RfControl *pclRfControl;
-#endif
-#ifdef USE_GNSSLTD_GYROSCOPE
     gyrospi *pclGyroscope;
-#endif
-#ifdef USE_GNSSLTD_ACCELEROMETER
     accelspi *pclAccelerometer;
-#endif
-#ifdef USE_GNSSLTD_GNSSENGINE
     GnssEngine *pclGnssEngine;
-#endif
 
     ahbrom *pclAhbRom;
 

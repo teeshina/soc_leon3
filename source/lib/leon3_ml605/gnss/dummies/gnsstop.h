@@ -59,6 +59,10 @@ class GnssTop
     uint64 wbChnOutData;
     ChannelsPack clChannelsPack;
 
+    int32 mscGpsI;
+    int32 mscGpsQ;
+    int32 mscGloI;
+    int32 mscGloQ;
     GnssMisc clGnssMisc;
     
     Noise    clNoise;

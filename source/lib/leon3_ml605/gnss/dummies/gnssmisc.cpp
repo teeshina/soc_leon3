@@ -12,7 +12,15 @@
 void GnssMisc::Update( uint32 inNRst,
                           SClock inAdcClk,
                           Ctrl2Module &in_c2m,
-                          Module2Ctrl &out_m2c)
+                          Module2Ctrl &out_m2c,
+                          uint32 inGpsI,
+                          uint32 inGpsQ,
+                          uint32 inGloI,
+                          uint32 inGloQ,
+                          int32 &outGpsI,
+                          int32 &outGpsQ,
+                          int32 &outGloI,
+                          int32 &outGloQ)
 {
   // write control registers:
   if((in_c2m.wr_module_sel==MODULE_ID_MISC)&&in_c2m.wr_ena)
@@ -42,8 +50,41 @@ void GnssMisc::Update( uint32 inNRst,
   }
   
   
+  if(inGpsI==0)     wbGpsI = -3;
+  else if(inGpsI==1)wbGpsI = -1;
+  else if(inGpsI==2)wbGpsI = +1;
+  else              wbGpsI = +3;
+
+  if(inGpsQ==0)     wbGpsQ = -3;
+  else if(inGpsQ==1)wbGpsQ = -1;
+  else if(inGpsQ==2)wbGpsQ = +1;
+  else              wbGpsQ = +3;
+
+
+  if(inGloI==0)     wbGloI = -3;
+  else if(inGloI==1)wbGloI = -1;
+  else if(inGloI==2)wbGloI = +1;
+  else              wbGloI = +3;
+
+  if(inGloQ==0)     wbGloQ = -3;
+  else if(inGloQ==1)wbGloQ = -1;
+  else if(inGloQ==2)wbGloQ = +1;
+  else              wbGloQ = +3;
+  
+  
+  // TODO: implemet carrier NCO IF:
+  wbGpsI_IF = wbGpsI;
+  wbGpsQ_IF = wbGpsQ;
+  wbGloI_IF = wbGloI;
+  wbGloQ_IF = wbGloQ;
+  
   out_m2c.rdata_rdy = r.Q.rdata_rdy;
   out_m2c.rdata     = r.Q.rdata;
+  
+  outGpsI = wbGpsI_IF;
+  outGpsQ = wbGpsQ_IF;
+  outGloI = wbGloI_IF;
+  outGloQ = wbGloQ_IF;
   
   r.CLK = inAdcClk;
   r.D = v;

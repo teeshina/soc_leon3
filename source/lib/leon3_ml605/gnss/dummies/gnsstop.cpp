@@ -53,7 +53,9 @@ void GnssTop::Update( uint32 inNRst,
   clGnssMisc.Update( inNRst,
                      inAdcClk,
                      c2m,
-                     m2c.arr[MODULE_ID_MISC]);
+                     m2c.arr[MODULE_ID_MISC],
+                     inGpsI, inGpsQ, inGloI, inGloQ,
+                     mscGpsI, mscGpsQ, mscGloI, mscGloQ );
 
   clGlobalTimer.Update( inNRst,
                         inAdcClk,
